@@ -8,14 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var library = LibraryStore()
+    @StateObject private var streak = StreakManager()
+    @StateObject private var notifications = NotificationManager()
+    @State private var selectedTab: AppTab = .today
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack(alignment: .bottom) {
+            Theme.background.ignoresSafeArea()
+
+            Group {
+                switch selectedTab {
+                case .today: TodayView()
+                case .library: LibraryView()
+                case .profile: ProfileView()
+                }
+            }
+
+            CustomTabBar(selection: $selectedTab)
+                .padding(.bottom, 8)
         }
-        .padding()
+        .environmentObject(library)
+        .environmentObject(streak)
+        .environmentObject(notifications)
     }
 }
 

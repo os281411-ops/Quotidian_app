@@ -1,0 +1,542 @@
+[
+  {
+    "id": "melville-moby-dick",
+    "text": "It is not down on any map; true places never are.",
+    "author": "Herman Melville",
+    "book": "Moby-Dick",
+    "year": "1851",
+    "about": "Melville's sprawling sea adventure follows Captain Ahab's obsessive hunt for the white whale that maimed him, using the voyage of the whaling ship Pequod to explore fate, obsession, and humanity's place in a vast, indifferent natural world.",
+    "isbn13": "9780143105954"
+  },
+  {
+    "id": "austen-pride-and-prejudice",
+    "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+    "author": "Jane Austen",
+    "book": "Pride and Prejudice",
+    "year": "1813",
+    "about": "Austen's beloved comedy of manners follows the spirited Elizabeth Bennet as she navigates family expectations, first impressions, and her prickly courtship with the proud Mr. Darcy in Regency England.",
+    "isbn13": "9780143138730"
+  },
+  {
+    "id": "dickens-tale-of-two-cities",
+    "text": "It was the best of times, it was the worst of times.",
+    "author": "Charles Dickens",
+    "book": "A Tale of Two Cities",
+    "year": "1859",
+    "about": "Set against the turmoil of the French Revolution, Dickens weaves the fates of a wrongly imprisoned man, a devoted daughter, and a dissolute lawyer into a story of sacrifice and resurrection.",
+    "isbn13": "9780141439600"
+  },
+  {
+    "id": "dickens-great-expectations",
+    "text": "I loved her against reason, against promise, against peace, against hope, against happiness, against all discouragement that could be.",
+    "author": "Charles Dickens",
+    "book": "Great Expectations",
+    "year": "1861",
+    "about": "Orphan Pip rises from a blacksmith's forge to genteel society through a mysterious benefactor, only to learn that wealth and love rarely arrive the way we expect them to.",
+    "isbn13": "9780141439563"
+  },
+  {
+    "id": "carroll-alice-in-wonderland",
+    "text": "We're all mad here. I'm mad. You're mad.",
+    "author": "Lewis Carroll",
+    "book": "Alice's Adventures in Wonderland",
+    "year": "1865",
+    "about": "A young girl tumbles down a rabbit hole into a nonsensical world of talking creatures, riddles, and impossible logic, in one of literature's most enduring works of imaginative whimsy.",
+    "isbn13": "9780141439761"
+  },
+  {
+    "id": "tolstoy-anna-karenina",
+    "text": "All happy families are alike; each unhappy family is unhappy in its own way.",
+    "author": "Leo Tolstoy",
+    "book": "Anna Karenina",
+    "year": "1878",
+    "about": "Tolstoy traces the tragic affair of Anna Karenina alongside the quieter, redemptive story of the landowner Levin, painting a vast portrait of love, society, and moral struggle in Imperial Russia.",
+    "isbn13": "9780143035008"
+  },
+  {
+    "id": "dostoevsky-crime-and-punishment",
+    "text": "Pain and suffering are always inevitable for a large intelligence and a deep heart.",
+    "author": "Fyodor Dostoevsky",
+    "book": "Crime and Punishment",
+    "year": "1866",
+    "about": "A destitute former student commits a murder to test his own theories about extraordinary men, then spirals into guilt and paranoia in Dostoevsky's psychological masterpiece of crime and conscience.",
+    "isbn13": "9780140449136"
+  },
+  {
+    "id": "dostoevsky-brothers-karamazov",
+    "text": "What is hell? I maintain that it is the suffering of being unable to love.",
+    "author": "Fyodor Dostoevsky",
+    "book": "The Brothers Karamazov",
+    "year": "1880",
+    "about": "The murder of a father becomes a lens for examining faith, doubt, and morality among his three very different sons in Dostoevsky's final and most philosophically ambitious novel.",
+    "isbn13": "9781324095101"
+  },
+  {
+    "id": "bronte-jane-eyre",
+    "text": "I am no bird; and no net ensnares me: I am a free human being with an independent will.",
+    "author": "Charlotte Brontë",
+    "book": "Jane Eyre",
+    "year": "1847",
+    "about": "An orphaned governess insists on her own moral and emotional independence as she navigates hardship, a dangerous romance, and the pursuit of a life defined on her own terms.",
+    "isbn13": "9780141441146"
+  },
+  {
+    "id": "bronte-wuthering-heights",
+    "text": "Whatever our souls are made of, his and mine are the same.",
+    "author": "Emily Brontë",
+    "book": "Wuthering Heights",
+    "year": "1847",
+    "about": "A wild, destructive love between Catherine Earnshaw and Heathcliff haunts two generations on the Yorkshire moors in this singular novel of passion, revenge, and the supernatural pull of the past.",
+    "isbn13": "9780141439556"
+  },
+  {
+    "id": "shelley-frankenstein",
+    "text": "Nothing is so painful to the human mind as a great and sudden change.",
+    "author": "Mary Shelley",
+    "book": "Frankenstein",
+    "year": "1818",
+    "about": "A young scientist's ambition to conquer death produces a living being he immediately abandons, setting off a chain of tragedy that questions who the real monster in the story is.",
+    "isbn13": "9780141439471"
+  },
+  {
+    "id": "wilde-dorian-gray",
+    "text": "I can resist everything except temptation.",
+    "author": "Oscar Wilde",
+    "book": "The Picture of Dorian Gray",
+    "year": "1890",
+    "about": "A beautiful young man's portrait ages and corrupts in his place while he pursues a life of unchecked pleasure, in Wilde's only novel and a sharp meditation on vanity and vice.",
+    "isbn13": "9780141439570"
+  },
+  {
+    "id": "alcott-little-women",
+    "text": "I am not afraid of storms, for I am learning how to sail my ship.",
+    "author": "Louisa May Alcott",
+    "book": "Little Women",
+    "year": "1868",
+    "about": "The four March sisters grow up together through wartime hardship, ambition, and heartbreak in Concord, Massachusetts, in Alcott's warm and enduring portrait of sisterhood and self-determination.",
+    "isbn13": "9780147514011"
+  },
+  {
+    "id": "twain-huckleberry-finn",
+    "text": "All right, then, I'll go to hell.",
+    "author": "Mark Twain",
+    "book": "Adventures of Huckleberry Finn",
+    "year": "1884",
+    "about": "A boy and an escaped enslaved man raft down the Mississippi River together, and Huck's growing friendship with Jim forces him to reckon with the moral code he's been taught.",
+    "isbn13": "9781440657580"
+  },
+  {
+    "id": "thoreau-walden",
+    "text": "I went to the woods because I wished to live deliberately.",
+    "author": "Henry David Thoreau",
+    "book": "Walden",
+    "year": "1854",
+    "about": "Thoreau recounts his two years living simply in a cabin by Walden Pond, using the experiment as a springboard for reflections on self-reliance, nature, and what a life actually requires.",
+    "isbn13": "9780140390445"
+  },
+  {
+    "id": "whitman-leaves-of-grass",
+    "text": "Do I contradict myself? Very well then I contradict myself, I am large, I contain multitudes.",
+    "author": "Walt Whitman",
+    "book": "Leaves of Grass",
+    "year": "1855",
+    "about": "Whitman's sprawling, ever-expanded collection of free verse celebrates the body, democracy, and the individual self with an exuberance that reshaped what American poetry could sound like.",
+    "isbn13": "9780143039273"
+  },
+  {
+    "id": "eliot-middlemarch",
+    "text": "What do we live for, if not to make life less difficult for each other?",
+    "author": "George Eliot",
+    "book": "Middlemarch",
+    "year": "1871",
+    "about": "Eliot follows the intertwined lives of idealistic Dorothea Brooke and ambitious young doctor Tertius Lydgate in a provincial English town, in a novel often called the finest in the English language.",
+    "isbn13": "9780141439549"
+  },
+  {
+    "id": "hawthorne-scarlet-letter",
+    "text": "No man, for any considerable period, can wear one face to himself and another to the multitude, without finally getting bewildered as to which may be true.",
+    "author": "Nathaniel Hawthorne",
+    "book": "The Scarlet Letter",
+    "year": "1850",
+    "about": "Branded with a scarlet 'A' for adultery in Puritan Boston, Hester Prynne endures public shame with quiet dignity while the true father of her child is slowly consumed by his secret guilt.",
+    "isbn13": "9780143105442"
+  },
+  {
+    "id": "marcus-aurelius-meditations",
+    "text": "You have power over your mind, not outside events. Realize this, and you will find strength.",
+    "author": "Marcus Aurelius",
+    "book": "Meditations",
+    "year": "180",
+    "about": "The private journal of a Roman emperor, written amid war and plague, distills Stoic philosophy into practical notes on duty, mortality, and keeping one's mind steady amid chaos.",
+    "isbn13": "9780812968255"
+  },
+  {
+    "id": "franklin-autobiography",
+    "text": "Well done is better than well said.",
+    "author": "Benjamin Franklin",
+    "book": "The Autobiography of Benjamin Franklin",
+    "year": "1791",
+    "about": "Franklin recounts his rise from a runaway printer's apprentice to statesman and inventor, threading the story with the practical maxims on virtue and self-improvement he became famous for.",
+    "isbn13": "9781965684207"
+  },
+  {
+    "id": "douglass-narrative",
+    "text": "Once you learn to read, you will be forever free.",
+    "author": "Frederick Douglass",
+    "book": "Narrative of the Life of Frederick Douglass",
+    "year": "1845",
+    "about": "Douglass's account of his life in slavery and his escape to freedom became one of the most influential works of the abolitionist movement, testifying to the power of literacy and self-emancipation.",
+    "isbn13": "9780486284996"
+  },
+  {
+    "id": "washington-up-from-slavery",
+    "text": "Success is to be measured not so much by the position that one has reached in life as by the obstacles which he has overcome.",
+    "author": "Booker T. Washington",
+    "book": "Up From Slavery",
+    "year": "1901",
+    "about": "Washington traces his path from enslaved childhood to founding the Tuskegee Institute, arguing for education and self-reliance as the surest route to Black advancement in post-Civil War America.",
+    "isbn13": "9780451531476"
+  },
+  {
+    "id": "augustine-confessions",
+    "text": "Our hearts are restless until they rest in you.",
+    "author": "Saint Augustine",
+    "book": "Confessions",
+    "year": "397",
+    "about": "One of the earliest Western autobiographies, Augustine's Confessions traces his restless youth and dramatic conversion to Christianity in a work that shaped centuries of spiritual and philosophical writing.",
+    "isbn13": "9780140441147"
+  },
+  {
+    "id": "keller-story-of-my-life",
+    "text": "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.",
+    "author": "Helen Keller",
+    "book": "The Story of My Life",
+    "year": "1903",
+    "about": "Written while still a student at Radcliffe, Keller's memoir describes how her teacher Anne Sullivan broke through the isolation of deafblindness and opened up language, and with it, the world.",
+    "isbn13": "9781633845879"
+  },
+  {
+    "id": "frankl-mans-search-for-meaning",
+    "text": "When we are no longer able to change a situation, we are challenged to change ourselves.",
+    "author": "Viktor Frankl",
+    "book": "Man's Search for Meaning",
+    "year": "1946",
+    "about": "Psychiatrist Viktor Frankl draws on his experience surviving Nazi concentration camps to argue that even in extreme suffering, people retain the freedom to choose their attitude and find meaning.",
+    "isbn13": "9780807014271"
+  },
+  {
+    "id": "frank-diary",
+    "text": "In spite of everything, I still believe that people are really good at heart.",
+    "author": "Anne Frank",
+    "book": "The Diary of a Young Girl",
+    "year": "1947",
+    "about": "Hiding from the Nazis in an Amsterdam attic for two years, teenage Anne Frank kept a diary of ordinary adolescence and extraordinary fear that remains one of the most read books about the Holocaust.",
+    "isbn13": "9780141336671"
+  },
+  {
+    "id": "mandela-long-walk-to-freedom",
+    "text": "I learned that courage was not the absence of fear, but the triumph over it.",
+    "author": "Nelson Mandela",
+    "book": "Long Walk to Freedom",
+    "year": "1994",
+    "about": "Mandela's autobiography traces his journey from a rural childhood through 27 years of imprisonment to becoming South Africa's first democratically elected president, dismantling apartheid along the way.",
+    "isbn13": "9780316548182"
+  },
+  {
+    "id": "isaacson-steve-jobs",
+    "text": "Your time is limited, so don't waste it living someone else's life.",
+    "author": "Steve Jobs",
+    "book": "Steve Jobs",
+    "year": "2011",
+    "about": "Walter Isaacson's authorized biography, based on dozens of interviews with Jobs himself, traces the volatile, perfectionist path that took him from a garage startup to reshaping personal computing, music, and phones.",
+    "isbn13": "9781451648539"
+  },
+  {
+    "id": "obama-becoming",
+    "text": "Am I good enough? Yes I am.",
+    "author": "Michelle Obama",
+    "book": "Becoming",
+    "year": "2018",
+    "about": "Michelle Obama traces her path from Chicago's South Side to Princeton, law, motherhood, and the White House, in a memoir about identity and finding her own voice inside very public roles.",
+    "isbn13": "9781524763138"
+  },
+  {
+    "id": "westover-educated",
+    "text": "You can love someone and still choose to say goodbye to them.",
+    "author": "Tara Westover",
+    "book": "Educated",
+    "year": "2018",
+    "about": "Raised by survivalist parents who kept her out of school, Westover taught herself enough to reach Cambridge and Harvard, and her memoir traces the painful cost of that self-invention.",
+    "isbn13": "9780399590504"
+  },
+  {
+    "id": "angelou-caged-bird",
+    "text": "There is no greater agony than bearing an untold story inside you.",
+    "author": "Maya Angelou",
+    "book": "I Know Why the Caged Bird Sings",
+    "year": "1969",
+    "about": "Angelou's first memoir recounts her childhood in the segregated South and a devastating trauma, following her path toward finding her voice, literally and figuratively, through literature.",
+    "isbn13": "9780345514400"
+  },
+  {
+    "id": "malcolm-x-autobiography",
+    "text": "Education is our passport to the future, for tomorrow belongs to the people who prepare for it today.",
+    "author": "Malcolm X",
+    "book": "The Autobiography of Malcolm X",
+    "year": "1965",
+    "about": "Told to journalist Alex Haley, Malcolm X's autobiography traces his transformation from a life of crime to minister and human rights activist, becoming one of the defining texts of Black American thought.",
+    "isbn13": "9780345350688"
+  },
+  {
+    "id": "hawking-brief-history-of-time",
+    "text": "The whole history of science has been the gradual realization that events do not happen in an arbitrary manner, but that they reflect a certain underlying order.",
+    "author": "Stephen Hawking",
+    "book": "A Brief History of Time",
+    "year": "1988",
+    "about": "Hawking distills black holes, the Big Bang, and the search for a unified theory of physics into a book written for general readers, becoming one of the best-selling science books ever published.",
+    "isbn13": "9780553380163"
+  },
+  {
+    "id": "wiesel-night",
+    "text": "Never shall I forget that night, the first night in camp, which has turned my life into one long night.",
+    "author": "Elie Wiesel",
+    "book": "Night",
+    "year": "1960",
+    "about": "Wiesel's slim, devastating memoir of surviving Auschwitz and Buchenwald as a teenager stands as one of the essential firsthand accounts of the Holocaust, written in spare, unflinching prose.",
+    "isbn13": "9780374500016"
+  },
+  {
+    "id": "emerson-self-reliance",
+    "text": "To be great is to be misunderstood.",
+    "author": "Ralph Waldo Emerson",
+    "book": "Self-Reliance",
+    "year": "1841",
+    "about": "Emerson's landmark essay argues for trusting one's own instincts over convention and conformity, becoming a founding text of American individualism and transcendentalist thought.",
+    "isbn13": "9781451508949"
+  },
+  {
+    "id": "addams-hull-house",
+    "text": "The good we secure for ourselves is precarious and uncertain until it is secured for all of us and incorporated into our common life.",
+    "author": "Jane Addams",
+    "book": "Twenty Years at Hull-House",
+    "year": "1910",
+    "about": "Addams recounts founding one of America's first settlement houses in Chicago, blending memoir with an argument for social reform, immigrant welfare, and women's civic participation.",
+    "isbn13": "9781513267715"
+  },
+  {
+    "id": "fitzgerald-gatsby",
+    "text": "So we beat on, boats against the current, borne back ceaselessly into the past.",
+    "author": "F. Scott Fitzgerald",
+    "book": "The Great Gatsby",
+    "year": "1925",
+    "about": "Jay Gatsby's lavish parties and relentless pursuit of a lost love unfold through the eyes of his neighbor Nick Carraway, in Fitzgerald's sharp elegy for the American Dream during the Jazz Age.",
+    "isbn13": "9780743273565"
+  },
+  {
+    "id": "lee-to-kill-a-mockingbird",
+    "text": "You never really understand a person until you climb into his skin and walk around in it.",
+    "author": "Harper Lee",
+    "book": "To Kill a Mockingbird",
+    "year": "1960",
+    "about": "Seen through the eyes of young Scout Finch, Harper Lee's novel follows her father Atticus as he defends a Black man falsely accused of rape in a Depression-era Alabama town, testing the town's conscience.",
+    "isbn13": "9780060935467"
+  },
+  {
+    "id": "vonnegut-slaughterhouse-five",
+    "text": "Everything was beautiful and nothing hurt.",
+    "author": "Kurt Vonnegut",
+    "book": "Slaughterhouse-Five",
+    "year": "1969",
+    "about": "Kurt Vonnegut fractures time itself to tell the story of Billy Pilgrim, a soldier who becomes unstuck in time after surviving the firebombing of Dresden, blending science fiction, dark comedy, and anti-war testimony drawn from Vonnegut's own experience as a POW.",
+    "isbn13": "9780385333849"
+  },
+  {
+    "id": "green-looking-for-alaska",
+    "text": "The only way out of the labyrinth of suffering is to forgive.",
+    "author": "John Green",
+    "book": "Looking for Alaska",
+    "year": "2005",
+    "about": "A scholarship student obsessed with famous last words falls in with a reckless, magnetic girl named Alaska Young at an Alabama boarding school, in John Green's debut novel about grief, guilt, and the search for a 'Great Perhaps.'",
+    "isbn13": "9780142402511"
+  },
+  {
+    "id": "salinger-catcher-in-the-rye",
+    "text": "What really knocks me out is a book that, when you're all done reading it, you wish the author that wrote it was a terrific friend of yours.",
+    "author": "J.D. Salinger",
+    "book": "The Catcher in the Rye",
+    "year": "1951",
+    "about": "Expelled teenager Holden Caulfield wanders New York City over a few restless days, narrating his alienation and disgust with 'phoniness' in a voice that made Salinger's novel a defining portrait of adolescent rebellion.",
+    "isbn13": "9780316769488"
+  },
+  {
+    "id": "orwell-1984",
+    "text": "War is peace. Freedom is slavery. Ignorance is strength.",
+    "author": "George Orwell",
+    "book": "1984",
+    "year": "1949",
+    "about": "In a totalitarian superstate ruled by constant surveillance and manufactured truth, Winston Smith risks everything for a private thought and a forbidden love, in Orwell's chilling vision of a future built on control of language and memory.",
+    "isbn13": "9780451524935"
+  },
+  {
+    "id": "huxley-brave-new-world",
+    "text": "Words can be like X-rays if you use them properly—they'll go through anything.",
+    "author": "Aldous Huxley",
+    "book": "Brave New World",
+    "year": "1932",
+    "about": "Huxley imagines a future where humanity is engineered into contentment through genetic conditioning and a happiness drug called soma, questioning whether a comfortable, painless society is worth the freedom it costs.",
+    "isbn13": "9780060850524"
+  },
+  {
+    "id": "bradbury-fahrenheit-451",
+    "text": "Without libraries what have we? We have no past and no future.",
+    "author": "Ray Bradbury",
+    "book": "Fahrenheit 451",
+    "year": "1953",
+    "about": "In a future where books are outlawed and firemen burn any that are found, fireman Guy Montag begins secretly reading the books he's supposed to destroy, in Bradbury's enduring warning about censorship and a culture that stops thinking.",
+    "isbn13": "9781451673319"
+  },
+  {
+    "id": "tolkien-fellowship-of-the-ring",
+    "text": "Not all those who wander are lost.",
+    "author": "J.R.R. Tolkien",
+    "book": "The Fellowship of the Ring",
+    "year": "1954",
+    "about": "A hobbit named Frodo inherits a ring of terrible power and sets out with a small fellowship to destroy it, in the first volume of Tolkien's epic that essentially invented modern fantasy literature.",
+    "isbn13": "9780547928210"
+  },
+  {
+    "id": "lewis-lion-witch-wardrobe",
+    "text": "Once a king or queen in Narnia, always a king or queen.",
+    "author": "C.S. Lewis",
+    "book": "The Lion, the Witch and the Wardrobe",
+    "year": "1950",
+    "about": "Four siblings step through an old wardrobe into the snowbound land of Narnia, where they join the lion Aslan's struggle against the White Witch, in C.S. Lewis's beloved blend of adventure and allegory.",
+    "isbn13": "9780064404990"
+  },
+  {
+    "id": "morrison-beloved",
+    "text": "Definitions belonged to the definers, not the defined.",
+    "author": "Toni Morrison",
+    "book": "Beloved",
+    "year": "1987",
+    "about": "Haunted literally and figuratively by the daughter she lost, a formerly enslaved woman named Sethe confronts a past that won't stay buried, in Toni Morrison's Pulitzer Prize-winning novel about memory, trauma, and motherhood.",
+    "isbn13": "9781400033416"
+  },
+  {
+    "id": "marquez-one-hundred-years-of-solitude",
+    "text": "Many years later, as he faced the firing squad, Colonel Aureliano Buendía was to remember that distant afternoon when his father took him to discover ice.",
+    "author": "Gabriel García Márquez",
+    "book": "One Hundred Years of Solitude",
+    "year": "1967",
+    "about": "Márquez traces seven generations of the Buendía family in the mythical town of Macondo, weaving magic and history together so seamlessly that the novel became the defining work of magical realism.",
+    "isbn13": "9780060883287"
+  },
+  {
+    "id": "woolf-mrs-dalloway",
+    "text": "Mrs. Dalloway said she would buy the flowers herself.",
+    "author": "Virginia Woolf",
+    "book": "Mrs Dalloway",
+    "year": "1925",
+    "about": "Over the course of a single June day in London, Clarissa Dalloway prepares for a party while a shell-shocked war veteran unravels nearby, in Woolf's stream-of-consciousness portrait of time, memory, and the mind's inner life.",
+    "isbn13": "9780143136132"
+  },
+  {
+    "id": "rowling-harry-potter",
+    "text": "It does not do to dwell on dreams and forget to live.",
+    "author": "J.K. Rowling",
+    "book": "Harry Potter and the Sorcerer's Stone",
+    "year": "1997",
+    "about": "An orphaned boy discovers on his eleventh birthday that he's a wizard and is whisked off to Hogwarts School, in the book that introduced the world to Harry Potter and reignited a generation's love of reading.",
+    "isbn13": "9781338878929"
+  },
+  {
+    "id": "collins-hunger-games",
+    "text": "Happy Hunger Games! And may the odds be ever in your favor.",
+    "author": "Suzanne Collins",
+    "book": "The Hunger Games",
+    "year": "2008",
+    "about": "Sixteen-year-old Katniss Everdeen volunteers to take her sister's place in a televised fight to the death, in Collins's dystopian trilogy opener about survival, spectacle, and rebellion under an authoritarian regime.",
+    "isbn13": "9780439023528"
+  },
+  {
+    "id": "hosseini-kite-runner",
+    "text": "For you, a thousand times over.",
+    "author": "Khaled Hosseini",
+    "book": "The Kite Runner",
+    "year": "2003",
+    "about": "A wealthy Kabul boy's betrayal of his closest friend haunts him for decades, and his attempt to atone carries him from a vanished Afghanistan back into the country under Taliban rule, in Hosseini's debut novel of guilt and redemption.",
+    "isbn13": "9781594631931"
+  },
+  {
+    "id": "achebe-things-fall-apart",
+    "text": "A man who calls his kinsmen to a feast does not do so to save them from starving. They all have food in their own homes.",
+    "author": "Chinua Achebe",
+    "book": "Things Fall Apart",
+    "year": "1958",
+    "about": "Achebe follows Okonkwo, a respected leader in an Igbo village in Nigeria, as the arrival of European colonizers and missionaries begins to unravel everything his world was built on, in a founding text of African literature.",
+    "isbn13": "9780385474542"
+  },
+  {
+    "id": "hesse-siddhartha",
+    "text": "Wisdom is not communicable. The wisdom which a wise man tries to communicate always sounds foolish.",
+    "author": "Hermann Hesse",
+    "book": "Siddhartha",
+    "year": "1922",
+    "about": "A young man in the time of the Buddha leaves his comfortable life to seek enlightenment through asceticism, pleasure, and ordinary work, in Hesse's slim, meditative novel about the difference between being taught and truly understanding.",
+    "isbn13": "9780553208849"
+  },
+  {
+    "id": "du-maurier-rebecca",
+    "text": "Last night I dreamt I went to Manderley again.",
+    "author": "Daphne du Maurier",
+    "book": "Rebecca",
+    "year": "1938",
+    "about": "A shy young bride moves into her new husband's grand estate only to find herself living in the shadow of his first wife, in du Maurier's gothic classic of jealousy, secrets, and psychological suspense.",
+    "isbn13": "9780316575201"
+  },
+  {
+    "id": "hurston-their-eyes-were-watching-god",
+    "text": "Ships at a distance have every man's wish on board.",
+    "author": "Zora Neale Hurston",
+    "book": "Their Eyes Were Watching God",
+    "year": "1937",
+    "about": "Janie Crawford's search for love and self-determination carries her through three marriages in the American South, in Hurston's lyrical novel now considered a landmark of African American and feminist literature.",
+    "isbn13": "9780060838676"
+  },
+  {
+    "id": "hemingway-old-man-and-the-sea",
+    "text": "A man can be destroyed but not defeated.",
+    "author": "Ernest Hemingway",
+    "book": "The Old Man and the Sea",
+    "year": "1952",
+    "about": "An aging Cuban fisherman battles a giant marlin far out in the Gulf Stream in Hemingway's spare, Pulitzer Prize-winning novella about endurance, dignity, and the limits of the human body.",
+    "isbn13": "9780684801223"
+  },
+  {
+    "id": "steinbeck-grapes-of-wrath",
+    "text": "Wherever there's a fight so hungry people can eat, I'll be there.",
+    "author": "John Steinbeck",
+    "book": "The Grapes of Wrath",
+    "year": "1939",
+    "about": "Driven off their Oklahoma farm by the Dust Bowl, the Joad family travels west to California in search of work, in Steinbeck's Depression-era epic about poverty, solidarity, and the human cost of economic collapse.",
+    "isbn13": "9780143039433"
+  },
+  {
+    "id": "zusak-book-thief",
+    "text": "I have hated the words and I have loved them, and I hope I have made them right.",
+    "author": "Markus Zusak",
+    "book": "The Book Thief",
+    "year": "2005",
+    "about": "Narrated by Death itself, Zusak's novel follows a young foster girl in Nazi Germany who steals books and shares them with her neighbors, including the Jewish man hiding in her family's basement.",
+    "isbn13": "9780375842207"
+  },
+  {
+    "id": "martel-life-of-pi",
+    "text": "I have a story that will make you believe in God.",
+    "author": "Yann Martel",
+    "book": "Life of Pi",
+    "year": "2001",
+    "about": "After a shipwreck leaves him stranded on a lifeboat with a Bengal tiger, a teenage boy named Pi must find a way to survive, in Martel's Booker Prize-winning novel about storytelling, faith, and the will to live.",
+    "isbn13": "9780156027328"
+  }
+]
