@@ -10,9 +10,22 @@
 		13DAC3B6300E400100702D88 /* Quotidian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quotidian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		13A63029300F8A6E0067DD77 /* Exceptions for "Quotidian" folder in "Quotidian" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 13DAC3B5300E400100702D88 /* Quotidian */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		13DAC3B8300E400100702D88 /* Quotidian */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				13A63029300F8A6E0067DD77 /* Exceptions for "Quotidian" folder in "Quotidian" target */,
+			);
 			path = Quotidian;
 			sourceTree = "<group>";
 		};
@@ -256,6 +269,7 @@
 				DEVELOPMENT_TEAM = R5Q96X7FAY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Quotidian/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Quotidian;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -292,6 +306,7 @@
 				DEVELOPMENT_TEAM = R5Q96X7FAY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Quotidian/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Quotidian;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

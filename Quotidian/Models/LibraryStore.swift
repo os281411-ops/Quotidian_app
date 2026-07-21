@@ -38,6 +38,14 @@ final class LibraryStore: ObservableObject {
         persist()
     }
 
+    /// Re-inserts a previously removed quote, used to undo an accidental removal.
+    func restore(_ saved: SavedQuote, at index: Int) {
+        guard !isSaved(saved.quote) else { return }
+        let clampedIndex = min(max(index, 0), savedQuotes.count)
+        savedQuotes.insert(saved, at: clampedIndex)
+        persist()
+    }
+
     func remove(at offsets: IndexSet) {
         savedQuotes.remove(atOffsets: offsets)
         persist()

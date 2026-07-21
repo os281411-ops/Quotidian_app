@@ -30,14 +30,14 @@ struct SplashView: View {
                     ForEach(Array(glyphs.enumerated()), id: \.offset) { _, glyph in
                         Text(glyph.text)
                             .font(Theme.Font.serif(glyph.size, weight: .light))
-                            .foregroundStyle(Theme.textSecondary.opacity(0.5))
+                            .foregroundStyle(Theme.accent.opacity(0.4))
                             .rotationEffect(.degrees(glyph.rotation))
                             .offset(x: glyph.x, y: glyph.y)
                     }
 
                     Image(systemName: "quote.opening")
                         .font(.system(size: 64, weight: .thin))
-                        .foregroundStyle(Theme.textSecondary.opacity(0.75))
+                        .foregroundStyle(Theme.accent)
                 }
                 .opacity(animateIn ? 1 : 0)
                 .scaleEffect(animateIn ? 1 : 0.85)
@@ -45,7 +45,7 @@ struct SplashView: View {
                 Text("quotidian")
                     .font(Theme.Font.serif(36))
                     .tracking(5)
-                    .foregroundStyle(Theme.textPrimary.opacity(0.92))
+                    .foregroundStyle(Theme.accent)
                     .opacity(animateIn ? 1 : 0)
                     .offset(y: animateIn ? 0 : 8)
             }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SavedQuoteCard: View {
     let saved: SavedQuote
+    var searchQuery: String = ""
     let onOpenAbout: () -> Void
     let onRemove: () -> Void
 
@@ -11,20 +12,17 @@ struct SavedQuoteCard: View {
         VStack(alignment: .leading, spacing: 18) {
             Button(action: onOpenAbout) {
                 VStack(alignment: .leading, spacing: 14) {
-                    Text("\"\(quote.text)\"")
+                    Text("\"\(quote.text)\"".highlighted(matching: searchQuery, baseColor: Theme.textPrimary, highlightColor: Theme.accent))
                         .font(Theme.Font.serif(19).italic())
-                        .foregroundStyle(Theme.textPrimary)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
 
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(quote.author)
+                        Text(quote.author.highlighted(matching: searchQuery, baseColor: Theme.textPrimary, highlightColor: Theme.accent))
                             .font(Theme.Font.serif(15))
-                            .foregroundStyle(Theme.textPrimary)
-                        Text(quote.book)
+                        Text(quote.book.highlighted(matching: searchQuery, baseColor: Theme.textSecondary, highlightColor: Theme.accent))
                             .font(.caption2.weight(.semibold))
                             .trackedCaps(1.2)
-                            .foregroundStyle(Theme.textSecondary)
                     }
                 }
             }
