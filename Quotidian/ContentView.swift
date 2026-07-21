@@ -11,7 +11,7 @@ struct ContentView: View {
     @StateObject private var library = LibraryStore()
     @StateObject private var streak = StreakManager()
     @StateObject private var notifications = NotificationManager()
-    @State private var selectedTab: AppTab = .today
+    @State private var selectedTab: AppTab = .library
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -27,6 +27,7 @@ struct ContentView: View {
 
             CustomTabBar(selection: $selectedTab)
                 .padding(.bottom, 8)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
         }
         .environmentObject(library)
         .environmentObject(streak)
