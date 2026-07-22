@@ -5,6 +5,7 @@ struct LibraryView: View {
     @EnvironmentObject private var streak: StreakManager
     @State private var selectedQuote: Quote?
     @State private var searchText = ""
+    @FocusState private var isSearchFocused: Bool
 
     @State private var pendingRemoval: (saved: SavedQuote, index: Int)?
     @State private var undoWorkItem: DispatchWorkItem?
@@ -65,6 +66,11 @@ struct LibraryView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 140)
             }
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    isSearchFocused = false
+                }
+            )
 
             if let pendingRemoval {
                 VStack {
@@ -121,6 +127,7 @@ struct LibraryView: View {
                 .foregroundStyle(Theme.textPrimary)
                 .tint(Theme.accent)
                 .autocorrectionDisabled()
+                .focused($isSearchFocused)
 
             if !searchText.isEmpty {
                 Button {
