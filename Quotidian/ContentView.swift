@@ -11,7 +11,7 @@ struct ContentView: View {
     @StateObject private var library = LibraryStore()
     @StateObject private var streak = StreakManager()
     @StateObject private var notifications = NotificationManager()
-    @State private var selectedTab: AppTab = .library
+    @State private var selectedTab: AppTab = .today
 
     var body: some View {
         ZStack(alignment: .bottom) {
