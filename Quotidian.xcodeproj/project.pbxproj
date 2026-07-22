@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		13DAC3B6300E400100702D88 /* "Quotidian".app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "\"Quotidian\".app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13DAC3B6300E400100702D88 /* Quotidian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quotidian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -53,7 +53,7 @@
 		13DAC3B7300E400100702D88 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13DAC3B6300E400100702D88 /* "Quotidian".app */,
+				13DAC3B6300E400100702D88 /* Quotidian.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,7 +80,7 @@
 			packageProductDependencies = (
 			);
 			productName = Quotidian;
-			productReference = 13DAC3B6300E400100702D88 /* "Quotidian".app */;
+			productReference = 13DAC3B6300E400100702D88 /* Quotidian.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
