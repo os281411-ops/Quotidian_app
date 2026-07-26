@@ -69,6 +69,11 @@ struct PaywallView: View {
                             .foregroundStyle(Theme.textSecondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 12)
+
+                        Link("Terms of Use (EULA)", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(Theme.textSecondary)
+                            .underline()
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
