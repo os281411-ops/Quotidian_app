@@ -22,10 +22,12 @@ struct QuoteDisplayView: View {
                 Text(quote.author)
                     .font(Theme.Font.serif(17))
                     .foregroundStyle(Theme.textPrimary)
-                Text(quote.book)
-                    .font(.caption.weight(.semibold))
-                    .trackedCaps(1.5)
-                    .foregroundStyle(Theme.textSecondary)
+                if quote.hasBook {
+                    Text(quote.book)
+                        .font(.caption.weight(.semibold))
+                        .trackedCaps(1.5)
+                        .foregroundStyle(Theme.textSecondary)
+                }
             }
         }
     }

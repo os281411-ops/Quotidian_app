@@ -6,8 +6,50 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2FA5F6E0C010710EEDDCC48E /* WidgetEntitlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA793EF02482AFDBD98F1789 /* WidgetEntitlement.swift */; };
+		304905FA523CF224F489ECA1 /* WidgetQuoteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE0D77CCB86B73771B257D3 /* WidgetQuoteProvider.swift */; };
+		33F018BC94FDE6F539032B43 /* QuotidianWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B991289C516B60AC46AE1766 /* QuotidianWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5D6B8BC532A44F8747310300 /* QuotidianWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37BA73E474ECF7C42F5D3D5 /* QuotidianWidgetBundle.swift */; };
+		C2812FEF0961FB679F992DAC /* quotes.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B46C17A10E31E8C3A14AE49 /* quotes.json */; };
+		C4554CA1772956EF5465632A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5058CAB84C553807DB05041 /* Foundation.framework */; };
+		DD3298D58E90F32FB2A9F9F6 /* QuotidianWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA430BA6AC0528B88FAACF /* QuotidianWidget.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B454BA806DEE57C690482156 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13DAC3AE300E400100702D88 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 267682ED129E9F99254C4E94;
+			remoteInfo = QuotidianWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4E140DDB7C5E4DA4886A60B5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				33F018BC94FDE6F539032B43 /* QuotidianWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0EE0D77CCB86B73771B257D3 /* WidgetQuoteProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetQuoteProvider.swift; sourceTree = "<group>"; };
 		13DAC3B6300E400100702D88 /* Quotidian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quotidian.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		38E14991E1050000C70FD9F2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7B46C17A10E31E8C3A14AE49 /* quotes.json */ = {isa = PBXFileReference; includeInIndex = 1; path = quotes.json; sourceTree = "<group>"; };
+		AA793EF02482AFDBD98F1789 /* WidgetEntitlement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetEntitlement.swift; sourceTree = "<group>"; };
+		B991289C516B60AC46AE1766 /* QuotidianWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuotidianWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCEA430BA6AC0528B88FAACF /* QuotidianWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuotidianWidget.swift; sourceTree = "<group>"; };
+		E5058CAB84C553807DB05041 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		F37BA73E474ECF7C42F5D3D5 /* QuotidianWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuotidianWidgetBundle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -39,6 +81,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8C6679D64A7E199653FA8E52 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4554CA1772956EF5465632A /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -47,6 +97,8 @@
 			children = (
 				13DAC3B8300E400100702D88 /* Quotidian */,
 				13DAC3B7300E400100702D88 /* Products */,
+				57B6A4469361A7AD1D14976A /* QuotidianWidget */,
+				818963562508BCF3356F5293 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,8 +106,39 @@
 			isa = PBXGroup;
 			children = (
 				13DAC3B6300E400100702D88 /* Quotidian.app */,
+				B991289C516B60AC46AE1766 /* QuotidianWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		57B6A4469361A7AD1D14976A /* QuotidianWidget */ = {
+			isa = PBXGroup;
+			children = (
+				38E14991E1050000C70FD9F2 /* Info.plist */,
+				F37BA73E474ECF7C42F5D3D5 /* QuotidianWidgetBundle.swift */,
+				DCEA430BA6AC0528B88FAACF /* QuotidianWidget.swift */,
+				0EE0D77CCB86B73771B257D3 /* WidgetQuoteProvider.swift */,
+				AA793EF02482AFDBD98F1789 /* WidgetEntitlement.swift */,
+				7B46C17A10E31E8C3A14AE49 /* quotes.json */,
+			);
+			name = QuotidianWidget;
+			path = QuotidianWidget;
+			sourceTree = "<group>";
+		};
+		818963562508BCF3356F5293 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DAB1EF6E9404B5FCBF24FF2E /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DAB1EF6E9404B5FCBF24FF2E /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E5058CAB84C553807DB05041 /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -68,20 +151,37 @@
 				13DAC3B2300E400100702D88 /* Sources */,
 				13DAC3B3300E400100702D88 /* Frameworks */,
 				13DAC3B4300E400100702D88 /* Resources */,
+				4E140DDB7C5E4DA4886A60B5 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F5021FF967087E605A54AE5D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				13DAC3B8300E400100702D88 /* Quotidian */,
 			);
 			name = Quotidian;
-			packageProductDependencies = (
-			);
 			productName = Quotidian;
 			productReference = 13DAC3B6300E400100702D88 /* Quotidian.app */;
 			productType = "com.apple.product-type.application";
+		};
+		267682ED129E9F99254C4E94 /* QuotidianWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3077D059BF656A354A2EB916 /* Build configuration list for PBXNativeTarget "QuotidianWidgetExtension" */;
+			buildPhases = (
+				5A56D76EF1E33833E03490A1 /* Sources */,
+				8C6679D64A7E199653FA8E52 /* Frameworks */,
+				7FEE5416D36605D0457237BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuotidianWidgetExtension;
+			productName = QuotidianWidgetExtension;
+			productReference = B991289C516B60AC46AE1766 /* QuotidianWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -113,6 +213,7 @@
 			projectRoot = "";
 			targets = (
 				13DAC3B5300E400100702D88 /* Quotidian */,
+				267682ED129E9F99254C4E94 /* QuotidianWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -122,6 +223,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7FEE5416D36605D0457237BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2812FEF0961FB679F992DAC /* quotes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +244,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A56D76EF1E33833E03490A1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D6B8BC532A44F8747310300 /* QuotidianWidgetBundle.swift in Sources */,
+				DD3298D58E90F32FB2A9F9F6 /* QuotidianWidget.swift in Sources */,
+				304905FA523CF224F489ECA1 /* WidgetQuoteProvider.swift in Sources */,
+				2FA5F6E0C010710EEDDCC48E /* WidgetEntitlement.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F5021FF967087E605A54AE5D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = QuotidianWidgetExtension;
+			target = 267682ED129E9F99254C4E94 /* QuotidianWidgetExtension */;
+			targetProxy = B454BA806DEE57C690482156 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13DAC3BF300E400200702D88 /* Debug */ = {
@@ -333,6 +462,53 @@
 			};
 			name = Release;
 		};
+		727CBEAC633807C2B4BDBA4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = R5Q96X7FAY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuotidianWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Quotidian;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oliverscott.Quotidian.QuotidianWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F859841BA3BD517BEB03DA5D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = R5Q96X7FAY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuotidianWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Quotidian;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oliverscott.Quotidian.QuotidianWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -350,6 +526,15 @@
 			buildConfigurations = (
 				13DAC3C2300E400200702D88 /* Debug */,
 				13DAC3C3300E400200702D88 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3077D059BF656A354A2EB916 /* Build configuration list for PBXNativeTarget "QuotidianWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				727CBEAC633807C2B4BDBA4F /* Release */,
+				F859841BA3BD517BEB03DA5D /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -4,8 +4,8 @@ enum Theme {
     static let background = Color(hex: 0x000000)
     static let surface = Color(hex: 0x17171A)
     static let surfaceElevated = Color(hex: 0x1E1E22)
-    static let accent = Color(hex: 0xD8A94C)
-    static let accentDim = Color(hex: 0xD8A94C).opacity(0.6)
+    static var accent: Color { AccentPalette.current.color }
+    static var accentDim: Color { accent.opacity(0.6) }
     static let textPrimary = Color(hex: 0xF4F1EA)
     static let textSecondary = Color(hex: 0x9B9B9E)
     static let divider = Color.white.opacity(0.08)
