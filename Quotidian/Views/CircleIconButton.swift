@@ -6,7 +6,8 @@ struct CircleIconButtonLabel: View {
     var isActive: Bool = false
     var isEmphasized: Bool = false
 
-    @State private var ringRotation: Double = 0
+    @State private var shinePulse = false
+    @State private var rayDrift: Double = 0
 
     private var diameter: CGFloat { isEmphasized ? 68 : 56 }
 
@@ -14,25 +15,29 @@ struct CircleIconButtonLabel: View {
         VStack(spacing: 8) {
             ZStack {
                 if isEmphasized {
+                    // Soft light bleeding outward from the button
                     Circle()
-                        .stroke(Theme.accent.opacity(0.3), lineWidth: 6)
-                        .frame(width: diameter + 20, height: diameter + 20)
-                        .blur(radius: 6)
-
-                    Circle()
-                        .stroke(
-                            AngularGradient(
-                                colors: [
-                                    Theme.accent.opacity(0.1), Theme.accent,
-                                    Theme.accent.opacity(0.1), Theme.accent,
-                                    Theme.accent.opacity(0.1)
-                                ],
-                                center: .center
-                            ),
-                            lineWidth: 1.5
+                        .fill(
+                            RadialGradient(
+                                colors: [Theme.accent.opacity(0.5), Theme.accent.opacity(0)],
+                                center: .center,
+                                startRadius: 2,
+                                endRadius: diameter * 0.85
+                            )
                         )
-                        .frame(width: diameter + 12, height: diameter + 12)
-                        .rotationEffect(.degrees(ringRotation))
+                        .frame(width: diameter * 1.7, height: diameter * 1.7)
+                        .scaleEffect(shinePulse ? 1.1 : 0.85)
+                        .opacity(shinePulse ? 0.9 : 0.5)
+
+                    // Thin rays of light radiating outward
+                    ForEach(0..<8, id: \.self) { i in
+                        Capsule()
+                            .fill(Theme.accent.opacity(0.6))
+                            .frame(width: 2, height: diameter * 0.24)
+                            .offset(y: -(diameter / 2 + 8))
+                            .rotationEffect(.degrees(Double(i) * 45 + rayDrift))
+                    }
+                    .opacity(shinePulse ? 0.9 : 0.3)
                 }
 
                 Circle()
@@ -49,8 +54,11 @@ struct CircleIconButtonLabel: View {
         }
         .onAppear {
             guard isEmphasized else { return }
-            withAnimation(.linear(duration: 9).repeatForever(autoreverses: false)) {
-                ringRotation = 360
+            withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) {
+                shinePulse = true
+            }
+            withAnimation(.linear(duration: 40).repeatForever(autoreverses: false)) {
+                rayDrift = 360
             }
         }
     }
