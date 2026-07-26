@@ -15,29 +15,30 @@ struct CircleIconButtonLabel: View {
         VStack(spacing: 8) {
             ZStack {
                 if isEmphasized {
-                    // Soft light bleeding outward from the button
+                    // Wide, soft bloom
                     Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [Theme.accent.opacity(0.5), Theme.accent.opacity(0)],
-                                center: .center,
-                                startRadius: 2,
-                                endRadius: diameter * 0.85
-                            )
-                        )
-                        .frame(width: diameter * 1.7, height: diameter * 1.7)
-                        .scaleEffect(shinePulse ? 1.1 : 0.85)
-                        .opacity(shinePulse ? 0.9 : 0.5)
+                        .fill(Theme.accent)
+                        .frame(width: diameter * 1.9, height: diameter * 1.9)
+                        .blur(radius: 22)
+                        .opacity(shinePulse ? 0.55 : 0.3)
+
+                    // Brighter inner bloom, tighter to the button
+                    Circle()
+                        .fill(Theme.accent)
+                        .frame(width: diameter * 1.25, height: diameter * 1.25)
+                        .blur(radius: 12)
+                        .opacity(shinePulse ? 0.75 : 0.45)
+                        .scaleEffect(shinePulse ? 1.08 : 0.92)
 
                     // Thin rays of light radiating outward
                     ForEach(0..<8, id: \.self) { i in
                         Capsule()
-                            .fill(Theme.accent.opacity(0.6))
-                            .frame(width: 2, height: diameter * 0.24)
-                            .offset(y: -(diameter / 2 + 8))
+                            .fill(Theme.accent.opacity(0.45))
+                            .frame(width: 2, height: diameter * 0.2)
+                            .offset(y: -(diameter / 2 + 6))
                             .rotationEffect(.degrees(Double(i) * 45 + rayDrift))
                     }
-                    .opacity(shinePulse ? 0.9 : 0.3)
+                    .opacity(shinePulse ? 0.7 : 0.25)
                 }
 
                 Circle()
