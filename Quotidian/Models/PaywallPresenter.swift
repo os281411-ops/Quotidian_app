@@ -4,6 +4,7 @@ import Foundation
 /// Where the paywall was triggered from — drives the headline/message so the
 /// pitch matches whatever the user just bumped into.
 enum PaywallTrigger: Identifiable {
+    case onboarding
     case saveLimit
     case archive
     case shareCard
@@ -16,6 +17,7 @@ enum PaywallTrigger: Identifiable {
 
     var headline: String {
         switch self {
+        case .onboarding: "Welcome to Quotidian"
         case .saveLimit: "You've saved 10 quotes"
         case .archive: "Browse Every Quote"
         case .shareCard: "Share a Beautiful Card"
@@ -28,6 +30,7 @@ enum PaywallTrigger: Identifiable {
 
     var message: String {
         switch self {
+        case .onboarding: "Start with Premium for unlimited saves, the full archive, and more — or continue with the free daily quote."
         case .saveLimit: "Upgrade to Premium for unlimited saves in your Library."
         case .archive: "Scroll through every quote, past and future, with Premium."
         case .shareCard: "Premium turns your favorite lines into shareable cards."

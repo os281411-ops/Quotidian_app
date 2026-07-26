@@ -16,6 +16,7 @@ struct ContentView: View {
     @StateObject private var paywall = PaywallPresenter()
     @StateObject private var themeManager = ThemeManager()
     @State private var selectedTab: AppTab = .today
+    @AppStorage("onboarding.paywallShown") private var hasShownOnboardingPaywall = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -51,6 +52,13 @@ struct ContentView: View {
             themeManager.enforceFreeTier(isSubscribed: isSubscribed)
             if !isSubscribed {
                 notifications.setEveningReminderEnabled(false)
+            }
+        }
+        .onAppear {
+            guard !hasShownOnboardingPaywall, !subscriptions.isSubscribed else { return }
+            hasShownOnboardingPaywall = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                paywall.present(.onboarding)
             }
         }
     }
