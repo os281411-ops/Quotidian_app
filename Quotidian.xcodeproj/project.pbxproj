@@ -44,7 +44,7 @@
 		0EE0D77CCB86B73771B257D3 /* WidgetQuoteProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetQuoteProvider.swift; sourceTree = "<group>"; };
 		13DAC3B6300E400100702D88 /* Quotidian.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quotidian.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38E14991E1050000C70FD9F2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7B46C17A10E31E8C3A14AE49 /* quotes.json */ = {isa = PBXFileReference; includeInIndex = 1; path = quotes.json; sourceTree = "<group>"; };
+		7B46C17A10E31E8C3A14AE49 /* quotes.json */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json; path = quotes.json; sourceTree = "<group>"; };
 		AA793EF02482AFDBD98F1789 /* WidgetEntitlement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetEntitlement.swift; sourceTree = "<group>"; };
 		B991289C516B60AC46AE1766 /* QuotidianWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuotidianWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCEA430BA6AC0528B88FAACF /* QuotidianWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuotidianWidget.swift; sourceTree = "<group>"; };
@@ -121,7 +121,6 @@
 				AA793EF02482AFDBD98F1789 /* WidgetEntitlement.swift */,
 				7B46C17A10E31E8C3A14AE49 /* quotes.json */,
 			);
-			name = QuotidianWidget;
 			path = QuotidianWidget;
 			sourceTree = "<group>";
 		};
@@ -326,6 +325,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -383,6 +383,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};

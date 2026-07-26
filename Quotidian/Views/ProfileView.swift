@@ -238,7 +238,7 @@ struct ProfileView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Accent Color")
+                    Text("Accent Colour")
                         .font(Theme.Font.serif(17))
                         .foregroundStyle(Theme.textPrimary)
                     Text("Premium themes for the whole app")

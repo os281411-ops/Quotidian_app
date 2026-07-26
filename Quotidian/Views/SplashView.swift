@@ -35,9 +35,18 @@ struct SplashView: View {
                             .offset(x: glyph.x, y: glyph.y)
                     }
 
-                    Image(systemName: "quote.opening")
-                        .font(.system(size: 64, weight: .thin))
-                        .foregroundStyle(Theme.accent)
+                    ZStack {
+                        Image(systemName: "person.fill")
+                            .font(.system(size: 40, weight: .thin))
+                            .foregroundStyle(Theme.accent.opacity(0.85))
+                            .offset(x: -14, y: -6)
+                        Image(systemName: "book.fill")
+                            .font(.system(size: 32))
+                            .foregroundStyle(Theme.accent)
+                            .rotationEffect(.degrees(-10))
+                            .offset(x: 16, y: 16)
+                    }
+                    .frame(width: 64, height: 64)
                 }
                 .opacity(animateIn ? 1 : 0)
                 .scaleEffect(animateIn ? 1 : 0.85)

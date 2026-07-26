@@ -132,7 +132,7 @@ struct ArchiveView: View {
             Text("Browse Every Quote")
                 .font(Theme.Font.serif(24, weight: .semibold))
                 .foregroundStyle(Theme.textPrimary)
-            Text("Premium unlocks the full archive of \(QuoteProvider.shared.quotes.count) quotes, searchable anytime.")
+            Text("Premium unlocks the full archive, searchable anytime.")
                 .font(.subheadline)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)

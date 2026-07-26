@@ -121,7 +121,7 @@ struct PaywallView: View {
             featureRow("apps.iphone", "Home screen widget with today's quote")
             featureRow("square.and.arrow.up", "Shareable, styled quote cards")
             featureRow("flame.fill", "A monthly streak freeze")
-            featureRow("paintpalette.fill", "Curated color themes")
+            featureRow("paintpalette.fill", "Curated colour themes")
             featureRow("bell.badge.fill", "A second daily reminder")
         }
         .padding(20)

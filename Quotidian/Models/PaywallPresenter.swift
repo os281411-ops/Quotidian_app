@@ -35,7 +35,7 @@ enum PaywallTrigger: Identifiable {
         case .archive: "Scroll through every quote, past and future, with Premium."
         case .shareCard: "Premium turns your favorite lines into shareable cards."
         case .streakFreeze: "Premium gives you a monthly streak freeze so a missed day doesn't cost you."
-        case .themes: "Premium unlocks curated color themes for the whole app."
+        case .themes: "Premium unlocks curated colour themes for the whole app."
         case .secondReminder: "Premium adds a second daily reminder, so today's quote never slips by."
         case .general: "Unlock unlimited saves, the full archive, and more."
         }
