@@ -1,0 +1,1442 @@
+[
+  {
+    "id": "melville-moby-dick",
+    "text": "It is not down on any map; true places never are.",
+    "author": "Herman Melville",
+    "book": "Moby-Dick",
+    "year": "1851",
+    "about": "Melville's sprawling sea adventure follows Captain Ahab's obsessive hunt for the white whale that maimed him, using the voyage of the whaling ship Pequod to explore fate, obsession, and humanity's place in a vast, indifferent natural world.",
+    "isbn13": "9780143105954"
+  },
+  {
+    "id": "austen-pride-and-prejudice",
+    "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+    "author": "Jane Austen",
+    "book": "Pride and Prejudice",
+    "year": "1813",
+    "about": "Austen's beloved comedy of manners follows the spirited Elizabeth Bennet as she navigates family expectations, first impressions, and her prickly courtship with the proud Mr. Darcy in Regency England.",
+    "isbn13": "9780143138730"
+  },
+  {
+    "id": "dickens-tale-of-two-cities",
+    "text": "It was the best of times, it was the worst of times.",
+    "author": "Charles Dickens",
+    "book": "A Tale of Two Cities",
+    "year": "1859",
+    "about": "Set against the turmoil of the French Revolution, Dickens weaves the fates of a wrongly imprisoned man, a devoted daughter, and a dissolute lawyer into a story of sacrifice and resurrection.",
+    "isbn13": "9780141439600"
+  },
+  {
+    "id": "dickens-great-expectations",
+    "text": "I loved her against reason, against promise, against peace, against hope, against happiness, against all discouragement that could be.",
+    "author": "Charles Dickens",
+    "book": "Great Expectations",
+    "year": "1861",
+    "about": "Orphan Pip rises from a blacksmith's forge to genteel society through a mysterious benefactor, only to learn that wealth and love rarely arrive the way we expect them to.",
+    "isbn13": "9780141439563"
+  },
+  {
+    "id": "carroll-alice-in-wonderland",
+    "text": "We're all mad here. I'm mad. You're mad.",
+    "author": "Lewis Carroll",
+    "book": "Alice's Adventures in Wonderland",
+    "year": "1865",
+    "about": "A young girl tumbles down a rabbit hole into a nonsensical world of talking creatures, riddles, and impossible logic, in one of literature's most enduring works of imaginative whimsy.",
+    "isbn13": "9780141439761"
+  },
+  {
+    "id": "tolstoy-anna-karenina",
+    "text": "All happy families are alike; each unhappy family is unhappy in its own way.",
+    "author": "Leo Tolstoy",
+    "book": "Anna Karenina",
+    "year": "1878",
+    "about": "Tolstoy traces the tragic affair of Anna Karenina alongside the quieter, redemptive story of the landowner Levin, painting a vast portrait of love, society, and moral struggle in Imperial Russia.",
+    "isbn13": "9780143035008"
+  },
+  {
+    "id": "dostoevsky-crime-and-punishment",
+    "text": "Pain and suffering are always inevitable for a large intelligence and a deep heart.",
+    "author": "Fyodor Dostoevsky",
+    "book": "Crime and Punishment",
+    "year": "1866",
+    "about": "A destitute former student commits a murder to test his own theories about extraordinary men, then spirals into guilt and paranoia in Dostoevsky's psychological masterpiece of crime and conscience.",
+    "isbn13": "9780140449136"
+  },
+  {
+    "id": "dostoevsky-brothers-karamazov",
+    "text": "What is hell? I maintain that it is the suffering of being unable to love.",
+    "author": "Fyodor Dostoevsky",
+    "book": "The Brothers Karamazov",
+    "year": "1880",
+    "about": "The murder of a father becomes a lens for examining faith, doubt, and morality among his three very different sons in Dostoevsky's final and most philosophically ambitious novel.",
+    "isbn13": "9781324095101"
+  },
+  {
+    "id": "bronte-jane-eyre",
+    "text": "I am no bird; and no net ensnares me: I am a free human being with an independent will.",
+    "author": "Charlotte Brontë",
+    "book": "Jane Eyre",
+    "year": "1847",
+    "about": "An orphaned governess insists on her own moral and emotional independence as she navigates hardship, a dangerous romance, and the pursuit of a life defined on her own terms.",
+    "isbn13": "9780141441146"
+  },
+  {
+    "id": "bronte-wuthering-heights",
+    "text": "Whatever our souls are made of, his and mine are the same.",
+    "author": "Emily Brontë",
+    "book": "Wuthering Heights",
+    "year": "1847",
+    "about": "A wild, destructive love between Catherine Earnshaw and Heathcliff haunts two generations on the Yorkshire moors in this singular novel of passion, revenge, and the supernatural pull of the past.",
+    "isbn13": "9780141439556"
+  },
+  {
+    "id": "shelley-frankenstein",
+    "text": "Nothing is so painful to the human mind as a great and sudden change.",
+    "author": "Mary Shelley",
+    "book": "Frankenstein",
+    "year": "1818",
+    "about": "A young scientist's ambition to conquer death produces a living being he immediately abandons, setting off a chain of tragedy that questions who the real monster in the story is.",
+    "isbn13": "9780141439471"
+  },
+  {
+    "id": "wilde-dorian-gray",
+    "text": "I can resist everything except temptation.",
+    "author": "Oscar Wilde",
+    "book": "The Picture of Dorian Gray",
+    "year": "1890",
+    "about": "A beautiful young man's portrait ages and corrupts in his place while he pursues a life of unchecked pleasure, in Wilde's only novel and a sharp meditation on vanity and vice.",
+    "isbn13": "9780141439570"
+  },
+  {
+    "id": "alcott-little-women",
+    "text": "I am not afraid of storms, for I am learning how to sail my ship.",
+    "author": "Louisa May Alcott",
+    "book": "Little Women",
+    "year": "1868",
+    "about": "The four March sisters grow up together through wartime hardship, ambition, and heartbreak in Concord, Massachusetts, in Alcott's warm and enduring portrait of sisterhood and self-determination.",
+    "isbn13": "9780147514011"
+  },
+  {
+    "id": "twain-huckleberry-finn",
+    "text": "All right, then, I'll go to hell.",
+    "author": "Mark Twain",
+    "book": "Adventures of Huckleberry Finn",
+    "year": "1884",
+    "about": "A boy and an escaped enslaved man raft down the Mississippi River together, and Huck's growing friendship with Jim forces him to reckon with the moral code he's been taught.",
+    "isbn13": "9781440657580"
+  },
+  {
+    "id": "thoreau-walden",
+    "text": "I went to the woods because I wished to live deliberately.",
+    "author": "Henry David Thoreau",
+    "book": "Walden",
+    "year": "1854",
+    "about": "Thoreau recounts his two years living simply in a cabin by Walden Pond, using the experiment as a springboard for reflections on self-reliance, nature, and what a life actually requires.",
+    "isbn13": "9780140390445"
+  },
+  {
+    "id": "whitman-leaves-of-grass",
+    "text": "Do I contradict myself? Very well then I contradict myself, I am large, I contain multitudes.",
+    "author": "Walt Whitman",
+    "book": "Leaves of Grass",
+    "year": "1855",
+    "about": "Whitman's sprawling, ever-expanded collection of free verse celebrates the body, democracy, and the individual self with an exuberance that reshaped what American poetry could sound like.",
+    "isbn13": "9780143039273"
+  },
+  {
+    "id": "eliot-middlemarch",
+    "text": "What do we live for, if not to make life less difficult for each other?",
+    "author": "George Eliot",
+    "book": "Middlemarch",
+    "year": "1871",
+    "about": "Eliot follows the intertwined lives of idealistic Dorothea Brooke and ambitious young doctor Tertius Lydgate in a provincial English town, in a novel often called the finest in the English language.",
+    "isbn13": "9780141439549"
+  },
+  {
+    "id": "hawthorne-scarlet-letter",
+    "text": "No man, for any considerable period, can wear one face to himself and another to the multitude, without finally getting bewildered as to which may be true.",
+    "author": "Nathaniel Hawthorne",
+    "book": "The Scarlet Letter",
+    "year": "1850",
+    "about": "Branded with a scarlet 'A' for adultery in Puritan Boston, Hester Prynne endures public shame with quiet dignity while the true father of her child is slowly consumed by his secret guilt.",
+    "isbn13": "9780143105442"
+  },
+  {
+    "id": "marcus-aurelius-meditations",
+    "text": "You have power over your mind, not outside events. Realize this, and you will find strength.",
+    "author": "Marcus Aurelius",
+    "book": "Meditations",
+    "year": "180",
+    "about": "The private journal of a Roman emperor, written amid war and plague, distills Stoic philosophy into practical notes on duty, mortality, and keeping one's mind steady amid chaos.",
+    "isbn13": "9780812968255"
+  },
+  {
+    "id": "franklin-autobiography",
+    "text": "Well done is better than well said.",
+    "author": "Benjamin Franklin",
+    "book": "The Autobiography of Benjamin Franklin",
+    "year": "1791",
+    "about": "Franklin recounts his rise from a runaway printer's apprentice to statesman and inventor, threading the story with the practical maxims on virtue and self-improvement he became famous for.",
+    "isbn13": "9781965684207"
+  },
+  {
+    "id": "douglass-narrative",
+    "text": "Once you learn to read, you will be forever free.",
+    "author": "Frederick Douglass",
+    "book": "Narrative of the Life of Frederick Douglass",
+    "year": "1845",
+    "about": "Douglass's account of his life in slavery and his escape to freedom became one of the most influential works of the abolitionist movement, testifying to the power of literacy and self-emancipation.",
+    "isbn13": "9780486284996"
+  },
+  {
+    "id": "washington-up-from-slavery",
+    "text": "Success is to be measured not so much by the position that one has reached in life as by the obstacles which he has overcome.",
+    "author": "Booker T. Washington",
+    "book": "Up From Slavery",
+    "year": "1901",
+    "about": "Washington traces his path from enslaved childhood to founding the Tuskegee Institute, arguing for education and self-reliance as the surest route to Black advancement in post-Civil War America.",
+    "isbn13": "9780451531476"
+  },
+  {
+    "id": "augustine-confessions",
+    "text": "Our hearts are restless until they rest in you.",
+    "author": "Saint Augustine",
+    "book": "Confessions",
+    "year": "397",
+    "about": "One of the earliest Western autobiographies, Augustine's Confessions traces his restless youth and dramatic conversion to Christianity in a work that shaped centuries of spiritual and philosophical writing.",
+    "isbn13": "9780140441147"
+  },
+  {
+    "id": "keller-story-of-my-life",
+    "text": "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.",
+    "author": "Helen Keller",
+    "book": "The Story of My Life",
+    "year": "1903",
+    "about": "Written while still a student at Radcliffe, Keller's memoir describes how her teacher Anne Sullivan broke through the isolation of deafblindness and opened up language, and with it, the world.",
+    "isbn13": "9781633845879"
+  },
+  {
+    "id": "frankl-mans-search-for-meaning",
+    "text": "When we are no longer able to change a situation, we are challenged to change ourselves.",
+    "author": "Viktor Frankl",
+    "book": "Man's Search for Meaning",
+    "year": "1946",
+    "about": "Psychiatrist Viktor Frankl draws on his experience surviving Nazi concentration camps to argue that even in extreme suffering, people retain the freedom to choose their attitude and find meaning.",
+    "isbn13": "9780807014271"
+  },
+  {
+    "id": "frank-diary",
+    "text": "In spite of everything, I still believe that people are really good at heart.",
+    "author": "Anne Frank",
+    "book": "The Diary of a Young Girl",
+    "year": "1947",
+    "about": "Hiding from the Nazis in an Amsterdam attic for two years, teenage Anne Frank kept a diary of ordinary adolescence and extraordinary fear that remains one of the most read books about the Holocaust.",
+    "isbn13": "9780141336671"
+  },
+  {
+    "id": "mandela-long-walk-to-freedom",
+    "text": "I learned that courage was not the absence of fear, but the triumph over it.",
+    "author": "Nelson Mandela",
+    "book": "Long Walk to Freedom",
+    "year": "1994",
+    "about": "Mandela's autobiography traces his journey from a rural childhood through 27 years of imprisonment to becoming South Africa's first democratically elected president, dismantling apartheid along the way.",
+    "isbn13": "9780316548182"
+  },
+  {
+    "id": "isaacson-steve-jobs",
+    "text": "Your time is limited, so don't waste it living someone else's life.",
+    "author": "Steve Jobs",
+    "book": "Steve Jobs",
+    "year": "2011",
+    "about": "Walter Isaacson's authorized biography, based on dozens of interviews with Jobs himself, traces the volatile, perfectionist path that took him from a garage startup to reshaping personal computing, music, and phones.",
+    "isbn13": "9781451648539"
+  },
+  {
+    "id": "obama-becoming",
+    "text": "Am I good enough? Yes I am.",
+    "author": "Michelle Obama",
+    "book": "Becoming",
+    "year": "2018",
+    "about": "Michelle Obama traces her path from Chicago's South Side to Princeton, law, motherhood, and the White House, in a memoir about identity and finding her own voice inside very public roles.",
+    "isbn13": "9781524763138"
+  },
+  {
+    "id": "westover-educated",
+    "text": "You can love someone and still choose to say goodbye to them.",
+    "author": "Tara Westover",
+    "book": "Educated",
+    "year": "2018",
+    "about": "Raised by survivalist parents who kept her out of school, Westover taught herself enough to reach Cambridge and Harvard, and her memoir traces the painful cost of that self-invention.",
+    "isbn13": "9780399590504"
+  },
+  {
+    "id": "angelou-caged-bird",
+    "text": "There is no greater agony than bearing an untold story inside you.",
+    "author": "Maya Angelou",
+    "book": "I Know Why the Caged Bird Sings",
+    "year": "1969",
+    "about": "Angelou's first memoir recounts her childhood in the segregated South and a devastating trauma, following her path toward finding her voice, literally and figuratively, through literature.",
+    "isbn13": "9780345514400"
+  },
+  {
+    "id": "malcolm-x-autobiography",
+    "text": "Education is our passport to the future, for tomorrow belongs to the people who prepare for it today.",
+    "author": "Malcolm X",
+    "book": "The Autobiography of Malcolm X",
+    "year": "1965",
+    "about": "Told to journalist Alex Haley, Malcolm X's autobiography traces his transformation from a life of crime to minister and human rights activist, becoming one of the defining texts of Black American thought.",
+    "isbn13": "9780345350688"
+  },
+  {
+    "id": "hawking-brief-history-of-time",
+    "text": "The whole history of science has been the gradual realization that events do not happen in an arbitrary manner, but that they reflect a certain underlying order.",
+    "author": "Stephen Hawking",
+    "book": "A Brief History of Time",
+    "year": "1988",
+    "about": "Hawking distills black holes, the Big Bang, and the search for a unified theory of physics into a book written for general readers, becoming one of the best-selling science books ever published.",
+    "isbn13": "9780553380163"
+  },
+  {
+    "id": "wiesel-night",
+    "text": "Never shall I forget that night, the first night in camp, which has turned my life into one long night.",
+    "author": "Elie Wiesel",
+    "book": "Night",
+    "year": "1960",
+    "about": "Wiesel's slim, devastating memoir of surviving Auschwitz and Buchenwald as a teenager stands as one of the essential firsthand accounts of the Holocaust, written in spare, unflinching prose.",
+    "isbn13": "9780374500016"
+  },
+  {
+    "id": "emerson-self-reliance",
+    "text": "To be great is to be misunderstood.",
+    "author": "Ralph Waldo Emerson",
+    "book": "Self-Reliance",
+    "year": "1841",
+    "about": "Emerson's landmark essay argues for trusting one's own instincts over convention and conformity, becoming a founding text of American individualism and transcendentalist thought.",
+    "isbn13": "9781451508949"
+  },
+  {
+    "id": "addams-hull-house",
+    "text": "The good we secure for ourselves is precarious and uncertain until it is secured for all of us and incorporated into our common life.",
+    "author": "Jane Addams",
+    "book": "Twenty Years at Hull-House",
+    "year": "1910",
+    "about": "Addams recounts founding one of America's first settlement houses in Chicago, blending memoir with an argument for social reform, immigrant welfare, and women's civic participation.",
+    "isbn13": "9781513267715"
+  },
+  {
+    "id": "fitzgerald-gatsby",
+    "text": "So we beat on, boats against the current, borne back ceaselessly into the past.",
+    "author": "F. Scott Fitzgerald",
+    "book": "The Great Gatsby",
+    "year": "1925",
+    "about": "Jay Gatsby's lavish parties and relentless pursuit of a lost love unfold through the eyes of his neighbor Nick Carraway, in Fitzgerald's sharp elegy for the American Dream during the Jazz Age.",
+    "isbn13": "9780743273565"
+  },
+  {
+    "id": "lee-to-kill-a-mockingbird",
+    "text": "You never really understand a person until you climb into his skin and walk around in it.",
+    "author": "Harper Lee",
+    "book": "To Kill a Mockingbird",
+    "year": "1960",
+    "about": "Seen through the eyes of young Scout Finch, Harper Lee's novel follows her father Atticus as he defends a Black man falsely accused of rape in a Depression-era Alabama town, testing the town's conscience.",
+    "isbn13": "9780060935467"
+  },
+  {
+    "id": "vonnegut-slaughterhouse-five",
+    "text": "Everything was beautiful and nothing hurt.",
+    "author": "Kurt Vonnegut",
+    "book": "Slaughterhouse-Five",
+    "year": "1969",
+    "about": "Kurt Vonnegut fractures time itself to tell the story of Billy Pilgrim, a soldier who becomes unstuck in time after surviving the firebombing of Dresden, blending science fiction, dark comedy, and anti-war testimony drawn from Vonnegut's own experience as a POW.",
+    "isbn13": "9780385333849"
+  },
+  {
+    "id": "green-looking-for-alaska",
+    "text": "The only way out of the labyrinth of suffering is to forgive.",
+    "author": "John Green",
+    "book": "Looking for Alaska",
+    "year": "2005",
+    "about": "A scholarship student obsessed with famous last words falls in with a reckless, magnetic girl named Alaska Young at an Alabama boarding school, in John Green's debut novel about grief, guilt, and the search for a 'Great Perhaps.'",
+    "isbn13": "9780142402511"
+  },
+  {
+    "id": "salinger-catcher-in-the-rye",
+    "text": "What really knocks me out is a book that, when you're all done reading it, you wish the author that wrote it was a terrific friend of yours.",
+    "author": "J.D. Salinger",
+    "book": "The Catcher in the Rye",
+    "year": "1951",
+    "about": "Expelled teenager Holden Caulfield wanders New York City over a few restless days, narrating his alienation and disgust with 'phoniness' in a voice that made Salinger's novel a defining portrait of adolescent rebellion.",
+    "isbn13": "9780316769488"
+  },
+  {
+    "id": "orwell-1984",
+    "text": "War is peace. Freedom is slavery. Ignorance is strength.",
+    "author": "George Orwell",
+    "book": "1984",
+    "year": "1949",
+    "about": "In a totalitarian superstate ruled by constant surveillance and manufactured truth, Winston Smith risks everything for a private thought and a forbidden love, in Orwell's chilling vision of a future built on control of language and memory.",
+    "isbn13": "9780451524935"
+  },
+  {
+    "id": "huxley-brave-new-world",
+    "text": "Words can be like X-rays if you use them properly—they'll go through anything.",
+    "author": "Aldous Huxley",
+    "book": "Brave New World",
+    "year": "1932",
+    "about": "Huxley imagines a future where humanity is engineered into contentment through genetic conditioning and a happiness drug called soma, questioning whether a comfortable, painless society is worth the freedom it costs.",
+    "isbn13": "9780060850524"
+  },
+  {
+    "id": "bradbury-fahrenheit-451",
+    "text": "Without libraries what have we? We have no past and no future.",
+    "author": "Ray Bradbury",
+    "book": "Fahrenheit 451",
+    "year": "1953",
+    "about": "In a future where books are outlawed and firemen burn any that are found, fireman Guy Montag begins secretly reading the books he's supposed to destroy, in Bradbury's enduring warning about censorship and a culture that stops thinking.",
+    "isbn13": "9781451673319"
+  },
+  {
+    "id": "tolkien-fellowship-of-the-ring",
+    "text": "Not all those who wander are lost.",
+    "author": "J.R.R. Tolkien",
+    "book": "The Fellowship of the Ring",
+    "year": "1954",
+    "about": "A hobbit named Frodo inherits a ring of terrible power and sets out with a small fellowship to destroy it, in the first volume of Tolkien's epic that essentially invented modern fantasy literature.",
+    "isbn13": "9780547928210"
+  },
+  {
+    "id": "lewis-lion-witch-wardrobe",
+    "text": "Once a king or queen in Narnia, always a king or queen.",
+    "author": "C.S. Lewis",
+    "book": "The Lion, the Witch and the Wardrobe",
+    "year": "1950",
+    "about": "Four siblings step through an old wardrobe into the snowbound land of Narnia, where they join the lion Aslan's struggle against the White Witch, in C.S. Lewis's beloved blend of adventure and allegory.",
+    "isbn13": "9780064404990"
+  },
+  {
+    "id": "morrison-beloved",
+    "text": "Definitions belonged to the definers, not the defined.",
+    "author": "Toni Morrison",
+    "book": "Beloved",
+    "year": "1987",
+    "about": "Haunted literally and figuratively by the daughter she lost, a formerly enslaved woman named Sethe confronts a past that won't stay buried, in Toni Morrison's Pulitzer Prize-winning novel about memory, trauma, and motherhood.",
+    "isbn13": "9781400033416"
+  },
+  {
+    "id": "marquez-one-hundred-years-of-solitude",
+    "text": "Many years later, as he faced the firing squad, Colonel Aureliano Buendía was to remember that distant afternoon when his father took him to discover ice.",
+    "author": "Gabriel García Márquez",
+    "book": "One Hundred Years of Solitude",
+    "year": "1967",
+    "about": "Márquez traces seven generations of the Buendía family in the mythical town of Macondo, weaving magic and history together so seamlessly that the novel became the defining work of magical realism.",
+    "isbn13": "9780060883287"
+  },
+  {
+    "id": "woolf-mrs-dalloway",
+    "text": "Mrs. Dalloway said she would buy the flowers herself.",
+    "author": "Virginia Woolf",
+    "book": "Mrs Dalloway",
+    "year": "1925",
+    "about": "Over the course of a single June day in London, Clarissa Dalloway prepares for a party while a shell-shocked war veteran unravels nearby, in Woolf's stream-of-consciousness portrait of time, memory, and the mind's inner life.",
+    "isbn13": "9780143136132"
+  },
+  {
+    "id": "rowling-harry-potter",
+    "text": "It does not do to dwell on dreams and forget to live.",
+    "author": "J.K. Rowling",
+    "book": "Harry Potter and the Sorcerer's Stone",
+    "year": "1997",
+    "about": "An orphaned boy discovers on his eleventh birthday that he's a wizard and is whisked off to Hogwarts School, in the book that introduced the world to Harry Potter and reignited a generation's love of reading.",
+    "isbn13": "9781338878929"
+  },
+  {
+    "id": "collins-hunger-games",
+    "text": "Happy Hunger Games! And may the odds be ever in your favor.",
+    "author": "Suzanne Collins",
+    "book": "The Hunger Games",
+    "year": "2008",
+    "about": "Sixteen-year-old Katniss Everdeen volunteers to take her sister's place in a televised fight to the death, in Collins's dystopian trilogy opener about survival, spectacle, and rebellion under an authoritarian regime.",
+    "isbn13": "9780439023528"
+  },
+  {
+    "id": "hosseini-kite-runner",
+    "text": "For you, a thousand times over.",
+    "author": "Khaled Hosseini",
+    "book": "The Kite Runner",
+    "year": "2003",
+    "about": "A wealthy Kabul boy's betrayal of his closest friend haunts him for decades, and his attempt to atone carries him from a vanished Afghanistan back into the country under Taliban rule, in Hosseini's debut novel of guilt and redemption.",
+    "isbn13": "9781594631931"
+  },
+  {
+    "id": "achebe-things-fall-apart",
+    "text": "A man who calls his kinsmen to a feast does not do so to save them from starving. They all have food in their own homes.",
+    "author": "Chinua Achebe",
+    "book": "Things Fall Apart",
+    "year": "1958",
+    "about": "Achebe follows Okonkwo, a respected leader in an Igbo village in Nigeria, as the arrival of European colonizers and missionaries begins to unravel everything his world was built on, in a founding text of African literature.",
+    "isbn13": "9780385474542"
+  },
+  {
+    "id": "hesse-siddhartha",
+    "text": "Wisdom is not communicable. The wisdom which a wise man tries to communicate always sounds foolish.",
+    "author": "Hermann Hesse",
+    "book": "Siddhartha",
+    "year": "1922",
+    "about": "A young man in the time of the Buddha leaves his comfortable life to seek enlightenment through asceticism, pleasure, and ordinary work, in Hesse's slim, meditative novel about the difference between being taught and truly understanding.",
+    "isbn13": "9780553208849"
+  },
+  {
+    "id": "du-maurier-rebecca",
+    "text": "Last night I dreamt I went to Manderley again.",
+    "author": "Daphne du Maurier",
+    "book": "Rebecca",
+    "year": "1938",
+    "about": "A shy young bride moves into her new husband's grand estate only to find herself living in the shadow of his first wife, in du Maurier's gothic classic of jealousy, secrets, and psychological suspense.",
+    "isbn13": "9780316575201"
+  },
+  {
+    "id": "hurston-their-eyes-were-watching-god",
+    "text": "Ships at a distance have every man's wish on board.",
+    "author": "Zora Neale Hurston",
+    "book": "Their Eyes Were Watching God",
+    "year": "1937",
+    "about": "Janie Crawford's search for love and self-determination carries her through three marriages in the American South, in Hurston's lyrical novel now considered a landmark of African American and feminist literature.",
+    "isbn13": "9780060838676"
+  },
+  {
+    "id": "hemingway-old-man-and-the-sea",
+    "text": "A man can be destroyed but not defeated.",
+    "author": "Ernest Hemingway",
+    "book": "The Old Man and the Sea",
+    "year": "1952",
+    "about": "An aging Cuban fisherman battles a giant marlin far out in the Gulf Stream in Hemingway's spare, Pulitzer Prize-winning novella about endurance, dignity, and the limits of the human body.",
+    "isbn13": "9780684801223"
+  },
+  {
+    "id": "steinbeck-grapes-of-wrath",
+    "text": "Wherever there's a fight so hungry people can eat, I'll be there.",
+    "author": "John Steinbeck",
+    "book": "The Grapes of Wrath",
+    "year": "1939",
+    "about": "Driven off their Oklahoma farm by the Dust Bowl, the Joad family travels west to California in search of work, in Steinbeck's Depression-era epic about poverty, solidarity, and the human cost of economic collapse.",
+    "isbn13": "9780143039433"
+  },
+  {
+    "id": "zusak-book-thief",
+    "text": "I have hated the words and I have loved them, and I hope I have made them right.",
+    "author": "Markus Zusak",
+    "book": "The Book Thief",
+    "year": "2005",
+    "about": "Narrated by Death itself, Zusak's novel follows a young foster girl in Nazi Germany who steals books and shares them with her neighbors, including the Jewish man hiding in her family's basement.",
+    "isbn13": "9780375842207"
+  },
+  {
+    "id": "martel-life-of-pi",
+    "text": "I have a story that will make you believe in God.",
+    "author": "Yann Martel",
+    "book": "Life of Pi",
+    "year": "2001",
+    "about": "After a shipwreck leaves him stranded on a lifeboat with a Bengal tiger, a teenage boy named Pi must find a way to survive, in Martel's Booker Prize-winning novel about storytelling, faith, and the will to live.",
+    "isbn13": "9780156027328"
+  },
+  {
+    "id": "forbes-002-napoleon-hill",
+    "text": "Whatever the mind of man can conceive and believe, it can achieve.",
+    "author": "Napoleon Hill",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-003-albert-einstein",
+    "text": "Strive not to be a success, but rather to be of value.",
+    "author": "Albert Einstein",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-004-robert-frost",
+    "text": "Two roads diverged in a wood, and I took the one less traveled by.",
+    "author": "Robert Frost",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-005-florence-nightingale",
+    "text": "I attribute my success to this: I never gave or took any excuse.",
+    "author": "Florence Nightingale",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-006-wayne-gretzky",
+    "text": "You miss 100% of the shots you don't take.",
+    "author": "Wayne Gretzky",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-007-michael-jordan",
+    "text": "I've failed over and over and over again in my life. And that is why I succeed.",
+    "author": "Michael Jordan",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-008-amelia-earhart",
+    "text": "The most difficult thing is the decision to act, the rest is merely tenacity.",
+    "author": "Amelia Earhart",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-009-babe-ruth",
+    "text": "Every strike brings me closer to the next home run.",
+    "author": "Babe Ruth",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-010-w-clement-stone",
+    "text": "Definiteness of purpose is the starting point of all achievement.",
+    "author": "W. Clement Stone",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-012-john-lennon",
+    "text": "Life is what happens to you while you're busy making other plans.",
+    "author": "John Lennon",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-013-earl-nightingale",
+    "text": "We become what we think about.",
+    "author": "Earl Nightingale",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-014-mark-twain",
+    "text": "Twenty years from now you will be more disappointed by the things you didn't do than by the ones you did do.",
+    "author": "Mark Twain",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-015-charles-swindoll",
+    "text": "Life is 10% what happens to me and 90% of how I react to it.",
+    "author": "Charles Swindoll",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-016-alice-walker",
+    "text": "The most common way people give up their power is by thinking they don't have any.",
+    "author": "Alice Walker",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-017-buddha",
+    "text": "The mind is everything. What you think you become.",
+    "author": "Buddha",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-018-chinese-proverb",
+    "text": "The best time to plant a tree was 20 years ago. The second best time is now.",
+    "author": "Chinese Proverb",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-019-socrates",
+    "text": "An unexamined life is not worth living.",
+    "author": "Socrates",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-020-woody-allen",
+    "text": "Eighty percent of success is showing up.",
+    "author": "Woody Allen",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-021-steve-jobs",
+    "text": "Your time is limited, so don't waste it living someone else's life.",
+    "author": "Steve Jobs",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-022-vince-lombardi",
+    "text": "Winning isn't everything, but wanting to win is.",
+    "author": "Vince Lombardi",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-023-stephen-covey",
+    "text": "I am not a product of my circumstances. I am a product of my decisions.",
+    "author": "Stephen Covey",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-024-pablo-picasso",
+    "text": "Every child is an artist. The problem is how to remain an artist once he grows up.",
+    "author": "Pablo Picasso",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-025-christopher-columbus",
+    "text": "You can never cross the ocean until you have the courage to lose sight of the shore.",
+    "author": "Christopher Columbus",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-026-maya-angelou",
+    "text": "People will never forget how you made them feel.",
+    "author": "Maya Angelou",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-027-jim-rohn",
+    "text": "Either you run the day, or the day runs you.",
+    "author": "Jim Rohn",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-028-henry-ford",
+    "text": "Whether you think you can or you think you can't, you're right.",
+    "author": "Henry Ford",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-029-mark-twain",
+    "text": "The two most important days in your life are the day you are born and the day you find out why.",
+    "author": "Mark Twain",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-030-johann-wolfgang-von-goethe",
+    "text": "Whatever you can do, or dream you can, begin it. Boldness has genius, power and magic in it.",
+    "author": "Johann Wolfgang von Goethe",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-031-frank-sinatra",
+    "text": "The best revenge is massive success.",
+    "author": "Frank Sinatra",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-032-zig-ziglar",
+    "text": "Motivation doesn't last. Well, neither does bathing. That's why we recommend it daily.",
+    "author": "Zig Ziglar",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-033-anais-nin",
+    "text": "Life shrinks or expands in proportion to one's courage.",
+    "author": "Anais Nin",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-034-vincent-van-gogh",
+    "text": "If you hear a voice within you say you cannot paint, then by all means paint, and that voice will be silenced.",
+    "author": "Vincent van Gogh",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-035-aristotle",
+    "text": "There is only one way to avoid criticism: do nothing, say nothing, and be nothing.",
+    "author": "Aristotle",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-036-jesus",
+    "text": "Ask and it will be given to you; search, and you will find.",
+    "author": "Jesus",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-037-ralph-waldo-emerson",
+    "text": "The only person you are destined to become is the person you decide to be.",
+    "author": "Ralph Waldo Emerson",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-038-henry-david-thoreau",
+    "text": "Go confidently in the direction of your dreams. Live the life you have imagined.",
+    "author": "Henry David Thoreau",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-039-erma-bombeck",
+    "text": "I would hope that if I ever get to the point where I think I have nothing more to learn, someone will do me the favor of shooting me.",
+    "author": "Erma Bombeck",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-040-booker-t-washington",
+    "text": "Few things can help an individual more than to place responsibility on him, and to let him know that you trust him.",
+    "author": "Booker T. Washington",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-041-ancient-indian-proverb",
+    "text": "Certain things catch your eye, but pursue only those that capture the heart.",
+    "author": "Ancient Indian Proverb",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-042-theodore-roosevelt",
+    "text": "Believe you can and you're halfway there.",
+    "author": "Theodore Roosevelt",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-043-george-addair",
+    "text": "Everything you've ever wanted is on the other side of fear.",
+    "author": "George Addair",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-044-plato",
+    "text": "The real tragedy of life is when men are afraid of the light.",
+    "author": "Plato",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-045-maimonides",
+    "text": "Teach thy tongue to say, I do not know, and thou shalt progress.",
+    "author": "Maimonides",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-046-arthur-ashe",
+    "text": "Start where you are. Use what you have. Do what you can.",
+    "author": "Arthur Ashe",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-047-john-lennon",
+    "text": "When I went to school, they asked me what I wanted to be when I grew up. I wrote down 'happy.'",
+    "author": "John Lennon",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-048-japanese-proverb",
+    "text": "Fall seven times and stand up eight.",
+    "author": "Japanese Proverb",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-049-helen-keller",
+    "text": "When one door of happiness closes, another opens, but often we look so long at the closed door that we don't see the one that has been opened for us.",
+    "author": "Helen Keller",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-050-confucius",
+    "text": "Everything has beauty, but not everyone can see it.",
+    "author": "Confucius",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-051-anne-frank",
+    "text": "Nobody can make you feel inferior without your consent.",
+    "author": "Anne Frank",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-052-lao-tzu",
+    "text": "When I let go of what I am, I become what I might be.",
+    "author": "Lao Tzu",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-053-maya-angelou",
+    "text": "Life is not measured by the number of breaths we take, but by the moments that take our breath away.",
+    "author": "Maya Angelou",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-054-dalai-lama",
+    "text": "Happiness is not something readymade. It comes from your own actions.",
+    "author": "Dalai Lama",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-055-sheryl-sandberg",
+    "text": "If you're offered a seat on a rocket ship, don't ask what seat! Just get on.",
+    "author": "Sheryl Sandberg",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-056-aristotle",
+    "text": "First, have a definite, clear practical ideal; a goal, an objective.",
+    "author": "Aristotle",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-057-latin-proverb",
+    "text": "If the wind will not serve, take to the oars.",
+    "author": "Latin Proverb",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-058-unknown",
+    "text": "You can't fall if you don't climb. But there's no joy in living your whole life on the ground.",
+    "author": "Unknown",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-059-marie-curie",
+    "text": "We must believe that we are gifted for something, and that this thing, at whatever cost, must be attained.",
+    "author": "Marie Curie",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-060-les-brown",
+    "text": "Too many of us are not living our dreams because we are living our fears.",
+    "author": "Les Brown",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-061-joshua-j-marine",
+    "text": "Challenges are what make life interesting and overcoming them is what makes life meaningful.",
+    "author": "Joshua J. Marine",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-062-booker-t-washington",
+    "text": "If you want to lift yourself up, lift up someone else.",
+    "author": "Booker T. Washington",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-063-leonardo-da-vinci",
+    "text": "Knowing is not enough; we must apply. Being willing is not enough; we must do.",
+    "author": "Leonardo da Vinci",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-064-jamie-paolinetti",
+    "text": "Limitations live only in our minds. But if we use our imaginations, our possibilities become limitless.",
+    "author": "Jamie Paolinetti",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-065-erica-jong",
+    "text": "You take your life in your own hands, and what happens? A terrible thing: no one to blame.",
+    "author": "Erica Jong",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-066-bob-dylan",
+    "text": "A man is a success if he gets up in the morning and gets to bed at night, and in between does what he wants to do.",
+    "author": "Bob Dylan",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-067-benjamin-franklin",
+    "text": "I didn't fail the test. I just found 100 ways to do it wrong.",
+    "author": "Benjamin Franklin",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-068-bill-cosby",
+    "text": "Your desire for success should be greater than your fear of failure.",
+    "author": "Bill Cosby",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-069-albert-einstein",
+    "text": "A person who never made a mistake never tried anything new.",
+    "author": "Albert Einstein",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-070-chinese-proverb",
+    "text": "The person who says it cannot be done should not interrupt the person doing it.",
+    "author": "Chinese Proverb",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-071-roger-staubach",
+    "text": "There are no traffic jams along the extra mile.",
+    "author": "Roger Staubach",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-072-george-eliot",
+    "text": "It is never too late to be what you might have been.",
+    "author": "George Eliot",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-073-oprah-winfrey",
+    "text": "You become what you believe.",
+    "author": "Oprah Winfrey",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-074-vincent-van-gogh",
+    "text": "I would rather die of passion than of boredom.",
+    "author": "Vincent van Gogh",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-075-unknown",
+    "text": "A truly rich man is one whose children run into his arms when his hands are empty.",
+    "author": "Unknown",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-076-ann-landers",
+    "text": "What you have taught them to do for themselves is what will make them successful human beings.",
+    "author": "Ann Landers",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-077-abigail-van-buren",
+    "text": "Spend twice as much time with your children, and half as much money.",
+    "author": "Abigail Van Buren",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-078-farrah-gray",
+    "text": "Build your own dreams, or someone else will hire you to build theirs.",
+    "author": "Farrah Gray",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-079-jesse-owens",
+    "text": "The invisible battles inside all of us — that's where it's at, I think.",
+    "author": "Jesse Owens",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-080-sir-claus-moser",
+    "text": "Education costs money. But then so does ignorance.",
+    "author": "Sir Claus Moser",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-081-rosa-parks",
+    "text": "When one's mind is made up, this diminishes fear.",
+    "author": "Rosa Parks",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-082-confucius",
+    "text": "It does not matter how slowly you go as long as you do not stop.",
+    "author": "Confucius",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-083-oprah-winfrey",
+    "text": "If you look at what you have in life, you'll always have more.",
+    "author": "Oprah Winfrey",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-084-dalai-lama",
+    "text": "Not getting what you want is sometimes a wonderful stroke of luck.",
+    "author": "Dalai Lama",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-085-maya-angelou",
+    "text": "You can't use up creativity. The more you use, the more you have.",
+    "author": "Maya Angelou",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-086-norman-vaughan",
+    "text": "Dream big and dare to fail.",
+    "author": "Norman Vaughan",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-087-martin-luther-king-jr",
+    "text": "Our lives begin to end the day we become silent about things that matter.",
+    "author": "Martin Luther King Jr.",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-088-teddy-roosevelt",
+    "text": "Do what you can, with what you have, where you are.",
+    "author": "Teddy Roosevelt",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-089-tony-robbins",
+    "text": "If you do what you've always done, you'll get what you've always gotten.",
+    "author": "Tony Robbins",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-090-gloria-steinem",
+    "text": "Dreaming, after all, is a form of planning.",
+    "author": "Gloria Steinem",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-091-mae-jemison",
+    "text": "Go on and do all you can with it, and make it the life you want.",
+    "author": "Mae Jemison",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-092-beverly-sills",
+    "text": "You may be disappointed if you fail, but you are doomed if you don't try.",
+    "author": "Beverly Sills",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-093-eleanor-roosevelt",
+    "text": "No one can make you feel inferior without your consent.",
+    "author": "Eleanor Roosevelt",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-094-grandma-moses",
+    "text": "Life is what we make it, always has been, always will be.",
+    "author": "Grandma Moses",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-095-ayn-rand",
+    "text": "The question isn't who is going to let me; it's who is going to stop me.",
+    "author": "Ayn Rand",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-096-henry-ford",
+    "text": "The airplane takes off against the wind, not with it.",
+    "author": "Henry Ford",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-097-abraham-lincoln",
+    "text": "It's not the years in your life that count. It's the life in your years.",
+    "author": "Abraham Lincoln",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-098-norman-vincent-peale",
+    "text": "Change your thoughts and you change your world.",
+    "author": "Norman Vincent Peale",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-099-benjamin-franklin",
+    "text": "Either write something worth reading or do something worth writing.",
+    "author": "Benjamin Franklin",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-100-audrey-hepburn",
+    "text": "Nothing is impossible, the word itself says 'I'm possible'!",
+    "author": "Audrey Hepburn",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-101-steve-jobs",
+    "text": "The only way to do great work is to love what you do.",
+    "author": "Steve Jobs",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  },
+  {
+    "id": "forbes-102-zig-ziglar",
+    "text": "If you can dream it, you can achieve it.",
+    "author": "Zig Ziglar",
+    "book": "",
+    "year": "",
+    "about": "",
+    "isbn13": null
+  }
+]
