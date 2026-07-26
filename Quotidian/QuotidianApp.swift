@@ -22,7 +22,7 @@ struct QuotidianApp: App {
             }
             .preferredColorScheme(.dark)
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
                     withAnimation(.easeOut(duration: 0.5)) {
                         showSplash = false
                     }
