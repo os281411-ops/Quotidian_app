@@ -7,9 +7,15 @@ struct CircleIconButtonLabel: View {
     var isEmphasized: Bool = false
 
     @State private var shinePulse = false
-    @State private var rayDrift: Double = 0
 
     private var diameter: CGFloat { isEmphasized ? 68 : 56 }
+
+    /// Relative lengths for a sunburst of thin rays — alternating long/short,
+    /// like a lens-flare, rather than a few evenly-spaced spokes.
+    private let rayLengths: [CGFloat] = [
+        1.0, 0.45, 0.85, 0.4, 1.15, 0.45, 0.8, 0.4,
+        0.95, 0.45, 0.85, 0.4, 1.05, 0.45, 0.8, 0.4
+    ]
 
     var body: some View {
         VStack(spacing: 8) {
@@ -18,27 +24,35 @@ struct CircleIconButtonLabel: View {
                     // Wide, soft bloom
                     Circle()
                         .fill(Theme.accent)
-                        .frame(width: diameter * 1.9, height: diameter * 1.9)
-                        .blur(radius: 22)
+                        .frame(width: diameter * 2.1, height: diameter * 2.1)
+                        .blur(radius: 24)
                         .opacity(shinePulse ? 0.55 : 0.3)
+
+                    // Thin sunburst rays, varied length, softly blurred
+                    ForEach(Array(rayLengths.enumerated()), id: \.offset) { i, length in
+                        Capsule()
+                            .fill(Theme.accent.opacity(0.5))
+                            .frame(width: 1.5, height: diameter * 0.5 * length)
+                            .offset(y: -(diameter / 2 + diameter * 0.25 * length))
+                            .blur(radius: 1)
+                            .rotationEffect(.degrees(Double(i) * (360.0 / Double(rayLengths.count))))
+                    }
+                    .opacity(shinePulse ? 0.85 : 0.35)
 
                     // Brighter inner bloom, tighter to the button
                     Circle()
                         .fill(Theme.accent)
-                        .frame(width: diameter * 1.25, height: diameter * 1.25)
-                        .blur(radius: 12)
-                        .opacity(shinePulse ? 0.75 : 0.45)
+                        .frame(width: diameter * 1.2, height: diameter * 1.2)
+                        .blur(radius: 10)
+                        .opacity(shinePulse ? 0.8 : 0.5)
                         .scaleEffect(shinePulse ? 1.08 : 0.92)
 
-                    // Thin rays of light radiating outward
-                    ForEach(0..<8, id: \.self) { i in
-                        Capsule()
-                            .fill(Theme.accent.opacity(0.45))
-                            .frame(width: 2, height: diameter * 0.2)
-                            .offset(y: -(diameter / 2 + 6))
-                            .rotationEffect(.degrees(Double(i) * 45 + rayDrift))
-                    }
-                    .opacity(shinePulse ? 0.7 : 0.25)
+                    // Hot white-gold core
+                    Circle()
+                        .fill(Theme.textPrimary)
+                        .frame(width: diameter * 0.55, height: diameter * 0.55)
+                        .blur(radius: 8)
+                        .opacity(shinePulse ? 0.5 : 0.25)
                 }
 
                 Circle()
@@ -57,9 +71,6 @@ struct CircleIconButtonLabel: View {
             guard isEmphasized else { return }
             withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true)) {
                 shinePulse = true
-            }
-            withAnimation(.linear(duration: 40).repeatForever(autoreverses: false)) {
-                rayDrift = 360
             }
         }
     }
