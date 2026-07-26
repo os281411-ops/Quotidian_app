@@ -23,9 +23,9 @@ enum AccentPalette: String, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .gold: Color(hex: 0xD8A94C)
-        case .rose: Color(hex: 0xD98383)
-        case .sage: Color(hex: 0x8FAE8B)
-        case .azure: Color(hex: 0x6FA8D8)
+        case .rose: Color(hex: 0xF27171)
+        case .sage: Color(hex: 0x9CCD96)
+        case .azure: Color(hex: 0x5CAEF2)
         }
     }
 }
