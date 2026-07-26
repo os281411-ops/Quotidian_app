@@ -45,6 +45,7 @@ struct ContentView: View {
         .environmentObject(themeManager)
         .sheet(item: $paywall.trigger) { trigger in
             PaywallView(trigger: trigger)
+                .environmentObject(subscriptions)
         }
         .onChange(of: subscriptions.isSubscribed) { _, isSubscribed in
             themeManager.enforceFreeTier(isSubscribed: isSubscribed)
