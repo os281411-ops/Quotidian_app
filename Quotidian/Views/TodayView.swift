@@ -40,7 +40,8 @@ struct TodayView: View {
                             CircleIconButton(
                                 systemImage: library.isSaved(quote) ? "bookmark.fill" : "bookmark",
                                 label: "Save",
-                                isActive: library.isSaved(quote)
+                                isActive: library.isSaved(quote),
+                                isEmphasized: true
                             ) {
                                 toggleSave(quote)
                             }
