@@ -10,6 +10,10 @@ struct SavedQuote: Identifiable, Codable {
 
 @MainActor
 final class LibraryStore: ObservableObject {
+    /// Save cap for non-subscribers. Callers are responsible for checking
+    /// subscription status and this limit before calling `toggle`/`save`.
+    static let freeSaveLimit = 10
+
     @Published private(set) var savedQuotes: [SavedQuote] = []
 
     private let defaults: UserDefaults

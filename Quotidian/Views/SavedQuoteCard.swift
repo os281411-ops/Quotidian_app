@@ -10,7 +10,7 @@ struct SavedQuoteCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Button(action: onOpenAbout) {
+            Button(action: { if quote.hasBook { onOpenAbout() } }) {
                 VStack(alignment: .leading, spacing: 14) {
                     Text("\"\(quote.text)\"".highlighted(matching: searchQuery, baseColor: Theme.textPrimary, highlightColor: Theme.accent))
                         .font(Theme.Font.serif(19).italic())
@@ -20,9 +20,11 @@ struct SavedQuoteCard: View {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(quote.author.highlighted(matching: searchQuery, baseColor: Theme.textPrimary, highlightColor: Theme.accent))
                             .font(Theme.Font.serif(15))
-                        Text(quote.book.highlighted(matching: searchQuery, baseColor: Theme.textSecondary, highlightColor: Theme.accent))
-                            .font(.caption2.weight(.semibold))
-                            .trackedCaps(1.2)
+                        if quote.hasBook {
+                            Text(quote.book.highlighted(matching: searchQuery, baseColor: Theme.textSecondary, highlightColor: Theme.accent))
+                                .font(.caption2.weight(.semibold))
+                                .trackedCaps(1.2)
+                        }
                     }
                 }
             }
@@ -31,19 +33,21 @@ struct SavedQuoteCard: View {
             Divider().overlay(Theme.divider)
 
             HStack {
-                Link(destination: quote.purchaseURL) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "bag.fill")
-                            .font(.caption2)
-                        Text("Buy")
-                            .font(.caption.weight(.bold))
-                            .trackedCaps(1)
+                if quote.hasBook {
+                    Link(destination: quote.purchaseURL) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "bag.fill")
+                                .font(.caption2)
+                            Text("Buy")
+                                .font(.caption.weight(.bold))
+                                .trackedCaps(1)
+                        }
+                        .foregroundStyle(Theme.accent)
                     }
-                    .foregroundStyle(Theme.accent)
-                }
 
-                Text("·")
-                    .foregroundStyle(Theme.textSecondary)
+                    Text("·")
+                        .foregroundStyle(Theme.textSecondary)
+                }
 
                 Text(saved.dateSaved.formatted(.dateTime.month(.abbreviated).day()))
                     .font(.caption.weight(.medium))

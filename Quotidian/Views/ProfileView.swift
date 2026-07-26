@@ -4,6 +4,9 @@ struct ProfileView: View {
     @EnvironmentObject private var library: LibraryStore
     @EnvironmentObject private var streak: StreakManager
     @EnvironmentObject private var notifications: NotificationManager
+    @EnvironmentObject private var subscriptions: SubscriptionManager
+    @EnvironmentObject private var paywall: PaywallPresenter
+    @EnvironmentObject private var themeManager: ThemeManager
 
     var body: some View {
         ZStack {
@@ -47,7 +50,15 @@ struct ProfileView: View {
                         StatCard(value: "\(library.savedQuotes.count)", label: "Saved Passages")
                     }
 
+                    freezeCard
+
+                    themeCard
+
                     reminderCard
+
+                    if !subscriptions.isSubscribed {
+                        upgradeCard
+                    }
 
                     VStack(spacing: 6) {
                         Text("Quotidian")
@@ -128,10 +139,172 @@ struct ProfileView: View {
                     .font(.caption2)
                     .foregroundStyle(Theme.textSecondary)
             }
+
+            Divider().overlay(Theme.divider)
+
+            if subscriptions.isSubscribed {
+                HStack {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Evening Reminder")
+                            .font(Theme.Font.serif(15))
+                            .foregroundStyle(Theme.textPrimary)
+                        Text("A second nudge if you haven't read yet")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    Spacer()
+                    Toggle("", isOn: Binding(
+                        get: { notifications.isEveningReminderEnabled },
+                        set: { notifications.setEveningReminderEnabled($0) }
+                    ))
+                    .labelsHidden()
+                    .tint(Theme.accent)
+                }
+
+                if notifications.isEveningReminderEnabled {
+                    DatePicker(
+                        "Time",
+                        selection: Binding(
+                            get: { notifications.eveningReminderTime },
+                            set: { notifications.updateEveningReminderTime($0) }
+                        ),
+                        displayedComponents: .hourAndMinute
+                    )
+                    .datePickerStyle(.compact)
+                    .labelsHidden()
+                    .tint(Theme.accent)
+                }
+            } else {
+                Button {
+                    paywall.present(.secondReminder)
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Evening Reminder")
+                                .font(Theme.Font.serif(15))
+                                .foregroundStyle(Theme.textPrimary)
+                            Text("Premium adds a second daily nudge")
+                                .font(.caption2)
+                                .foregroundStyle(Theme.textSecondary)
+                        }
+                        Spacer()
+                        Image(systemName: "lock.fill")
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
         }
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Theme.surface))
         .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private var freezeCard: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Streak Freeze")
+                    .font(Theme.Font.serif(17))
+                    .foregroundStyle(Theme.textPrimary)
+                Text(
+                    subscriptions.isSubscribed
+                        ? "\(streak.freezesAvailable) available this month — covers a missed day"
+                        : "Premium covers one missed day a month automatically"
+                )
+                .font(.caption2)
+                .foregroundStyle(Theme.textSecondary)
+            }
+            Spacer()
+            if subscriptions.isSubscribed {
+                Image(systemName: "snowflake")
+                    .font(.title3)
+                    .foregroundStyle(Theme.accent)
+            } else {
+                Button {
+                    paywall.present(.streakFreeze)
+                } label: {
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private var themeCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Accent Color")
+                        .font(Theme.Font.serif(17))
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Premium themes for the whole app")
+                        .font(.caption2)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                Spacer()
+                if !subscriptions.isSubscribed {
+                    Image(systemName: "lock.fill")
+                        .font(.caption)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+
+            HStack(spacing: 16) {
+                ForEach(AccentPalette.allCases) { palette in
+                    Button {
+                        selectPalette(palette)
+                    } label: {
+                        Circle()
+                            .fill(palette.color)
+                            .frame(width: 32, height: 32)
+                            .overlay(
+                                Circle().stroke(Theme.textPrimary, lineWidth: themeManager.palette == palette ? 2 : 0)
+                            )
+                            .overlay(Circle().stroke(Theme.divider, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private var upgradeCard: some View {
+        Button {
+            paywall.present(.general)
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Quotidian Premium")
+                        .font(Theme.Font.serif(17, weight: .semibold))
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Unlimited saves, the full archive, and more")
+                        .font(.caption2)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Theme.accent)
+            }
+        }
+        .buttonStyle(.plain)
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Theme.surfaceElevated))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Theme.accent.opacity(0.3), lineWidth: 1))
+    }
+
+    private func selectPalette(_ palette: AccentPalette) {
+        guard subscriptions.isSubscribed else {
+            paywall.present(.themes)
+            return
+        }
+        themeManager.palette = palette
     }
 }
 
@@ -140,4 +313,7 @@ struct ProfileView: View {
         .environmentObject(LibraryStore())
         .environmentObject(StreakManager())
         .environmentObject(NotificationManager())
+        .environmentObject(SubscriptionManager())
+        .environmentObject(PaywallPresenter())
+        .environmentObject(ThemeManager())
 }

@@ -12,8 +12,12 @@ struct Quote: Identifiable, Codable, Hashable {
 }
 
 extension Quote {
+    /// False for quotes that aren't drawn from a specific book (e.g. standalone
+    /// inspirational quotes) — used to hide book/purchase UI for those entries.
+    var hasBook: Bool { !book.isEmpty }
+
     var shareText: String {
-        "\"\(text)\"\n— \(author), \(book)"
+        hasBook ? "\"\(text)\"\n— \(author), \(book)" : "\"\(text)\"\n— \(author)"
     }
 
     /// Bookshop.org attributes affiliate credit only through its documented link
