@@ -87,8 +87,8 @@ struct StreakCelebrationView: View {
                 Particle(
                     symbol: symbolSet.randomElement()!,
                     x: CGFloat.random(in: spread),
-                    delay: Double.random(in: 0...0.3),
-                    duration: Double.random(in: 0.9...1.6),
+                    delay: Double.random(in: 0...0.4),
+                    duration: Double.random(in: 1.8...2.6),
                     rotation: Double.random(in: -180...180)
                 )
             }
@@ -109,7 +109,7 @@ struct StreakCelebrationView: View {
                 }
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + (isMilestone ? 3.0 : 2.2)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + (isMilestone ? 3.6 : 3.0)) {
                 dismiss()
             }
         }
