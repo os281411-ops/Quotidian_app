@@ -70,10 +70,15 @@ struct PaywallView: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 12)
 
-                        Link("Terms of Use (EULA)", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(Theme.textSecondary)
-                            .underline()
+                        HStack(spacing: 6) {
+                            Link("Terms of Use", destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!)
+                                .underline()
+                            Text("·")
+                            Link("Privacy Policy", destination: URL(string: "https://os281411-ops.github.io/Quotidian_app/privacy-policy.html")!)
+                                .underline()
+                        }
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Theme.textSecondary)
                     }
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
