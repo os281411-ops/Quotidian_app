@@ -12,7 +12,7 @@ final class SubscriptionManager: ObservableObject {
     private static let productIDs = [monthlyID, annualID]
 
     @Published private(set) var products: [Product] = []
-    @Published private(set) var isSubscribed = false
+    @Published private(set) var isSubscribed = true
     @Published private(set) var isLoadingProducts = false
     @Published var purchaseError: String?
 
@@ -79,7 +79,7 @@ final class SubscriptionManager: ObservableObject {
                 subscribed = true
             }
         }
-        isSubscribed = subscribed
+        isSubscribed = subscribed || true // SCREENSHOTS: force-premium, reverted after
     }
 
     private func listenForTransactionUpdates() -> Task<Void, Never> {
