@@ -30,13 +30,36 @@ final class SubscriptionManager: ObservableObject {
         updatesTask?.cancel()
     }
 
+    /// Loads the products, retrying a few times with backoff. A single
+    /// `Product.products(for:)` call can come back empty or throw while the
+    /// device is still establishing its App Store session (cold launch, slow
+    /// network, a storefront that hasn't settled yet), so one attempt is not
+    /// enough to conclude the products don't exist.
     func loadProducts() async {
+        guard !isLoadingProducts else { return }
         isLoadingProducts = true
         defer { isLoadingProducts = false }
-        do {
-            let fetched = try await Product.products(for: Self.productIDs)
-            products = fetched.sorted { $0.price < $1.price }
-        } catch {
+        purchaseError = nil
+
+        let delays: [Duration] = [.zero, .seconds(1), .seconds(2), .seconds(4)]
+        for delay in delays {
+            if delay != .zero {
+                try? await Task.sleep(for: delay)
+            }
+            if Task.isCancelled { return }
+            do {
+                let fetched = try await Product.products(for: Self.productIDs)
+                if !fetched.isEmpty {
+                    products = fetched.sorted { $0.price < $1.price }
+                    purchaseError = nil
+                    return
+                }
+            } catch {
+                continue
+            }
+        }
+
+        if products.isEmpty {
             purchaseError = "Couldn't load subscription options. Check your connection and try again."
         }
     }

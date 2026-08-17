@@ -45,10 +45,7 @@ struct PaywallView: View {
                                 .tint(Theme.accent)
                                 .padding(.top, 12)
                         } else if subscriptions.products.isEmpty {
-                            Text("Subscription options aren't available right now.")
-                                .font(.subheadline)
-                                .foregroundStyle(Theme.textSecondary)
-                                .multilineTextAlignment(.center)
+                            unavailableState
                         } else {
                             pricingOptions
                         }
@@ -150,6 +147,26 @@ struct PaywallView: View {
                 .font(.subheadline)
                 .foregroundStyle(Theme.textPrimary)
             Spacer()
+        }
+    }
+
+    private var unavailableState: some View {
+        VStack(spacing: 12) {
+            Text("Subscription options couldn't be loaded.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
+            Button {
+                Task { await subscriptions.loadProducts() }
+            } label: {
+                Text("Try Again")
+                    .font(.subheadline.weight(.bold))
+                    .trackedCaps(1.5)
+                    .padding(.horizontal, 28)
+                    .padding(.vertical, 12)
+                    .background(Capsule().stroke(Theme.accent, lineWidth: 1.5))
+                    .foregroundStyle(Theme.accent)
+            }
         }
     }
 
