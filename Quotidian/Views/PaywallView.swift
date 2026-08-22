@@ -26,7 +26,11 @@ struct PaywallView: View {
         let yearlyAtMonthlyRate = monthly.price * 12
         guard yearlyAtMonthlyRate > annual.price else { return nil }
         let savings = (yearlyAtMonthlyRate - annual.price) / yearlyAtMonthlyRate * 100
-        return NSDecimalNumber(decimal: savings).intValue
+        // .intValue on a Decimal computed via division can silently return 0 when the
+        // result hits Decimal's 38-significant-digit precision ceiling (a Foundation
+        // quirk, not a rounding choice) — go through doubleValue instead, which doesn't
+        // have that failure mode.
+        return Int(NSDecimalNumber(decimal: savings).doubleValue)
     }
 
     var body: some View {
