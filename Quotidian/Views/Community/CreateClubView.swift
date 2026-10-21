@@ -30,7 +30,7 @@ struct CreateClubView: View {
                             label: "Name",
                             hint: "\(trimmedName.count)/\(BookClub.nameLimit.upperBound)"
                         ) {
-                            TextField("", text: $name, prompt: Text("e.g. Sunday Stoics").foregroundStyle(Theme.textSecondary.opacity(0.5)))
+                            TextField("", text: $name, prompt: Text("e.g. Middlemarch, Russian Classics").foregroundStyle(Theme.textSecondary.opacity(0.5)))
                                 .font(Theme.Font.serif(18))
                                 .foregroundStyle(Theme.textPrimary)
                                 .focused($focusedField, equals: .name)
@@ -47,7 +47,7 @@ struct CreateClubView: View {
                             label: "About",
                             hint: "\(description.count)/\(BookClub.descriptionLimit)"
                         ) {
-                            TextField("", text: $description, prompt: Text("What will you read? Who's it for?").foregroundStyle(Theme.textSecondary.opacity(0.5)), axis: .vertical)
+                            TextField("", text: $description, prompt: Text("What's it about? A book, an author, a genre, a character…").foregroundStyle(Theme.textSecondary.opacity(0.5)), axis: .vertical)
                                 .lineLimit(3...6)
                                 .foregroundStyle(Theme.textPrimary)
                                 .focused($focusedField, equals: .description)
@@ -57,6 +57,11 @@ struct CreateClubView: View {
                                     }
                                 }
                         }
+
+                        Text("A club can be about anything: one book, an author, a genre or a favourite character. For a single book, just name the club after it.")
+                            .font(.caption)
+                            .foregroundStyle(Theme.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
 
                         privacyCard
 

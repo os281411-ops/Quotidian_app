@@ -9,7 +9,7 @@ struct CommunitySignInView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                CommunityHeader(title: "Community", subtitle: "Book Clubs")
+                CommunityHeader(title: "Bookclub", subtitle: "Read Together")
 
                 VStack(spacing: 18) {
                     Image(systemName: "books.vertical.fill")

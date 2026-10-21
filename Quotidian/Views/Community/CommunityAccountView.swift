@@ -5,6 +5,7 @@ struct CommunityAccountView: View {
     @EnvironmentObject private var auth: AuthManager
     @Environment(\.dismiss) private var dismiss
     @State private var confirmingDelete = false
+    @State private var showBookPicker = false
 
     var body: some View {
         NavigationStack {
@@ -14,6 +15,7 @@ struct CommunityAccountView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         profileCard
+                        currentlyReadingCard
                         actionsCard
                         CommunityErrorText(message: auth.errorMessage)
                     }
@@ -29,7 +31,12 @@ struct CommunityAccountView: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.large])
+        .sheet(isPresented: $showBookPicker) {
+            BookPickerView(title: "Currently Reading") { book in
+                Task { await auth.setCurrentlyReading(book) }
+            }
+        }
         .alert("Delete your account?", isPresented: $confirmingDelete) {
             Button("Delete Account", role: .destructive) {
                 Task {
@@ -63,6 +70,58 @@ struct CommunityAccountView: View {
                     .foregroundStyle(Theme.textSecondary)
             }
             Spacer()
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private var currentlyReadingCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Currently Reading")
+                    .font(.caption.weight(.semibold))
+                    .trackedCaps(1.5)
+                    .foregroundStyle(Theme.textSecondary)
+                Spacer()
+                if auth.profile?.currentlyReading != nil {
+                    Menu {
+                        Button("Change Book") { showBookPicker = true }
+                        Button("Remove", role: .destructive) {
+                            Task { await auth.setCurrentlyReading(nil) }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .accessibilityLabel("Change currently reading")
+                }
+            }
+
+            if let book = auth.profile?.currentlyReading {
+                BookCard(book: book)
+            } else {
+                Button { showBookPicker = true } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Theme.accent)
+                            .frame(width: 40, height: 56)
+                            .background(RoundedRectangle(cornerRadius: 4).stroke(Theme.accent.opacity(0.4), style: StrokeStyle(lineWidth: 1, dash: [4])))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Add what you're reading")
+                                .font(Theme.Font.serif(16))
+                                .foregroundStyle(Theme.textPrimary)
+                            Text("Other club members see it on your profile.")
+                                .font(.caption)
+                                .foregroundStyle(Theme.textSecondary)
+                        }
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
         }
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))

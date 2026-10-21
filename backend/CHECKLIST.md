@@ -37,23 +37,27 @@ Tick items by changing `[ ]` to `[x]`.
 ## Phase 3 — Clubs
 
 - [ ] **11. Community tab** in `CustomTabBar`: "My clubs" and "Discover" (public clubs).
-- [ ] **12. Create a club**: name, description, public/private.
+- [ ] **12. Create a club**: name, description, public/private. No book selection.
 - [ ] **13. Join and leave** public clubs; members list.
-- [ ] **14. Book search** via the Open Library API; set the club's current book (and link through `BookshopAffiliate`).
+- [ ] **14. Book search** via the Open Library API, used to attach books in chat and to set Currently Reading (with a Bookshop.org link through `BookshopAffiliate`). Clubs aren't tied to one book: a club can be about a book, an author, a genre or a character.
 - [ ] **15. Private club invites** (invite code or link). *Can wait until after launch.*
 
-## Phase 4 — Posts and discussion
+## Phase 4 — Club chat and profiles
 
-- [ ] **16. Club feed** using the `club_feed` view, newest first, with pull-to-refresh.
-- [ ] **17. Post a quote**: quote text, book, page, your thoughts.
-- [ ] **18. Share to a club** from a saved quote in the Library or the daily quote.
-- [ ] **19. Comments and replies** on a post.
-- [ ] **20. Reactions** (like / "resonated").
-- [ ] **21. Edit and delete** your own posts and comments; moderators can delete any in their club.
+Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). The Community tab is called **Bookclub** in the app.
+
+- [ ] **16. Live club chat**: messages appear instantly (Supabase Realtime); load earlier messages; pull to refresh.
+- [ ] **17. Send messages**: plain text, a quoted passage (quote mode), or both.
+- [ ] **18. Attach a book**: search Open Library, attach a book card with a Bookshop.org affiliate button.
+- [ ] **19. Currently Reading** on profiles: set it in Account; shown in members lists and on member profiles.
+- [ ] **20. Member profiles**: tap a name in chat or the members list.
+- [ ] **21. Delete** your own messages; owners/moderators can delete any in their club.
+- [ ] **21b. Share to a club** from a saved quote in the Library or the daily quote. *(not built yet)*
+- [ ] **21c. Edit** your own messages. *(database supports it; no button yet)*
 
 ## Phase 5 — Safety (required for App Store approval)
 
-- [ ] **22. Report** button on every post, comment and profile (reason + optional details).
+- [ ] **22. Report**: messages can be reported from the long-press menu (built). Still to do: report a person from their profile.
 - [ ] **23. Block user** from their profile or a post; add an unblock list in Settings.
 - [ ] **24. Show friendly errors** for the word filter and spam limit (the server returns hints `word_filter` and `rate_limit`).
 - [ ] **25. Review reports**: check the `reports` table in the dashboard regularly. Set `status`, and un-hide content that was wrongly reported. Apple expects you to act within 24 hours.

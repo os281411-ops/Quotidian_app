@@ -1,279 +1,476 @@
 import SwiftUI
+import UIKit
 
-/// A single book club: what it's about, what it's reading, who's in it,
-/// and joining or leaving.
+/// A club's chat room. Messages arrive live; members can write, share a
+/// passage, or attach a book (which shows a Bookshop.org button).
+/// Club details and members are behind the ⓘ button.
 struct ClubDetailView: View {
     @EnvironmentObject private var auth: AuthManager
     @EnvironmentObject private var clubs: ClubStore
     @Environment(\.dismiss) private var dismiss
 
     @State private var club: BookClub
-    @State private var members: [ClubMember] = []
-    @State private var isLoadingMembers = true
-    @State private var confirmingLeave = false
-    @State private var confirmingDelete = false
+    @StateObject private var room: ChatRoom
+
+    @State private var draft = ""
+    @State private var isQuote = false
+    @State private var attachedBook: Book?
+    @State private var showBookPicker = false
+    @State private var showInfo = false
+    @State private var profileToShow: ClubMember?
+    @State private var reporting: ChatMessage?
+    @State private var reportSent = false
+    @FocusState private var isComposerFocused: Bool
 
     init(initialClub: BookClub) {
         _club = State(initialValue: initialClub)
+        _room = StateObject(wrappedValue: ChatRoom(clubID: initialClub.id))
     }
 
     private var myRole: ClubMember.Role? { clubs.role(in: club) }
+    private var isMember: Bool { myRole != nil }
+    private var canModerate: Bool { myRole == .owner || myRole == .moderator }
 
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    titleBlock
-                    membershipAction
-                    CommunityErrorText(message: clubs.errorMessage)
-                    currentBookCard
-                    discussionCard
-                    membersCard
-                    if myRole == .owner {
-                        deleteButton
-                    }
+            VStack(spacing: 0) {
+                messageList
+
+                CommunityErrorText(message: room.errorMessage ?? clubs.errorMessage)
+                    .padding(.horizontal, 20)
+
+                if isMember {
+                    ChatComposer(
+                        text: $draft,
+                        isQuote: $isQuote,
+                        attachedBook: $attachedBook,
+                        isFocused: $isComposerFocused,
+                        isSending: room.isSending,
+                        onPickBook: { showBookPicker = true },
+                        onSend: send
+                    )
+                } else {
+                    joinBar
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
-                .padding(.bottom, 140)
             }
-            .refreshable { await reload() }
+            // Leave room for the app's floating tab bar, which hides with the keyboard.
+            .padding(.bottom, isComposerFocused ? 6 : 76)
         }
+        .navigationTitle(club.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.background, for: .navigationBar)
-        .task { await reload() }
-        .onAppear { clubs.errorMessage = nil }
-        .alert("Leave \(club.name)?", isPresented: $confirmingLeave) {
-            Button("Leave", role: .destructive) {
-                Task {
-                    guard let userID = auth.userID else { return }
-                    if await clubs.leave(club, userID: userID) {
-                        if club.isPrivate { dismiss() } else { await reload() }
-                    }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showInfo = true } label: {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(Theme.textPrimary)
                 }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text(club.isPrivate
-                 ? "This is a private club, so you'll need an invite to rejoin."
-                 : "You can join again any time.")
-        }
-        .alert("Delete \(club.name)?", isPresented: $confirmingDelete) {
-            Button("Delete Club", role: .destructive) {
-                Task {
-                    guard let userID = auth.userID else { return }
-                    if await clubs.delete(club, userID: userID) { dismiss() }
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This removes the club and all its posts for every member. This can't be undone.")
-        }
-    }
-
-    private func reload() async {
-        if let fresh = await clubs.fetchClub(id: club.id) {
-            club = fresh
-        }
-        members = await clubs.fetchMembers(clubID: club.id)
-        isLoadingMembers = false
-    }
-
-    // MARK: - Sections
-
-    private var titleBlock: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(club.name)
-                .font(Theme.Font.serif(30, weight: .semibold))
-                .foregroundStyle(Theme.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            HStack(spacing: 14) {
-                Label(club.isPrivate ? "Private" : "Public",
-                      systemImage: club.isPrivate ? "lock.fill" : "globe")
-                Label("\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")",
-                      systemImage: "person.2")
-            }
-            .font(.caption.weight(.semibold))
-            .trackedCaps(1)
-            .foregroundStyle(Theme.textSecondary)
-
-            if let description = club.description, !description.isEmpty {
-                Text(description)
-                    .font(Theme.Font.serif(16))
-                    .foregroundStyle(Theme.textSecondary)
-                    .lineSpacing(3)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 4)
+                .accessibilityLabel("Club info")
             }
         }
-    }
-
-    @ViewBuilder
-    private var membershipAction: some View {
-        switch myRole {
-        case nil:
-            CommunityPrimaryButton(title: "Join Club", isWorking: clubs.isWorking) {
-                Task {
-                    guard let userID = auth.userID else { return }
-                    if await clubs.join(club, userID: userID) { await reload() }
-                }
-            }
-        case .owner:
-            Label("You started this club", systemImage: "crown")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Theme.accent)
-        case .moderator, .member:
-            HStack {
-                Label(myRole == .moderator ? "You're a moderator" : "You're a member",
-                      systemImage: "checkmark.circle.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.accent)
-                Spacer()
-                Button("Leave") { confirmingLeave = true }
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
-                    .disabled(clubs.isWorking)
+        .task {
+            clubs.errorMessage = nil
+            await room.start()
+        }
+        .onDisappear {
+            Task { await room.stop() }
+        }
+        .sheet(isPresented: $showBookPicker) {
+            BookPickerView(title: "Attach a Book") { book in
+                attachedBook = book
             }
         }
-    }
-
-    private var currentBookCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            sectionLabel("Currently Reading")
-            if let book = club.currentBook {
-                HStack(spacing: 14) {
-                    Image(systemName: "book.closed.fill")
-                        .font(.system(size: 26))
-                        .foregroundStyle(Theme.accent)
-                        .frame(width: 44, height: 60)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Theme.surfaceElevated))
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(book.title)
-                            .font(Theme.Font.serif(18, weight: .semibold))
-                            .foregroundStyle(Theme.textPrimary)
-                        if let author = book.author {
-                            Text(author)
-                                .font(.subheadline)
-                                .foregroundStyle(Theme.textSecondary)
+        .sheet(isPresented: $showInfo) {
+            ClubInfoView(club: $club, onLeftOrDeleted: { dismiss() })
+        }
+        .sheet(item: $profileToShow) { member in
+            MemberProfileView(member: member)
+        }
+        .confirmationDialog(
+            "Report this message?",
+            isPresented: Binding(get: { reporting != nil }, set: { if !$0 { reporting = nil } }),
+            titleVisibility: .visible,
+            presenting: reporting
+        ) { message in
+            ForEach(ReportReason.allCases) { reason in
+                Button(reason.label) {
+                    Task {
+                        guard let userID = auth.userID else { return }
+                        if await room.report(message, reason: reason, userID: userID) {
+                            reportSent = true
                         }
                     }
                 }
-            } else {
-                Text(myRole == .owner || myRole == .moderator
-                     ? "No book chosen yet. Picking one is coming soon."
-                     : "The club hasn't picked a book yet.")
-                    .font(.subheadline)
-                    .foregroundStyle(Theme.textSecondary)
             }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Reports are reviewed within 24 hours.")
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+        .alert("Thanks for reporting", isPresented: $reportSent) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("We'll review it within 24 hours.")
+        }
     }
 
-    private var discussionCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            sectionLabel("Discussion")
-            Text(myRole == nil
-                 ? "Join to share passages and talk about the book."
-                 : "Sharing passages and discussing them is coming next.")
-                .font(.subheadline)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
-    }
+    // MARK: - Messages
 
-    private var membersCard: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            sectionLabel("Members")
-                .padding(.bottom, 8)
+    private var messageList: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 4) {
+                    if room.hasOlder {
+                        Button {
+                            Task { await room.loadOlder() }
+                        } label: {
+                            if room.isLoadingOlder {
+                                ProgressView().tint(Theme.accent)
+                            } else {
+                                Text("Load earlier messages")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(Theme.accent)
+                            }
+                        }
+                        .padding(.vertical, 10)
+                    }
 
-            if isLoadingMembers {
-                ProgressView()
-                    .tint(Theme.accent)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-            } else {
-                ForEach(members) { member in
-                    memberRow(member)
-                    if member.id != members.last?.id {
-                        Divider().overlay(Theme.divider)
+                    if room.isLoading {
+                        ProgressView().tint(Theme.accent).padding(.top, 60)
+                    } else if room.messages.isEmpty {
+                        emptyChat
+                    }
+
+                    ForEach(Array(room.messages.enumerated()), id: \.element.id) { index, message in
+                        MessageRow(
+                            message: message,
+                            isMine: message.authorID == auth.userID,
+                            showsHeader: startsGroup(at: index),
+                            onTapAuthor: { showProfile(of: message) }
+                        )
+                        .id(message.id)
+                        .contextMenu { contextMenu(for: message) }
                     }
                 }
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 12)
             }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
-    }
-
-    private func memberRow(_ member: ClubMember) -> some View {
-        let username = member.profile?.username ?? "reader"
-        let name = member.profile?.displayName
-        return HStack(spacing: 12) {
-            Circle()
-                .fill(Theme.surfaceElevated)
-                .frame(width: 36, height: 36)
-                .overlay(
-                    Text(String((name ?? username).prefix(1)).uppercased())
-                        .font(Theme.Font.serif(16, weight: .semibold))
-                        .foregroundStyle(Theme.accent)
-                )
-            VStack(alignment: .leading, spacing: 1) {
-                Text(name ?? "@\(username)")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(Theme.textPrimary)
-                if name != nil {
-                    Text("@\(username)")
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
+            .defaultScrollAnchor(.bottom)
+            .scrollDismissesKeyboard(.interactively)
+            .refreshable { await room.loadLatest() }
+            .onChange(of: room.messages.last?.id) { _, lastID in
+                guard let lastID else { return }
+                withAnimation(.easeOut(duration: 0.2)) {
+                    proxy.scrollTo(lastID, anchor: .bottom)
                 }
             }
-            Spacer()
-            if member.userID == auth.userID {
-                Text("You")
-                    .font(.caption2.weight(.bold))
-                    .trackedCaps(1)
-                    .foregroundStyle(Theme.textSecondary)
-            }
-            if member.role != .member {
-                Text(member.role.label)
-                    .font(.caption2.weight(.bold))
-                    .trackedCaps(1)
-                    .foregroundStyle(Theme.accent)
+            .onChange(of: isComposerFocused) { _, focused in
+                guard focused, let lastID = room.messages.last?.id else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation { proxy.scrollTo(lastID, anchor: .bottom) }
+                }
             }
         }
-        .padding(.vertical, 8)
     }
 
-    private var deleteButton: some View {
-        Button {
-            confirmingDelete = true
-        } label: {
-            Label("Delete Club", systemImage: "trash")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Color(hex: 0xFF6B6B))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(Capsule().stroke(Color(hex: 0xFF6B6B).opacity(0.4), lineWidth: 1))
+    /// Show the name and time when the author changes or after a 10-minute gap.
+    private func startsGroup(at index: Int) -> Bool {
+        guard index > 0 else { return true }
+        let previous = room.messages[index - 1]
+        let current = room.messages[index]
+        return previous.authorID != current.authorID
+            || current.createdAt.timeIntervalSince(previous.createdAt) > 600
+    }
+
+    private var emptyChat: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "bubble.left.and.text.bubble.right")
+                .font(.system(size: 32))
+                .foregroundStyle(Theme.accentDim)
+            Text("No messages yet")
+                .font(Theme.Font.serif(19, weight: .semibold))
+                .foregroundStyle(Theme.textPrimary)
+            Text(isMember
+                 ? "Say hello, share a passage, or attach a book you'd recommend."
+                 : "Join to start the conversation.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
         }
-        .buttonStyle(.plain)
-        .disabled(clubs.isWorking)
+        .padding(.top, 80)
+        .padding(.horizontal, 24)
+    }
+
+    @ViewBuilder
+    private func contextMenu(for message: ChatMessage) -> some View {
+        Button {
+            UIPasteboard.general.string = message.copyText
+        } label: {
+            Label("Copy", systemImage: "doc.on.doc")
+        }
+
+        if message.authorID != auth.userID {
+            Button {
+                showProfile(of: message)
+            } label: {
+                Label("View Profile", systemImage: "person")
+            }
+            Button {
+                reporting = message
+            } label: {
+                Label("Report", systemImage: "flag")
+            }
+        }
+
+        if message.authorID == auth.userID || canModerate {
+            Button(role: .destructive) {
+                Task { await room.delete(message) }
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+
+    private func showProfile(of message: ChatMessage) {
+        profileToShow = ClubMember(
+            userID: message.authorID,
+            role: .member,
+            joinedAt: message.createdAt,
+            profile: message.author
+        )
+    }
+
+    // MARK: - Bottom bar
+
+    private var joinBar: some View {
+        VStack(spacing: 8) {
+            CommunityPrimaryButton(title: "Join to Chat", isWorking: clubs.isWorking) {
+                Task {
+                    guard let userID = auth.userID else { return }
+                    await clubs.join(club, userID: userID)
+                }
+            }
+            Text("Anyone can read this club. Join to send messages.")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 10)
+    }
+
+    private func send() {
+        guard let userID = auth.userID else { return }
+        let text = draft, quote = isQuote, book = attachedBook
+        Task {
+            if await room.send(text: text, asQuote: quote, book: book, userID: userID) {
+                draft = ""
+                isQuote = false
+                attachedBook = nil
+            }
+        }
+    }
+}
+
+// MARK: - Message row
+
+struct MessageRow: View {
+    let message: ChatMessage
+    let isMine: Bool
+    let showsHeader: Bool
+    let onTapAuthor: () -> Void
+
+    var body: some View {
+        VStack(alignment: isMine ? .trailing : .leading, spacing: 4) {
+            if showsHeader {
+                HStack(spacing: 6) {
+                    if !isMine {
+                        Button(action: onTapAuthor) {
+                            Text(message.authorName)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Theme.textPrimary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    Text(timestamp)
+                        .font(.caption2)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .padding(.top, 10)
+                .padding(.horizontal, 4)
+            }
+
+            HStack {
+                if isMine { Spacer(minLength: 48) }
+                bubble
+                if !isMine { Spacer(minLength: 48) }
+            }
+        }
+    }
+
+    private var bubble: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if message.isHidden {
+                Label("Hidden after reports", systemImage: "eye.slash")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Color(hex: 0xFF6B6B))
+            }
+
+            if let quote = message.quoteText {
+                HStack(alignment: .top, spacing: 10) {
+                    RoundedRectangle(cornerRadius: 1)
+                        .fill(Theme.accent)
+                        .frame(width: 2)
+                    Text(quote)
+                        .font(Theme.Font.serif(16).italic())
+                        .foregroundStyle(Theme.textPrimary)
+                        .lineSpacing(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            if let body = message.body {
+                Text(body)
+                    .font(.body)
+                    .foregroundStyle(Theme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .textSelection(.enabled)
+            }
+
+            if let book = message.book {
+                BookCard(book: book, compact: true)
+                    .frame(maxWidth: 280)
+            }
+
+            if message.editedAt != nil {
+                Text("Edited")
+                    .font(.caption2)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(isMine ? Theme.accent.opacity(0.16) : Theme.surface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(isMine ? Theme.accent.opacity(0.25) : Theme.divider, lineWidth: 1)
+        )
+    }
+
+    private var timestamp: String {
+        let date = message.createdAt
+        if Calendar.current.isDateInToday(date) {
+            return date.formatted(date: .omitted, time: .shortened)
+        }
+        return date.formatted(.dateTime.day().month(.abbreviated).hour().minute())
+    }
+}
+
+// MARK: - Composer
+
+struct ChatComposer: View {
+    @Binding var text: String
+    @Binding var isQuote: Bool
+    @Binding var attachedBook: Book?
+    var isFocused: FocusState<Bool>.Binding
+    let isSending: Bool
+    let onPickBook: () -> Void
+    let onSend: () -> Void
+
+    private var canSend: Bool {
+        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || attachedBook != nil
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let book = attachedBook {
+                HStack(spacing: 10) {
+                    BookCover(url: book.cover, width: 24)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(book.title)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.textPrimary)
+                            .lineLimit(1)
+                        Text("Shows a Bookshop.org link")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    Spacer()
+                    Button { attachedBook = nil } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .accessibilityLabel("Remove book")
+                }
+                .padding(8)
+                .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Theme.surface))
+            }
+
+            if isQuote {
+                Label("Sharing a passage", systemImage: "text.quote")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+                    .padding(.leading, 4)
+            }
+
+            HStack(alignment: .bottom, spacing: 8) {
+                composerButton("book", label: "Attach a book", isOn: attachedBook != nil, action: onPickBook)
+                composerButton("text.quote", label: "Share a passage", isOn: isQuote) {
+                    withAnimation(.easeOut(duration: 0.15)) { isQuote.toggle() }
+                }
+
+                TextField(
+                    "",
+                    text: $text,
+                    prompt: Text(isQuote ? "Paste or type the passage…" : "Message")
+                        .foregroundStyle(Theme.textSecondary.opacity(0.6)),
+                    axis: .vertical
+                )
+                .lineLimit(1...6)
+                .font(isQuote ? Theme.Font.serif(16).italic() : .body)
+                .foregroundStyle(Theme.textPrimary)
+                .tint(Theme.accent)
+                .focused(isFocused)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+                .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+                .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+
+                Button(action: onSend) {
+                    ZStack {
+                        if isSending {
+                            ProgressView().tint(Theme.background)
+                        } else {
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundStyle(Theme.background)
+                        }
+                    }
+                    .frame(width: 38, height: 38)
+                    .background(Circle().fill(canSend ? Theme.accent : Theme.accent.opacity(0.3)))
+                }
+                .disabled(!canSend || isSending)
+                .accessibilityLabel("Send")
+            }
+        }
+        .padding(.horizontal, 12)
         .padding(.top, 8)
     }
 
-    private func sectionLabel(_ text: String) -> some View {
-        Text(text)
-            .font(.caption.weight(.semibold))
-            .trackedCaps(1.5)
-            .foregroundStyle(Theme.textSecondary)
+    private func composerButton(_ systemImage: String, label: String, isOn: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(isOn ? Theme.accent : Theme.textSecondary)
+                .frame(width: 38, height: 38)
+                .background(Circle().fill(Theme.surface))
+                .overlay(Circle().stroke(isOn ? Theme.accent.opacity(0.5) : Theme.divider, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 }

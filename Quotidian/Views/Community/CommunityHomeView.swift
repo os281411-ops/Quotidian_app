@@ -78,7 +78,7 @@ struct CommunityHomeView: View {
 
     private var header: some View {
         HStack(alignment: .top) {
-            CommunityHeader(title: "Community", subtitle: "Book Clubs")
+            CommunityHeader(title: "Bookclub", subtitle: "Read Together")
             Spacer()
             HStack(spacing: 10) {
                 headerButton("plus", label: "Start a club") { showCreate = true }
@@ -292,13 +292,7 @@ struct ClubRow: View {
                     .multilineTextAlignment(.leading)
             }
 
-            HStack(spacing: 14) {
-                Label("\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")", systemImage: "person.2")
-                if let book = club.currentBook {
-                    Label(book.title, systemImage: "book.closed")
-                        .lineLimit(1)
-                }
-            }
+            Label("\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")", systemImage: "person.2")
             .font(.caption)
             .foregroundStyle(Theme.textSecondary)
         }

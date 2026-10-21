@@ -225,7 +225,7 @@ final class ClubStore: ObservableObject {
 
     private static func message(for error: PostgrestError) -> String? {
         switch (error.code ?? "", error.hint ?? "") {
-        case (_, "word_filter"): return "That contains language that isn't allowed in the community."
+        case (_, "word_filter"): return "That contains language that isn't allowed in Bookclub."
         case (_, "rate_limit"):  return "You're going a bit fast. Wait a minute and try again."
         case ("23505", _):       return "You're already in this club."
         case ("23514", _):       return "Club names need 3–60 characters, and descriptions up to 500."

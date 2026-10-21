@@ -69,7 +69,7 @@ final class AuthManager: ObservableObject {
         do {
             var loaded: CommunityProfile = try await supabase
                 .from("profiles")
-                .select()
+                .select(CommunityProfile.columns)
                 .eq("id", value: userID)
                 .single()
                 .execute()
@@ -194,7 +194,13 @@ final class AuthManager: ObservableObject {
         return await updateProfile(["accepted_guidelines_at": now])
     }
 
-    private func updateProfile(_ values: [String: String]) async -> Bool {
+    /// Sets (or clears, with nil) the book shown as "Currently Reading".
+    @discardableResult
+    func setCurrentlyReading(_ book: Book?) async -> Bool {
+        await updateProfile(CurrentlyReadingUpdate(bookID: book?.id))
+    }
+
+    private func updateProfile(_ values: some Encodable & Sendable) async -> Bool {
         guard let userID else { return false }
         errorMessage = nil
         isWorking = true
@@ -205,7 +211,7 @@ final class AuthManager: ObservableObject {
                 .from("profiles")
                 .update(values)
                 .eq("id", value: userID)
-                .select()
+                .select(CommunityProfile.columns)
                 .single()
                 .execute()
                 .value
@@ -225,7 +231,7 @@ final class AuthManager: ObservableObject {
         switch (error.code ?? "", error.hint ?? "") {
         case ("23505", _):            return "That username is taken. Try another."
         case ("23514", _):            return "Use 3–20 lowercase letters, numbers or underscores."
-        case (_, "word_filter"):      return "That contains language that isn't allowed in the community."
+        case (_, "word_filter"):      return "That contains language that isn't allowed in Bookclub."
         case (_, "rate_limit"):       return "You're going a bit fast. Wait a minute and try again."
         default:                      return "Something went wrong. Please try again."
         }
@@ -248,5 +254,19 @@ nonisolated enum AppleSignInNonce {
         SHA256.hash(data: Data(input.utf8))
             .map { String(format: "%02x", $0) }
             .joined()
+    }
+}
+
+/// Sends `currently_reading_book_id`, including an explicit null to clear it.
+nonisolated struct CurrentlyReadingUpdate: Encodable, Sendable {
+    let bookID: UUID?
+
+    enum CodingKeys: String, CodingKey {
+        case bookID = "currently_reading_book_id"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(bookID, forKey: .bookID)
     }
 }
