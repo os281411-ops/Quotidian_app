@@ -23,15 +23,15 @@ Tick items by changing `[ ]` to `[x]`.
 - [x] **5. Turn on Sign in with Apple**
   - Xcode → Quotidian target → Signing & Capabilities → **+ Sign in with Apple**.
   - Supabase → Authentication → Sign In / Providers → Apple → enable → add your app's **bundle ID** under Client IDs. (A native-only iOS app doesn't need a Services ID or key file.)
-- [ ] **6. Add the Supabase Swift package**
+- [x] **6. Add the Supabase Swift package**
   Xcode → File → Add Package Dependencies → `https://github.com/supabase/supabase-swift` → add the `Supabase` library to the Quotidian target.
   Put the URL and anon key in a `SupabaseConfig.swift` (the anon key is safe in the app; the access rules protect the data). **Never** put the service-role key in the app.
 
 ## Phase 2 — Accounts in the app
 
-- [ ] **7. Sign-in screen** with the Sign in with Apple button; keep the user signed in between launches.
-- [ ] **8. Pick a username** after first sign-in (3–20 chars, lowercase letters, numbers, `_`).
-- [ ] **9. Community guidelines screen**: user must tap "I agree" before posting (sets `accepted_guidelines_at`). Write the guidelines page and host it next to `docs/privacy-policy.html`.
+- [x] **7. Sign-in screen** with the Sign in with Apple button; keep the user signed in between launches.
+- [x] **8. Pick a username** after first sign-in (3–20 chars, lowercase letters, numbers, `_`).
+- [x] **9. Community guidelines screen**: user must tap "I agree" before posting (sets `accepted_guidelines_at`). Guidelines are shown in-app (`CommunityGuidelinesView`).
 - [ ] **10. Delete account** in Settings (Apple requirement). Needs a Supabase Edge Function that deletes the auth user; everything else is removed automatically.
 
 ## Phase 3 — Clubs
