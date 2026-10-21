@@ -12,14 +12,15 @@ Tick items by changing `[ ]` to `[x]`.
 - [x] **1. Write the database schema and access rules**
   `backend/supabase/migrations/0001_community_schema.sql`
   Tables: profiles, books, book_clubs, club_members, posts, comments, reactions, reports, blocks, blocked_terms. Includes access rules, word filter, spam limit, auto-hide after 3 reports, and a `club_feed` view. Tested against Postgres 16.
-- [ ] **2. Create a Supabase project** *(you)*
+- [x] **2. Create a Supabase project** *(you)*
   supabase.com → New project → name `quotidian` → region **London (eu-west-2)** → save the database password in your password manager.
   Then Project Settings → API: copy the **Project URL** and **anon public key**.
-- [ ] **3. Run the schema**
-  SQL Editor → New query → paste the whole `0001_community_schema.sql` → Run. Check Table Editor shows the 10 tables.
-- [ ] **4. Add words to the filter**
+- [x] **3. Run the schema**
+  Applied, and recorded under Database → Migrations as `0001 · community_schema`.
+  From now on, add new database changes as new files in `backend/supabase/migrations/` and push to main; the GitHub integration applies them. Don't paste migration files into the SQL Editor.
+- [x] **4. Add words to the filter**
   Table Editor → `blocked_terms` → add slurs and other terms you want blocked (lowercase, one per row).
-- [ ] **5. Turn on Sign in with Apple**
+- [x] **5. Turn on Sign in with Apple**
   - Xcode → Quotidian target → Signing & Capabilities → **+ Sign in with Apple**.
   - Supabase → Authentication → Sign In / Providers → Apple → enable → add your app's **bundle ID** under Client IDs. (A native-only iOS app doesn't need a Services ID or key file.)
 - [ ] **6. Add the Supabase Swift package**
