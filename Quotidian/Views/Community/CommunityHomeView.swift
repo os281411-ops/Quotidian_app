@@ -1,124 +1,312 @@
 import SwiftUI
 
-/// Where book clubs will live. For now it confirms sign-in worked
-/// (checklist phase 3 replaces the placeholder card with real clubs).
+/// The Community tab once someone is signed in: their clubs, public clubs
+/// to discover, and a way to start a new one.
 struct CommunityHomeView: View {
     @EnvironmentObject private var auth: AuthManager
-    @State private var confirmingDelete = false
+    @EnvironmentObject private var clubs: ClubStore
+
+    enum Section: String, CaseIterable {
+        case mine = "My Clubs"
+        case discover = "Discover"
+    }
+
+    @State private var section: Section = .mine
+    @State private var searchText = ""
+    @State private var showCreate = false
+    @State private var showAccount = false
+    @State private var path: [BookClub] = []
+    @FocusState private var isSearchFocused: Bool
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 28) {
-                CommunityHeader(title: "Community", subtitle: "Book Clubs")
+        NavigationStack(path: $path) {
+            ZStack {
+                Theme.background.ignoresSafeArea()
 
-                HStack(spacing: 14) {
-                    Circle()
-                        .fill(Theme.surfaceElevated)
-                        .frame(width: 48, height: 48)
-                        .overlay(
-                            Text(initial)
-                                .font(Theme.Font.serif(22, weight: .semibold))
-                                .foregroundStyle(Theme.accent)
-                        )
-                    VStack(alignment: .leading, spacing: 2) {
-                        if let name = auth.profile?.displayName {
-                            Text(name)
-                                .font(Theme.Font.serif(17))
-                                .foregroundStyle(Theme.textPrimary)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        header
+                        sectionPicker
+
+                        if section == .discover {
+                            searchField
                         }
-                        Text("@\(auth.profile?.username ?? "")")
-                            .font(.subheadline)
-                            .foregroundStyle(Theme.textSecondary)
+
+                        CommunityErrorText(message: clubs.errorMessage)
+
+                        switch section {
+                        case .mine: myClubsList
+                        case .discover: discoverList
+                        }
                     }
-                    Spacer()
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 140)
                 }
-                .padding(18)
-                .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
-                .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
-
-                VStack(spacing: 12) {
-                    Image(systemName: "books.vertical")
-                        .font(.system(size: 32))
-                        .foregroundStyle(Theme.accentDim)
-                    Text("Book clubs are on their way")
-                        .font(Theme.Font.serif(20, weight: .semibold))
-                        .foregroundStyle(Theme.textPrimary)
-                    Text("You're all set. Soon you'll be able to join clubs and share passages here.")
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.textSecondary)
-                        .multilineTextAlignment(.center)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 36)
-                .padding(.horizontal, 24)
-                .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Theme.surface))
-                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.divider, lineWidth: 1))
-
-                accountCard
+                .scrollDismissesKeyboard(.interactively)
+                .refreshable { await reload() }
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 140)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: BookClub.self) { club in
+                ClubDetailView(initialClub: club)
+            }
         }
-        .alert("Delete your account?", isPresented: $confirmingDelete) {
-            Button("Delete Account", role: .destructive) {
-                Task { await auth.deleteAccount() }
+        .task(id: auth.userID) { await reload() }
+        .task(id: searchText) {
+            // Wait for a pause in typing before searching.
+            if !searchText.isEmpty { try? await Task.sleep(for: .milliseconds(350)) }
+            guard !Task.isCancelled else { return }
+            await clubs.refreshDiscover(search: searchText)
+        }
+        .sheet(isPresented: $showCreate) {
+            CreateClubView { newClub in
+                section = .mine
+                path.append(newClub)
             }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This permanently deletes your username, posts, comments and reactions. Your saved quotes and streak on this phone stay as they are. This can't be undone.")
+        }
+        .sheet(isPresented: $showAccount) {
+            CommunityAccountView()
         }
     }
 
-    private var accountCard: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Account")
-                .font(.caption.weight(.semibold))
-                .trackedCaps(1.5)
-                .foregroundStyle(Theme.textSecondary)
-                .padding(.bottom, 12)
+    private func reload() async {
+        guard let userID = auth.userID else { return }
+        await clubs.refreshMine(userID: userID)
+        await clubs.refreshDiscover(search: searchText)
+    }
 
-            Button {
-                Task { await auth.signOut() }
-            } label: {
-                accountRow("Sign Out", icon: "rectangle.portrait.and.arrow.right", color: Theme.textPrimary)
+    // MARK: - Header
+
+    private var header: some View {
+        HStack(alignment: .top) {
+            CommunityHeader(title: "Community", subtitle: "Book Clubs")
+            Spacer()
+            HStack(spacing: 10) {
+                headerButton("plus", label: "Start a club") { showCreate = true }
+                headerButton("person.crop.circle", label: "Account") { showAccount = true }
             }
-
-            Divider().overlay(Theme.divider)
-
-            Button {
-                confirmingDelete = true
-            } label: {
-                accountRow("Delete Account", icon: "trash", color: Color(hex: 0xFF6B6B))
-            }
-            .disabled(auth.isWorking)
-
-            CommunityErrorText(message: auth.errorMessage)
-                .padding(.top, 8)
+            .padding(.top, 12)
         }
+    }
+
+    private func headerButton(_ systemImage: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 17, weight: .medium))
+                .foregroundStyle(Theme.textPrimary)
+                .frame(width: 40, height: 40)
+                .background(Circle().fill(Theme.surface))
+                .overlay(Circle().stroke(Theme.divider, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
+    }
+
+    private var sectionPicker: some View {
+        HStack(spacing: 4) {
+            ForEach(Section.allCases, id: \.self) { option in
+                Button {
+                    withAnimation(.easeOut(duration: 0.2)) { section = option }
+                    isSearchFocused = false
+                } label: {
+                    Text(option.rawValue)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(section == option ? Theme.accent : Theme.textSecondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(
+                            Capsule().fill(section == option ? Theme.surfaceElevated : .clear)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(4)
+        .background(Capsule().fill(Theme.surface))
+        .overlay(Capsule().stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private var searchField: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(Theme.textSecondary)
+
+            TextField("Search clubs", text: $searchText)
+                .foregroundStyle(Theme.textPrimary)
+                .tint(Theme.accent)
+                .autocorrectionDisabled()
+                .focused($isSearchFocused)
+
+            if !searchText.isEmpty {
+                Button {
+                    searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    // MARK: - Lists
+
+    @ViewBuilder
+    private var myClubsList: some View {
+        if clubs.myClubs.isEmpty {
+            if clubs.isLoadingMine {
+                loadingState
+            } else {
+                emptyState(
+                    icon: "books.vertical",
+                    title: "No clubs yet",
+                    message: "Join a club to read along with others, or start your own and invite friends.",
+                    primary: ("Discover Clubs", { withAnimation { section = .discover } }),
+                    secondary: ("Start a Club", { showCreate = true })
+                )
+            }
+        } else {
+            clubList(clubs.myClubs)
+        }
+    }
+
+    @ViewBuilder
+    private var discoverList: some View {
+        if clubs.discoverClubs.isEmpty {
+            if clubs.isLoadingDiscover {
+                loadingState
+            } else if searchText.isEmpty {
+                emptyState(
+                    icon: "sparkles",
+                    title: "Be the first",
+                    message: "There aren't any public clubs yet. Start one and other readers will find it here.",
+                    primary: ("Start a Club", { showCreate = true }),
+                    secondary: nil
+                )
+            } else {
+                Text("No clubs match \u{201C}\(searchText)\u{201D}.")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 24)
+            }
+        } else {
+            clubList(clubs.discoverClubs)
+        }
+    }
+
+    private func clubList(_ list: [BookClub]) -> some View {
+        VStack(spacing: 14) {
+            ForEach(list) { club in
+                NavigationLink(value: club) {
+                    ClubRow(club: club, role: clubs.role(in: club))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var loadingState: some View {
+        ProgressView()
+            .tint(Theme.accent)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 40)
+    }
+
+    private func emptyState(
+        icon: String,
+        title: String,
+        message: String,
+        primary: (String, () -> Void),
+        secondary: (String, () -> Void)?
+    ) -> some View {
+        VStack(spacing: 14) {
+            Image(systemName: icon)
+                .font(.system(size: 32))
+                .foregroundStyle(Theme.accentDim)
+            Text(title)
+                .font(Theme.Font.serif(20, weight: .semibold))
+                .foregroundStyle(Theme.textPrimary)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+
+            CommunityPrimaryButton(title: primary.0, action: primary.1)
+                .padding(.top, 6)
+
+            if let secondary {
+                Button(secondary.0, action: secondary.1)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
+        .padding(.horizontal, 24)
+        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+}
+
+/// One club in a list.
+struct ClubRow: View {
+    let club: BookClub
+    let role: ClubMember.Role?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(club.name)
+                    .font(Theme.Font.serif(19, weight: .semibold))
+                    .foregroundStyle(Theme.textPrimary)
+                    .lineLimit(2)
+                if club.isPrivate {
+                    Image(systemName: "lock.fill")
+                        .font(.caption)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                Spacer(minLength: 8)
+                if let role, role != .member {
+                    Text(role.label)
+                        .font(.caption2.weight(.bold))
+                        .trackedCaps(1)
+                        .foregroundStyle(Theme.accent)
+                } else if role == .member {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.accent)
+                        .accessibilityLabel("Joined")
+                }
+            }
+
+            if let description = club.description, !description.isEmpty {
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+
+            HStack(spacing: 14) {
+                Label("\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")", systemImage: "person.2")
+                if let book = club.currentBook {
+                    Label(book.title, systemImage: "book.closed")
+                        .lineLimit(1)
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(Theme.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
-    }
-
-    private func accountRow(_ title: String, icon: String, color: Color) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .frame(width: 22)
-            Text(title)
-            Spacer()
-            if auth.isWorking && title == "Delete Account" {
-                ProgressView().tint(Theme.textSecondary)
-            }
-        }
-        .font(.body)
-        .foregroundStyle(color)
-        .padding(.vertical, 12)
         .contentShape(Rectangle())
-    }
-
-    private var initial: String {
-        let source = auth.profile?.displayName ?? auth.profile?.username ?? "?"
-        return String(source.prefix(1)).uppercased()
     }
 }
 
@@ -128,4 +316,5 @@ struct CommunityHomeView: View {
         CommunityHomeView()
     }
     .environmentObject(AuthManager())
+    .environmentObject(ClubStore())
 }
