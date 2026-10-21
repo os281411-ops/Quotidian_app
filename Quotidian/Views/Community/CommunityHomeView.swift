@@ -4,6 +4,7 @@ import SwiftUI
 /// (checklist phase 3 replaces the placeholder card with real clubs).
 struct CommunityHomeView: View {
     @EnvironmentObject private var auth: AuthManager
+    @State private var confirmingDelete = false
 
     var body: some View {
         ScrollView {
@@ -53,15 +54,66 @@ struct CommunityHomeView: View {
                 .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Theme.surface))
                 .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.divider, lineWidth: 1))
 
-                Button("Sign out") {
-                    Task { await auth.signOut() }
-                }
-                .font(.footnote)
-                .foregroundStyle(Theme.textSecondary)
+                accountCard
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 140)
         }
+        .alert("Delete your account?", isPresented: $confirmingDelete) {
+            Button("Delete Account", role: .destructive) {
+                Task { await auth.deleteAccount() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes your username, posts, comments and reactions. Your saved quotes and streak on this phone stay as they are. This can't be undone.")
+        }
+    }
+
+    private var accountCard: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Account")
+                .font(.caption.weight(.semibold))
+                .trackedCaps(1.5)
+                .foregroundStyle(Theme.textSecondary)
+                .padding(.bottom, 12)
+
+            Button {
+                Task { await auth.signOut() }
+            } label: {
+                accountRow("Sign Out", icon: "rectangle.portrait.and.arrow.right", color: Theme.textPrimary)
+            }
+
+            Divider().overlay(Theme.divider)
+
+            Button {
+                confirmingDelete = true
+            } label: {
+                accountRow("Delete Account", icon: "trash", color: Color(hex: 0xFF6B6B))
+            }
+            .disabled(auth.isWorking)
+
+            CommunityErrorText(message: auth.errorMessage)
+                .padding(.top, 8)
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private func accountRow(_ title: String, icon: String, color: Color) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .frame(width: 22)
+            Text(title)
+            Spacer()
+            if auth.isWorking && title == "Delete Account" {
+                ProgressView().tint(Theme.textSecondary)
+            }
+        }
+        .font(.body)
+        .foregroundStyle(color)
+        .padding(.vertical, 12)
+        .contentShape(Rectangle())
     }
 
     private var initial: String {
