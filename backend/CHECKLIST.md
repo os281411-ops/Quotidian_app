@@ -32,7 +32,7 @@ Tick items by changing `[ ]` to `[x]`.
 - [x] **7. Sign-in screen** with the Sign in with Apple button; keep the user signed in between launches.
 - [x] **8. Pick a username** after first sign-in (3–20 chars, lowercase letters, numbers, `_`).
 - [x] **9. Community guidelines screen**: user must tap "I agree" before posting (sets `accepted_guidelines_at`). Guidelines are shown in-app (`CommunityGuidelinesView`).
-- [ ] **10. Delete account** in Settings (Apple requirement). Needs a Supabase Edge Function that deletes the auth user; everything else is removed automatically.
+- [x] **10. Delete account** (Apple requirement). Community tab → Account → Delete Account. Uses the `delete_my_account()` database function (migration `20261021200000_delete_account.sql`); everything else is removed automatically.
 
 ## Phase 3 — Clubs
 
@@ -68,6 +68,7 @@ Tick items by changing `[ ]` to `[x]`.
 ## Phase 7 — Before release
 
 - [ ] **30. Update the privacy policy** (accounts, user posts, Apple ID email) and App Store privacy labels; update `PrivacyInfo.xcprivacy`.
+- [ ] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
 - [ ] **31. Decide what's premium** (e.g. creating clubs). If gated, check subscriptions on the server, not just in the app.
 - [ ] **32. TestFlight** with at least 3 accounts: posting, reporting, blocking, deleting an account.
 - [ ] **33. App Review notes**: explain the community feature, the moderation tools, and give Apple a **demo account** they can sign in with.
