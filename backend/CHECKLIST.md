@@ -27,6 +27,12 @@ Tick items by changing `[ ]` to `[x]`.
   Xcode → File → Add Package Dependencies → `https://github.com/supabase/supabase-swift` → add the `Supabase` library to the Quotidian target.
   Put the URL and anon key in a `SupabaseConfig.swift` (the anon key is safe in the app; the access rules protect the data). **Never** put the service-role key in the app.
 
+## Phase 1b — Developer setup
+
+- [x] **D1. Quotidian Dev app**: Xcode Run builds "Quotidian Dev" (own app ID, DEV icon, Developer Menu in Profile). Archive builds the real app.
+- [ ] **D2. Dev database**: separate "Quotidian Dev" Supabase project, built with `backend/supabase/dev_setup.sql`. The dev app uses it automatically once its URL and key are in `SupabaseConfig.swift`.
+- [ ] **D3. Workflow for database changes**: run each new migration file in the DEV project's SQL Editor first and test with the dev app; push to main only when it works (main = live database).
+
 ## Phase 2 — Accounts in the app
 
 - [x] **7. Sign-in screen** with the Sign in with Apple button; keep the user signed in between launches.

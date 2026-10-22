@@ -50,6 +50,7 @@ struct DeveloperMenuView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var notice: String?
+    @AppStorage("debug.useLiveDatabase") private var useLiveDatabase = false
 
     var body: some View {
         NavigationStack {
@@ -57,7 +58,19 @@ struct DeveloperMenuView: View {
                 Section("This Build") {
                     row("App", Bundle.main.bundleIdentifier ?? "?")
                     row("Version", "\(appVersion) (\(buildNumber))")
-                    row("Database", SupabaseConfig.url.host() ?? "?")
+                }
+
+                Section {
+                    row("Connected to", SupabaseConfig.isDevDatabase ? "DEV database" : "LIVE database")
+                    row("Address", SupabaseConfig.url.host() ?? "?")
+                    Toggle("Use Live Database", isOn: $useLiveDatabase)
+                        .onChange(of: useLiveDatabase) { _, _ in
+                            notice = "Quit and reopen the app to switch databases."
+                        }
+                } header: {
+                    Text("Database")
+                } footer: {
+                    Text("The dev app normally uses the DEV database so testing never touches real users. Turn this on to look at live data; anything you do then is real.")
                 }
 
                 Section {
