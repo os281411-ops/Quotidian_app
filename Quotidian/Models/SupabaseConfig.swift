@@ -18,8 +18,8 @@ enum SupabaseConfig {
 
     // DEV project ("Quotidian Dev"): test data, dev app.
     // Supabase → Quotidian Dev → Project Settings → API Keys / Data API.
-    private static let devURL = "PASTE_DEV_PROJECT_URL_HERE"   // e.g. "https://abcdefgh.supabase.co"
-    private static let devKey = "PASTE_DEV_PUBLISHABLE_KEY_HERE"
+    private static let devURL = "https://vlxvrewvjwcmaeewofbr.supabase.co"   // e.g. "https://abcdefgh.supabase.co"
+    private static let devKey = "sb_publishable_VTDkAq33qhrVIEd-3qXShA_R-gAKGp_"
 
     #if DEBUG
     /// True when this build talks to the dev project.
