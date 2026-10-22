@@ -55,12 +55,37 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [ ] **21b. Share to a club** from a saved quote in the Library or the daily quote. *(not built yet)*
 - [ ] **21c. Edit** your own messages. *(database supports it; no button yet)*
 
+## Phase 4b — More Bookclub features
+
+*Tie Bookclub into the rest of the app*
+- [ ] **A1. Quote of the Day room**: one shared chat everyone can join to discuss each day's quote.
+- [ ] **A2. Save from chat to Library**: long-press a shared passage → save it to your Library.
+- [ ] **A3. Streak on profiles**: show a reader's streak next to their name and on their profile.
+
+*Reading together*
+- [ ] **A4. Spoiler tags**: mark a message as a spoiler with a chapter ("Spoiler · Ch. 12"); blurred until tapped.
+- [ ] **A5. Club shelf**: automatic list of every book attached in a club's chat, each with a Bookshop.org button.
+- [ ] **A6. Pinned message**: owners/moderators pin a reading plan to the top of the chat.
+- [ ] **A7. Replies**: reply to a specific message.
+- [ ] **A8. Reactions**: a "resonated" reaction on messages.
+
+*Finding and returning to clubs*
+- [ ] **A9. Club tags**: Book, Author, Genre, Character; filter by tag in Discover.
+- [ ] **A10. Unread badges**: show which clubs have new messages since you last looked.
+
+*Premium*
+- [ ] **A11. Starting a club is Premium.**
+- [ ] **A12. Private clubs are Premium**: creating one *and* joining one (via invite) both need Premium. Check it on the server, not just in the app.
+
+*For you*
+- [x] **A13. Moderation view**: Bookclub → Account → Review Reports (admins only). Remove / Keep per reported message. Make yourself admin once: SQL Editor → `insert into public.app_admins (user_id) values ('<your user id>');` (Developer Menu → Copy My User ID).
+
 ## Phase 5 — Safety (required for App Store approval)
 
 - [ ] **22. Report**: messages can be reported from the long-press menu (built). Still to do: report a person from their profile.
 - [ ] **23. Block user** from their profile or a post; add an unblock list in Settings.
 - [ ] **24. Show friendly errors** for the word filter and spam limit (the server returns hints `word_filter` and `rate_limit`).
-- [ ] **25. Review reports**: check the `reports` table in the dashboard regularly. Set `status`, and un-hide content that was wrongly reported. Apple expects you to act within 24 hours.
+- [ ] **25. Review reports** within 24 hours (Apple expects this) using the Review Reports screen (A13). Consider a daily reminder or, later, a push notification to admins when a report comes in.
 - [ ] **26. Contact info** for reporting problems shown in the app (your support page).
 
 ## Phase 6 — Notifications
@@ -73,6 +98,6 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 
 - [ ] **30. Update the privacy policy** (accounts, user posts, Apple ID email) and App Store privacy labels; update `PrivacyInfo.xcprivacy`.
 - [ ] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
-- [ ] **31. Decide what's premium** (e.g. creating clubs). If gated, check subscriptions on the server, not just in the app.
+- [ ] **31. Premium checks on the server** for A11/A12: verify subscriptions with Apple's App Store Server API (an Edge Function), so a modified app can't skip the paywall.
 - [ ] **32. TestFlight** with at least 3 accounts: posting, reporting, blocking, deleting an account.
 - [ ] **33. App Review notes**: explain the community feature, the moderation tools, and give Apple a **demo account** they can sign in with.

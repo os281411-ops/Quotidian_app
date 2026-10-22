@@ -60,6 +60,10 @@ struct ProfileView: View {
                         upgradeCard
                     }
 
+                    #if DEBUG
+                    DeveloperMenuButton()
+                    #endif
+
                     VStack(spacing: 6) {
                         Text("Quotidian")
                             .font(Theme.Font.serif(15))

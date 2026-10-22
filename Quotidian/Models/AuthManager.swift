@@ -23,6 +23,8 @@ final class AuthManager: ObservableObject {
     @Published private(set) var userID: UUID?
     @Published private(set) var isLoading = true
     @Published private(set) var isWorking = false
+    /// True for accounts in the `app_admins` table (you), who can review reports.
+    @Published private(set) var isAdmin = false
     @Published var errorMessage: String?
 
     private var hasStarted = false
@@ -87,6 +89,8 @@ final class AuthManager: ObservableObject {
             }
             pendingDisplayName = nil
             profile = loaded
+            let adminCheck: Bool? = try? await supabase.rpc("is_app_admin").execute().value
+            isAdmin = adminCheck ?? false
             errorMessage = nil
         } catch {
             profile = nil
@@ -97,6 +101,7 @@ final class AuthManager: ObservableObject {
     private func clearSession() {
         userID = nil
         profile = nil
+        isAdmin = false
     }
 
     // MARK: - Sign in with Apple

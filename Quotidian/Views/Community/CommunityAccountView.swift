@@ -16,6 +16,9 @@ struct CommunityAccountView: View {
                     VStack(alignment: .leading, spacing: 24) {
                         profileCard
                         currentlyReadingCard
+                        if auth.isAdmin {
+                            moderationLink
+                        }
                         actionsCard
                         CommunityErrorText(message: auth.errorMessage)
                     }
@@ -126,6 +129,34 @@ struct CommunityAccountView: View {
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    /// Only shown to admins (accounts in `app_admins`).
+    private var moderationLink: some View {
+        NavigationLink {
+            ModerationView()
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "shield.lefthalf.filled")
+                    .foregroundStyle(Theme.accent)
+                    .frame(width: 22)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Review Reports")
+                        .foregroundStyle(Theme.textPrimary)
+                    Text("Admin only")
+                        .font(.caption2)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            .padding(18)
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.accent.opacity(0.35), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     private var actionsCard: some View {

@@ -16,6 +16,21 @@ final class SubscriptionManager: ObservableObject {
     @Published private(set) var isLoadingProducts = false
     @Published var purchaseError: String?
 
+    #if DEBUG
+    /// Developer menu switch (Debug builds only): nil follows StoreKit,
+    /// true/false forces Premium on/off.
+    @Published var debugPremiumOverride: Bool? = UserDefaults.standard.object(forKey: "debug.premiumOverride") as? Bool {
+        didSet {
+            if let debugPremiumOverride {
+                UserDefaults.standard.set(debugPremiumOverride, forKey: "debug.premiumOverride")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "debug.premiumOverride")
+            }
+            Task { await refreshEntitlements() }
+        }
+    }
+    #endif
+
     private var updatesTask: Task<Void, Never>?
 
     init() {
@@ -102,6 +117,9 @@ final class SubscriptionManager: ObservableObject {
                 subscribed = true
             }
         }
+        #if DEBUG
+        if let debugPremiumOverride { subscribed = debugPremiumOverride }
+        #endif
         isSubscribed = subscribed
     }
 
