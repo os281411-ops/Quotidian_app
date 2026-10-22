@@ -5,6 +5,8 @@ import SwiftUI
 struct CommunityHomeView: View {
     @EnvironmentObject private var auth: AuthManager
     @EnvironmentObject private var clubs: ClubStore
+    @EnvironmentObject private var subscriptions: SubscriptionManager
+    @EnvironmentObject private var paywall: PaywallPresenter
 
     enum Section: String, CaseIterable {
         case mine = "My Clubs"
@@ -15,6 +17,7 @@ struct CommunityHomeView: View {
     @State private var searchText = ""
     @State private var showCreate = false
     @State private var showAccount = false
+    @State private var showJoinWithCode = false
     @State private var path: [BookClub] = []
     @FocusState private var isSearchFocused: Bool
 
@@ -66,6 +69,21 @@ struct CommunityHomeView: View {
         .sheet(isPresented: $showAccount) {
             CommunityAccountView()
         }
+        .sheet(isPresented: $showJoinWithCode) {
+            JoinWithCodeView { club in
+                section = .mine
+                path.append(club)
+            }
+        }
+    }
+
+    /// Starting a club is a Premium feature.
+    private func startClub() {
+        if subscriptions.isSubscribed {
+            showCreate = true
+        } else {
+            paywall.present(.bookclub)
+        }
     }
 
     private func reload() async {
@@ -81,21 +99,35 @@ struct CommunityHomeView: View {
             CommunityHeader(title: "Bookclub", subtitle: "Read Together")
             Spacer()
             HStack(spacing: 10) {
-                headerButton("plus", label: "Start a club") { showCreate = true }
+                Menu {
+                    Button { startClub() } label: {
+                        Label(subscriptions.isSubscribed ? "Start a Club" : "Start a Club (Premium)", systemImage: "plus")
+                    }
+                    Button { showJoinWithCode = true } label: {
+                        Label("Join with Invite Code", systemImage: "ticket")
+                    }
+                } label: {
+                    headerIcon("plus")
+                }
+                .accessibilityLabel("Start or join a club")
                 headerButton("person.crop.circle", label: "Account") { showAccount = true }
             }
             .padding(.top, 12)
         }
     }
 
+    private func headerIcon(_ systemImage: String) -> some View {
+        Image(systemName: systemImage)
+            .font(.system(size: 17, weight: .medium))
+            .foregroundStyle(Theme.textPrimary)
+            .frame(width: 40, height: 40)
+            .background(Circle().fill(Theme.surface))
+            .overlay(Circle().stroke(Theme.divider, lineWidth: 1))
+    }
+
     private func headerButton(_ systemImage: String, label: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: systemImage)
-                .font(.system(size: 17, weight: .medium))
-                .foregroundStyle(Theme.textPrimary)
-                .frame(width: 40, height: 40)
-                .background(Circle().fill(Theme.surface))
-                .overlay(Circle().stroke(Theme.divider, lineWidth: 1))
+            headerIcon(systemImage)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
@@ -163,9 +195,9 @@ struct CommunityHomeView: View {
                 emptyState(
                     icon: "books.vertical",
                     title: "No clubs yet",
-                    message: "Join a club to read along with others, or start your own and invite friends.",
+                    message: "Join a club to read along with others, start your own, or join a private one with an invite code.",
                     primary: ("Discover Clubs", { withAnimation { section = .discover } }),
-                    secondary: ("Start a Club", { showCreate = true })
+                    secondary: ("Start a Club", { startClub() })
                 )
             }
         } else {
@@ -183,7 +215,7 @@ struct CommunityHomeView: View {
                     icon: "sparkles",
                     title: "Be the first",
                     message: "There aren't any public clubs yet. Start one and other readers will find it here.",
-                    primary: ("Start a Club", { showCreate = true }),
+                    primary: ("Start a Club", { startClub() }),
                     secondary: nil
                 )
             } else {

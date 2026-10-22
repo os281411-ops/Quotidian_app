@@ -25,6 +25,8 @@ final class AuthManager: ObservableObject {
     @Published private(set) var isWorking = false
     /// True for accounts in the `app_admins` table (you), who can review reports.
     @Published private(set) var isAdmin = false
+    /// True if an admin has banned this account (it can read but not post or join).
+    @Published private(set) var isBanned = false
     @Published var errorMessage: String?
 
     private var hasStarted = false
@@ -91,6 +93,8 @@ final class AuthManager: ObservableObject {
             profile = loaded
             let adminCheck: Bool? = try? await supabase.rpc("is_app_admin").execute().value
             isAdmin = adminCheck ?? false
+            let banCheck: Bool? = try? await supabase.rpc("is_banned").execute().value
+            isBanned = banCheck ?? false
             errorMessage = nil
         } catch {
             profile = nil
@@ -102,6 +106,7 @@ final class AuthManager: ObservableObject {
         userID = nil
         profile = nil
         isAdmin = false
+        isBanned = false
     }
 
     // MARK: - Sign in with Apple

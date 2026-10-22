@@ -17,6 +17,7 @@ struct ContentView: View {
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var auth = AuthManager()
     @StateObject private var clubs = ClubStore()
+    @StateObject private var safety = SafetyStore()
     @State private var selectedTab: AppTab = .today
     @AppStorage("onboarding.paywallShown") private var hasShownOnboardingPaywall = false
 
@@ -49,9 +50,17 @@ struct ContentView: View {
         .environmentObject(themeManager)
         .environmentObject(auth)
         .environmentObject(clubs)
+        .environmentObject(safety)
         .task { await auth.start() }
         .onChange(of: auth.userID) { _, userID in
             if userID == nil { clubs.reset() }
+        }
+        .task(id: auth.userID) {
+            if auth.userID == nil {
+                safety.reset()
+            } else {
+                await safety.load()
+            }
         }
         .sheet(item: $paywall.trigger) { trigger in
             PaywallView(trigger: trigger)

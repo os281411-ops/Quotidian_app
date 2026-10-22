@@ -11,6 +11,7 @@ enum PaywallTrigger: Identifiable {
     case streakFreeze
     case themes
     case secondReminder
+    case bookclub
     case general
 
     var id: Self { self }
@@ -24,6 +25,7 @@ enum PaywallTrigger: Identifiable {
         case .streakFreeze: "Never Lose Your Streak"
         case .themes: "Make It Yours"
         case .secondReminder: "A Second Nudge"
+        case .bookclub: "Read Together with Premium"
         case .general: "Quotidian Premium"
         }
     }
@@ -37,6 +39,7 @@ enum PaywallTrigger: Identifiable {
         case .streakFreeze: "Premium gives you a monthly streak freeze so a missed day doesn't cost you."
         case .themes: "Premium unlocks curated colour themes for the whole app."
         case .secondReminder: "Premium adds a second daily reminder, so today's quote never slips by."
+        case .bookclub: "Premium lets you start your own book clubs and join private ones with an invite."
         case .general: "Unlock unlimited saves, the full archive, and more."
         }
     }

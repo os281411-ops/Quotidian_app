@@ -1,5 +1,15 @@
 import Combine
+import Observation
 import SwiftUI
+
+/// Holds the selected palette. It's `@Observable`, so any view whose body
+/// reads `Theme.accent` is redrawn the moment the palette changes (a plain
+/// static var gave SwiftUI nothing to watch, so screens only updated when
+/// they were next rebuilt).
+@Observable
+final class AccentSelection {
+    var palette: AccentPalette = .gold
+}
 
 /// Premium perk: curated accent color palettes. `Theme.accent` reads
 /// `AccentPalette.current` directly so every existing call site picks up the
@@ -7,7 +17,12 @@ import SwiftUI
 enum AccentPalette: String, CaseIterable, Identifiable {
     case gold, rose, sage, azure
 
-    static var current: AccentPalette = .gold
+    private static let selection = AccentSelection()
+
+    static var current: AccentPalette {
+        get { selection.palette }
+        set { selection.palette = newValue }
+    }
 
     var id: String { rawValue }
 

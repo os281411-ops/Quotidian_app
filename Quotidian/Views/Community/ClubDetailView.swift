@@ -7,6 +7,7 @@ import UIKit
 struct ClubDetailView: View {
     @EnvironmentObject private var auth: AuthManager
     @EnvironmentObject private var clubs: ClubStore
+    @EnvironmentObject private var safety: SafetyStore
     @Environment(\.dismiss) private var dismiss
 
     @State private var club: BookClub
@@ -20,6 +21,7 @@ struct ClubDetailView: View {
     @State private var profileToShow: ClubMember?
     @State private var reporting: ChatMessage?
     @State private var reportSent = false
+    @State private var blocking: ChatMessage?
     @FocusState private var isComposerFocused: Bool
 
     init(initialClub: BookClub) {
@@ -41,7 +43,9 @@ struct ClubDetailView: View {
                 CommunityErrorText(message: room.errorMessage ?? clubs.errorMessage)
                     .padding(.horizontal, 20)
 
-                if isMember {
+                if auth.isBanned {
+                    bannedNotice
+                } else if isMember {
                     ChatComposer(
                         text: $draft,
                         isQuote: $isQuote,
@@ -86,7 +90,26 @@ struct ClubDetailView: View {
             ClubInfoView(club: $club, onLeftOrDeleted: { dismiss() })
         }
         .sheet(item: $profileToShow) { member in
-            MemberProfileView(member: member)
+            MemberProfileView(member: member, onBlockChanged: {
+                Task { await room.loadLatest() }
+            })
+        }
+        .alert(
+            "Block \(blocking?.authorName ?? "this reader")?",
+            isPresented: Binding(get: { blocking != nil }, set: { if !$0 { blocking = nil } }),
+            presenting: blocking
+        ) { message in
+            Button("Block", role: .destructive) {
+                Task {
+                    guard let me = auth.userID else { return }
+                    if await safety.block(message.authorID, me: me) {
+                        await room.loadLatest()
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("You won't see their messages in any club. They won't be told. You can unblock them from Account → Blocked Readers.")
         }
         .confirmationDialog(
             "Report this message?",
@@ -222,6 +245,11 @@ struct ClubDetailView: View {
             } label: {
                 Label("Report", systemImage: "flag")
             }
+            Button(role: .destructive) {
+                blocking = message
+            } label: {
+                Label("Block \(message.authorName)", systemImage: "hand.raised")
+            }
         }
 
         if message.authorID == auth.userID || canModerate {
@@ -243,6 +271,15 @@ struct ClubDetailView: View {
     }
 
     // MARK: - Bottom bar
+
+    private var bannedNotice: some View {
+        Label("Your account can't send messages because it broke the house rules.", systemImage: "nosign")
+            .font(.caption)
+            .foregroundStyle(Theme.textSecondary)
+            .multilineTextAlignment(.leading)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+    }
 
     private var joinBar: some View {
         VStack(spacing: 8) {

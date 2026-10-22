@@ -17,8 +17,11 @@ struct ClubInfoView: View {
     @State private var confirmingLeave = false
     @State private var confirmingDelete = false
     @State private var profileToShow: ClubMember?
+    @State private var inviteCode: String?
+    @State private var confirmingNewCode = false
 
     private var myRole: ClubMember.Role? { clubs.role(in: club) }
+    private var canModerate: Bool { myRole == .owner || myRole == .moderator }
 
     var body: some View {
         NavigationStack {
@@ -30,6 +33,9 @@ struct ClubInfoView: View {
                         titleBlock
                         membershipAction
                         CommunityErrorText(message: clubs.errorMessage)
+                        if canModerate {
+                            inviteCard
+                        }
                         membersCard
                         if myRole == .owner {
                             deleteButton
@@ -94,6 +100,77 @@ struct ClubInfoView: View {
         }
         members = await clubs.fetchMembers(clubID: club.id)
         isLoadingMembers = false
+        if canModerate {
+            inviteCode = await clubs.inviteCode(for: club)
+        }
+    }
+
+    private var inviteMessage: String {
+        "Join my book club \u{201C}\(club.name)\u{201D} on Quotidian. In the Bookclub tab, tap + → Join with Invite Code and enter: \(inviteCode ?? "")"
+    }
+
+    private var inviteCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Invite")
+                .font(.caption.weight(.semibold))
+                .trackedCaps(1.5)
+                .foregroundStyle(Theme.textSecondary)
+
+            if let inviteCode {
+                Text(inviteCode)
+                    .font(.system(size: 28, weight: .semibold, design: .monospaced))
+                    .tracking(5)
+                    .foregroundStyle(Theme.textPrimary)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+
+                Text(club.isPrivate
+                     ? "Anyone with this code can join. Joining a private club needs Premium."
+                     : "Anyone with this code can join straight away.")
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+
+                HStack(spacing: 10) {
+                    ShareLink(item: inviteMessage) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.background)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 11)
+                            .background(Capsule().fill(Theme.accent))
+                    }
+                    Button {
+                        confirmingNewCode = true
+                    } label: {
+                        Label("New Code", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.textPrimary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 11)
+                            .background(Capsule().stroke(Theme.divider, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                }
+            } else {
+                ProgressView().tint(Theme.accent).frame(maxWidth: .infinity)
+            }
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.accent.opacity(0.3), lineWidth: 1))
+        .alert("Make a new invite code?", isPresented: $confirmingNewCode) {
+            Button("New Code", role: .destructive) {
+                Task {
+                    if let code = await clubs.regenerateInviteCode(for: club) {
+                        inviteCode = code
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("The current code will stop working. People already in the club stay in.")
+        }
     }
 
     // MARK: - Sections
@@ -259,9 +336,21 @@ struct MemberAvatar: View {
 /// Another reader's profile: name, username and what they're reading.
 struct MemberProfileView: View {
     let member: ClubMember
+    /// Called after blocking or unblocking, so an open chat can refresh.
+    var onBlockChanged: (() -> Void)? = nil
+
+    @EnvironmentObject private var auth: AuthManager
+    @EnvironmentObject private var safety: SafetyStore
     @Environment(\.dismiss) private var dismiss
     @State private var currentlyReading: Book?
     @State private var isLoading = true
+    @State private var confirmingBlock = false
+    @State private var showReportReasons = false
+    @State private var reportSent = false
+
+    private var isMe: Bool { member.userID == auth.userID }
+    private var isBlocked: Bool { safety.isBlocked(member.userID) }
+    private var handle: String { "@\(member.profile?.username ?? "reader")" }
 
     var body: some View {
         NavigationStack {
@@ -302,6 +391,10 @@ struct MemberProfileView: View {
                         .padding(18)
                         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
                         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+
+                        if !isMe {
+                            safetyActions
+                        }
                     }
                     .padding(24)
                 }
@@ -316,6 +409,86 @@ struct MemberProfileView: View {
         }
         .presentationDetents([.medium, .large])
         .task { await load() }
+        .alert("Block \(handle)?", isPresented: $confirmingBlock) {
+            Button("Block", role: .destructive) {
+                Task {
+                    guard let me = auth.userID else { return }
+                    if await safety.block(member.userID, me: me) {
+                        onBlockChanged?()
+                        dismiss()
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("You won't see their messages in any club. They won't be told. You can unblock them from Account → Blocked Readers.")
+        }
+        .confirmationDialog("Report \(handle)?", isPresented: $showReportReasons, titleVisibility: .visible) {
+            ForEach(ReportReason.allCases) { reason in
+                Button(reason.label) {
+                    Task {
+                        guard let me = auth.userID else { return }
+                        if await safety.report(member.userID, reason: reason, me: me) {
+                            reportSent = true
+                        }
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Reports are reviewed within 24 hours.")
+        }
+        .alert("Thanks for reporting", isPresented: $reportSent) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("We'll review it within 24 hours. You can also block them so you don't see their messages.")
+        }
+    }
+
+    private var safetyActions: some View {
+        VStack(spacing: 0) {
+            Button {
+                if isBlocked {
+                    Task {
+                        guard let me = auth.userID else { return }
+                        if await safety.unblock(member.userID, me: me) { onBlockChanged?() }
+                    }
+                } else {
+                    confirmingBlock = true
+                }
+            } label: {
+                safetyRow(isBlocked ? "Unblock \(handle)" : "Block \(handle)",
+                          icon: isBlocked ? "hand.raised.slash" : "hand.raised",
+                          color: isBlocked ? Theme.textPrimary : Color(hex: 0xFF6B6B))
+            }
+            .disabled(safety.isWorking)
+
+            Divider().overlay(Theme.divider)
+
+            Button {
+                showReportReasons = true
+            } label: {
+                safetyRow("Report \(handle)", icon: "flag", color: Color(hex: 0xFF6B6B))
+            }
+
+            CommunityErrorText(message: safety.errorMessage)
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 6)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private func safetyRow(_ title: String, icon: String, color: Color) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon).frame(width: 22)
+            Text(title)
+            Spacer()
+        }
+        .font(.body)
+        .foregroundStyle(color)
+        .padding(.vertical, 12)
+        .contentShape(Rectangle())
     }
 
     private var displayName: String {

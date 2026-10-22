@@ -19,6 +19,7 @@ struct CommunityAccountView: View {
                         if auth.isAdmin {
                             moderationLink
                         }
+                        blockedLink
                         actionsCard
                         CommunityErrorText(message: auth.errorMessage)
                     }
@@ -129,6 +130,28 @@ struct CommunityAccountView: View {
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    private var blockedLink: some View {
+        NavigationLink {
+            BlockedReadersView()
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "hand.raised")
+                    .foregroundStyle(Theme.textSecondary)
+                    .frame(width: 22)
+                Text("Blocked Readers")
+                    .foregroundStyle(Theme.textPrimary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            .padding(18)
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     /// Only shown to admins (accounts in `app_admins`).

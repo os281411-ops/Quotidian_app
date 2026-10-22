@@ -192,6 +192,70 @@ final class ClubStore: ObservableObject {
         }
     }
 
+    // MARK: - Invites
+
+    /// What an invite code points at, shown before joining.
+    func previewInvite(_ code: String) async -> InvitePreview? {
+        errorMessage = nil
+        do {
+            let matches: [InvitePreview] = try await supabase
+                .rpc("preview_invite", params: ["p_code": code])
+                .execute()
+                .value
+            if matches.isEmpty {
+                errorMessage = "That code doesn't match a club. Check it and try again."
+            }
+            return matches.first
+        } catch {
+            errorMessage = "Couldn't check that code. Check your connection."
+            return nil
+        }
+    }
+
+    /// Joins the club behind an invite code (works for private clubs too).
+    func joinWithInvite(_ code: String, userID: UUID) async -> BookClub? {
+        errorMessage = nil
+        isWorking = true
+        defer { isWorking = false }
+        do {
+            let clubID: UUID = try await supabase
+                .rpc("join_with_invite", params: ["p_code": code])
+                .execute()
+                .value
+            await refreshAfterChange(userID: userID)
+            if let club = myClubs.first(where: { $0.id == clubID }) {
+                return club
+            }
+            return await fetchClub(id: clubID)
+        } catch let error as PostgrestError {
+            errorMessage = error.hint == "bad_code"
+                ? "That code doesn't match a club. Check it and try again."
+                : (error.code == "42501" ? "This account can't join clubs." : "Couldn't join. Please try again.")
+            return nil
+        } catch {
+            errorMessage = "Couldn't join. Check your connection and try again."
+            return nil
+        }
+    }
+
+    /// The club's invite code (owners and moderators only).
+    func inviteCode(for club: BookClub) async -> String? {
+        let code: String? = try? await supabase
+            .rpc("club_invite_code", params: ["p_club_id": club.id.uuidString])
+            .execute()
+            .value
+        return code
+    }
+
+    /// Replaces the club's invite code; the old one stops working.
+    func regenerateInviteCode(for club: BookClub) async -> String? {
+        let code: String? = try? await supabase
+            .rpc("regenerate_invite_code", params: ["p_club_id": club.id.uuidString])
+            .execute()
+            .value
+        return code
+    }
+
     // MARK: - Helpers
 
     private func refreshAfterChange(userID: UUID) async {
@@ -232,5 +296,29 @@ final class ClubStore: ObservableObject {
         case ("42501", _):       return "You don't have permission to do that."
         default:                 return nil
         }
+    }
+}
+
+/// Result of `preview_invite`: the club an invite code points at.
+nonisolated struct InvitePreview: Decodable, Identifiable, Sendable {
+    let clubID: UUID
+    let name: String
+    let isPrivate: Bool
+    let memberCount: Int
+    let alreadyMember: Bool
+
+    var id: UUID { clubID }
+
+    enum CodingKeys: String, CodingKey {
+        case clubID = "club_id"
+        case name
+        case isPrivate = "is_private"
+        case memberCount = "member_count"
+        case alreadyMember = "already_member"
+    }
+
+    /// Invite codes are 8 letters/numbers; tidy whatever was typed or pasted.
+    static func normalize(_ input: String) -> String {
+        String(input.uppercased().filter { $0.isASCII && ($0.isLetter || $0.isNumber) }.prefix(8))
     }
 }

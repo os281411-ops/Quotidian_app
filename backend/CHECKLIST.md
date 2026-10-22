@@ -30,7 +30,7 @@ Tick items by changing `[ ]` to `[x]`.
 ## Phase 1b — Developer setup
 
 - [x] **D1. Quotidian Dev app**: Xcode Run builds "Quotidian Dev" (own app ID, DEV icon, Developer Menu in Profile). Archive builds the real app.
-- [ ] **D2. Dev database**: separate "Quotidian Dev" Supabase project, built with `backend/supabase/dev_setup.sql`. The dev app uses it automatically once its URL and key are in `SupabaseConfig.swift`.
+- [x] **D2. Dev database**: separate "Quotidian Dev" Supabase project, built with `backend/supabase/dev_setup.sql`. The dev app uses it automatically once its URL and key are in `SupabaseConfig.swift`.
 - [ ] **D3. Workflow for database changes**: run each new migration file in the DEV project's SQL Editor first and test with the dev app; push to main only when it works (main = live database).
 
 ## Phase 2 — Accounts in the app
@@ -46,7 +46,7 @@ Tick items by changing `[ ]` to `[x]`.
 - [ ] **12. Create a club**: name, description, public/private. No book selection.
 - [ ] **13. Join and leave** public clubs; members list.
 - [ ] **14. Book search** via the Open Library API, used to attach books in chat and to set Currently Reading (with a Bookshop.org link through `BookshopAffiliate`). Clubs aren't tied to one book: a club can be about a book, an author, a genre or a character.
-- [ ] **15. Private club invites** (invite code or link). *Can wait until after launch.*
+- [x] **15. Invite codes**: owners/moderators get an 8-character code in Club Info (Share, New Code); anyone can use + → Join with Invite Code.
 
 ## Phase 4 — Club chat and profiles
 
@@ -80,16 +80,17 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [ ] **A10. Unread badges**: show which clubs have new messages since you last looked.
 
 *Premium*
-- [ ] **A11. Starting a club is Premium.**
-- [ ] **A12. Private clubs are Premium**: creating one *and* joining one (via invite) both need Premium. Check it on the server, not just in the app.
+- [x] **A11. Starting a club is Premium** (checked in the app; server check is step 31).
+- [x] **A12. Private clubs are Premium**: creating needs Premium (A11); joining a private club by code needs Premium (checked in the app; server check is step 31).
 
 *For you*
 - [x] **A13. Moderation view**: Bookclub → Account → Review Reports (admins only). Remove / Keep per reported message. Make yourself admin once: SQL Editor → `insert into public.app_admins (user_id) values ('<your user id>');` (Developer Menu → Copy My User ID).
 
 ## Phase 5 — Safety (required for App Store approval)
 
-- [ ] **22. Report**: messages can be reported from the long-press menu (built). Still to do: report a person from their profile.
-- [ ] **23. Block user** from their profile or a post; add an unblock list in Settings.
+- [x] **22. Report**: messages (long-press → Report) and people (their profile → Report).
+- [x] **23. Block**: from a profile or long-press on a message; Account → Blocked Readers to unblock.
+- [x] **23b. Ban** (admins): Review Reports → Ban, or Remove & Ban Author. Banned accounts can't post, start or join clubs; their messages are hidden.
 - [ ] **24. Show friendly errors** for the word filter and spam limit (the server returns hints `word_filter` and `rate_limit`).
 - [ ] **25. Review reports** within 24 hours (Apple expects this) using the Review Reports screen (A13). Consider a daily reminder or, later, a push notification to admins when a report comes in.
 - [ ] **26. Contact info** for reporting problems shown in the app (your support page).
@@ -105,5 +106,9 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [ ] **30. Update the privacy policy** (accounts, user posts, Apple ID email) and App Store privacy labels; update `PrivacyInfo.xcprivacy`.
 - [ ] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
 - [ ] **31. Premium checks on the server** for A11/A12: verify subscriptions with Apple's App Store Server API (an Edge Function), so a modified app can't skip the paywall.
+- [ ] **31b. Update the Premium paywall** (`PaywallView` feature list): add the Bookclub perks (start your own clubs, join private clubs with an invite).
+- [ ] **31c. New App Store screenshots** that include Bookclub (club chat, a book card with the Bookshop.org button, Currently Reading) and the updated paywall. Add a subtle colour gradient behind the phone frames for more colour, keeping the app's sleek dark look; the existing designs are in `Marketing/App Store Screenshots`.
+  - Gradient idea: a deep tone fading into black at the edges, so it stays dark and premium; a slightly different shade per screenshot so the set flows as a sequence.
+  - Claude builds the frames from the existing designs and shows a few gradient options to pick from.
 - [ ] **32. TestFlight** with at least 3 accounts: posting, reporting, blocking, deleting an account.
 - [ ] **33. App Review notes**: explain the community feature, the moderation tools, and give Apple a **demo account** they can sign in with.
