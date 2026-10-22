@@ -58,6 +58,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Models/Quotidian.storekit,
 			);
 			target = 13DAC3B5300E400100702D88 /* Quotidian */;
 		};

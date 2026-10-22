@@ -1,0 +1,117 @@
+{
+  "identifier" : "D9A5DE5C-68FD-4116-A27A-7C3CC9982D80",
+  "nonRenewingSubscriptions" : [],
+  "products" : [],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 0,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "50A5A401-8310-49B5-8854-615AB09066DB",
+      "localizations" : [],
+      "name" : "Quotidian Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B0E8D255-ED61-4C5C-B323-19AFB635B6DF",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited saves, the full archive, and premium extras.",
+              "displayName" : "Quotidian Premium Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.oliverscott.Quotidian.premium.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Monthly",
+          "subscriptionGroupID" : "50A5A401-8310-49B5-8854-615AB09066DB",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : []
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "F3F4C2A1-9B3E-4E2D-8C0A-2B1E7D5A4C6F",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited saves, the full archive, and premium extras. Best value.",
+              "displayName" : "Quotidian Premium Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.oliverscott.Quotidian.premium.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Premium Annual",
+          "subscriptionGroupID" : "50A5A401-8310-49B5-8854-615AB09066DB",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : []
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
