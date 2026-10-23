@@ -9,8 +9,7 @@ struct WidgetQuote: Decodable {
     let author: String
     let book: String
 
-    /// False for quotes that aren't drawn from a specific book — kept out of
-    /// "today's quote" rotation, mirroring Quote.hasBook in the main app.
+    /// False for quotes that aren't drawn from a specific book.
     var hasBook: Bool { !book.isEmpty }
 }
 
@@ -24,7 +23,8 @@ enum WidgetQuoteProvider {
         return decoded
     }()
 
-    private static let dailyEligibleQuotes: [WidgetQuote] = quotes.filter(\.hasBook)
+    /// Every quote is in the rotation, matching QuoteProvider in the main app.
+    private static let dailyEligibleQuotes: [WidgetQuote] = quotes
 
     /// Mirrors QuoteProvider.quote(for:) in the main app so the widget and
     /// the app always agree on "today's quote."

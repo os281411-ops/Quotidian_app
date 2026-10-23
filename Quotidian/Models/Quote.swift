@@ -16,8 +16,14 @@ extension Quote {
     /// inspirational quotes) — used to hide book/purchase UI for those entries.
     var hasBook: Bool { !book.isEmpty }
 
-    var shareText: String {
+    /// The quote and who said it, without the app attribution.
+    var shareLine: String {
         hasBook ? "\"\(text)\"\n— \(author), \(book)" : "\"\(text)\"\n— \(author)"
+    }
+
+    /// What's shared as text: the quote, then where it came from.
+    var shareText: String {
+        "\(shareLine)\n\n\(AppLinks.shareAttribution)"
     }
 
     /// Bookshop.org attributes affiliate credit only through its documented link

@@ -89,7 +89,7 @@ struct DeveloperMenuView: View {
                 } header: {
                     Text("Premium")
                 } footer: {
-                    Text("Force On unlocks every Premium feature without buying, so you can test themes, the archive and Premium Bookclub features.")
+                    Text("Force On unlocks every Premium feature without buying, so you can test themes, unlimited saves and Premium Bookclub features.")
                 }
 
                 Section {
@@ -127,6 +127,10 @@ struct DeveloperMenuView: View {
                     Button("Clear Library", role: .destructive) {
                         UserDefaults.standard.removeObject(forKey: "library.savedQuotes")
                         notice = "Library cleared. Quit and reopen the app to see it."
+                    }
+                    Button("Clear Reflections", role: .destructive) {
+                        UserDefaults.standard.removeObject(forKey: "reflections.byQuote")
+                        notice = "Reflections cleared. Quit and reopen the app to see it."
                     }
                 } header: {
                     Text("Reset")

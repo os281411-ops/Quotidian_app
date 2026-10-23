@@ -58,18 +58,20 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [ ] **19. Currently Reading** on profiles: set it in Account; shown in members lists and on member profiles.
 - [ ] **20. Member profiles**: tap a name in chat or the members list.
 - [ ] **21. Delete** your own messages; owners/moderators can delete any in their club.
-- [ ] **21b. Share to a club** from a saved quote in the Library or the daily quote. *(not built yet)*
+- [x] **21b. Share to a club**: Today → Club button, or the club icon on a Library card. Pick a club, add a thought, send; the book is attached with its Bookshop.org link.
 - [ ] **21c. Edit** your own messages. *(database supports it; no button yet)*
 
 ## Phase 4b — More Bookclub features
 
 *Tie Bookclub into the rest of the app*
-- [ ] **A1. Quote of the Day room**: one shared chat everyone can join to discuss each day's quote.
-- [ ] **A2. Save from chat to Library**: long-press a shared passage → save it to your Library.
+- [ ] **A1. Quote of the Day room**: one shared chat everyone can join to discuss each day's quote. Add a "Discuss today's quote" button under the quote on Today that opens it.
+- [x] **A2. Save from chat to Library**: long-press a shared passage → Save to Library (free limit of 10 applies).
+- [ ] **A14. "From the author" card** for the 100 book-less quotes: a 2–3 line note on who said it plus one recommended book by/about them with a Bookshop.org link (brings back About and the affiliate link on those days). Claude drafts notes + book picks and checks ISBNs; Oliver approves before it goes in.
+- [x] **A15. Reflect** on Today: a round Reflect button (under Save on book quotes; in About's place on book-less quotes) opens a menu: six moods (Inspired, Moved, Calm, Thoughtful, Challenged, Not for me), Write a Thought…, Clear. Private, saved on the device only; shown on Library cards for saved quotes.
 - [ ] **A3. Streak on profiles**: show a reader's streak next to their name and on their profile.
 
 *Reading together*
-- [ ] **A4. Spoiler tags**: mark a message as a spoiler with a chapter ("Spoiler · Ch. 12"); blurred until tapped.
+- [x] **A4. Spoiler tags**: eye button in the message box, optional label (pre-filled from Now Reading); blurred for others until tapped.
 - [ ] **A5. Club shelf**: automatic list of every book attached in a club's chat, each with a Bookshop.org button.
 - [x] **A6. Now Reading**: owners/moderators tag the book (optional), section (e.g. "Chapters 1–5") and a finish-by date. Shown as a banner at the top of the chat, in Club Info, and under the club in lists.
 - [ ] **A7. Replies**: reply to a specific message.
@@ -104,9 +106,18 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 ## Phase 7 — Before release
 
 - [ ] **30. Update the privacy policy** (accounts, user posts, Apple ID email) and App Store privacy labels; update `PrivacyInfo.xcprivacy`.
+  - The App Store description currently says Quotidian "doesn't collect any personal data, doesn't require an account, and doesn't track you". Rewrite that line: Bookclub is optional, but it uses an account and stores what people post.
 - [ ] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
 - [ ] **31. Premium checks on the server** for A11/A12: verify subscriptions with Apple's App Store Server API (an Edge Function), so a modified app can't skip the paywall.
-- [ ] **31b. Update the Premium paywall** (`PaywallView` feature list): add the Bookclub perks (start your own clubs, join private clubs with an invite).
+- [x] **31a. Remove the Archive** *(done in the app; still to do: "What's New" note and dropping `04-archive.png` with 31c)* (the tab where Premium users browse every quote, past and future). Seeing every quote at once goes against the point of a quote *a day*, and Bookclub now gives Premium more to offer. Includes:
+  - remove the Archive tab and `ArchiveView`, and the `.archive` paywall reason;
+  - take "The full quote archive" out of the paywall feature list (do this with 31b);
+  - update the App Store description and drop the archive screenshot (`04-archive.png`) when redoing screenshots (31c);
+  - existing subscribers lose a feature they paid for: mention the change in the update's "What's New" text and lead with the new Bookclub perks.
+- [x] **31b. Update the Premium paywall**: leads with "Start your own book clubs" and "Join private clubs with an invite"; archive removed from the list and paywall wording.
+- [x] **31d. All 160 quotes in the daily rotation** (book quotes spread evenly; never more than 2 days in a row without a book). App and widget both updated.
+  - The day this update goes out, everyone's "today's quote" changes once (the cycle is now 160 days, not 60).
+  - App Store description says every quote "links straight to that book on Bookshop.org" and "comes with a short note on the book": reword, since about 6 in 10 days now have no book.
 - [ ] **31c. New App Store screenshots** that include Bookclub (club chat, a book card with the Bookshop.org button, Currently Reading) and the updated paywall. Add a subtle colour gradient behind the phone frames for more colour, keeping the app's sleek dark look; the existing designs are in `Marketing/App Store Screenshots`.
   - Gradient idea: a deep tone fading into black at the edges, so it stays dark and premium; a slightly different shade per screenshot so the set flows as a sequence.
   - Claude builds the frames from the existing designs and shows a few gradient options to pick from.

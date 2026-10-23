@@ -4,6 +4,7 @@ struct LibraryView: View {
     @EnvironmentObject private var library: LibraryStore
     @EnvironmentObject private var streak: StreakManager
     @State private var selectedQuote: Quote?
+    @State private var shareToClubQuote: Quote?
     @State private var searchText = ""
     @FocusState private var isSearchFocused: Bool
 
@@ -56,7 +57,8 @@ struct LibraryView: View {
                                         saved: saved,
                                         searchQuery: searchText,
                                         onOpenAbout: { selectedQuote = saved.quote },
-                                        onRemove: { removeWithUndo(saved) }
+                                        onRemove: { removeWithUndo(saved) },
+                                        onShareToClub: { shareToClubQuote = saved.quote }
                                     )
                                 }
                             }
@@ -86,6 +88,9 @@ struct LibraryView: View {
         }
         .sheet(item: $selectedQuote) { quote in
             AboutBookView(quote: quote)
+        }
+        .sheet(item: $shareToClubQuote) { quote in
+            ShareToClubView(quote: quote)
         }
     }
 

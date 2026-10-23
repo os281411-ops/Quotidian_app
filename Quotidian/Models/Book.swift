@@ -158,6 +158,51 @@ enum BookSearch {
         }
     }
 
+    private nonisolated struct NewQuoteBook: Encodable {
+        let title: String
+        let author: String?
+        let isbn13: String?
+    }
+
+    /// The shared `books` row for a Quotidian quote's book (matched by ISBN,
+    /// or by title and author), adding it if it's new.
+    @MainActor
+    static func book(forQuote quote: Quote) async throws -> Book? {
+        guard quote.hasBook else { return nil }
+
+        func lookup() async throws -> Book? {
+            var request = supabase.from("books").select(Book.columns)
+            if let isbn = quote.isbn13 {
+                request = request.eq("isbn13", value: isbn)
+            } else {
+                request = request.eq("title", value: quote.book).eq("author", value: quote.author)
+            }
+            let matches: [Book] = try await request.limit(1).execute().value
+            return matches.first
+        }
+
+        if let existing = try await lookup() { return existing }
+        do {
+            return try await supabase
+                .from("books")
+                .insert(
+                    NewQuoteBook(
+                        title: String(quote.book.prefix(300)),
+                        author: quote.author.isEmpty ? nil : String(quote.author.prefix(200)),
+                        isbn13: quote.isbn13
+                    ),
+                    returning: .representation
+                )
+                .select(Book.columns)
+                .single()
+                .execute()
+                .value
+        } catch {
+            if let existing = try await lookup() { return existing }
+            throw error
+        }
+    }
+
     @MainActor
     private static func findExisting(_ result: BookSearchResult) async throws -> Book? {
         var filter = "open_library_id.eq.\(result.openLibraryID)"

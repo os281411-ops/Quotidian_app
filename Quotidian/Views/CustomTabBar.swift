@@ -1,12 +1,11 @@
 import SwiftUI
 
 enum AppTab: CaseIterable {
-    case today, archive, library, community, profile
+    case today, library, community, profile
 
     var systemImage: String {
         switch self {
         case .today: "house.fill"
-        case .archive: "square.stack.3d.up.fill"
         case .library: "bookmark.fill"
         case .community: "person.2.fill"
         case .profile: "person.fill"

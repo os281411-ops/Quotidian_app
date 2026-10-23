@@ -127,8 +127,9 @@ struct PaywallView: View {
 
     private var featureList: some View {
         VStack(alignment: .leading, spacing: 14) {
+            featureRow("books.vertical.fill", "Start your own book clubs")
+            featureRow("lock.fill", "Join private clubs with an invite")
             featureRow("infinity", "Unlimited saves in your Library")
-            featureRow("books.vertical.fill", "The full quote archive, searchable and unlimited")
             featureRow("apps.iphone", "Home screen widget with today's quote")
             featureRow("square.and.arrow.up", "Shareable, styled quote cards")
             featureRow("flame.fill", "A monthly streak freeze")

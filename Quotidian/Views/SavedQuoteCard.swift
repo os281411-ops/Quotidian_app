@@ -5,6 +5,10 @@ struct SavedQuoteCard: View {
     var searchQuery: String = ""
     let onOpenAbout: () -> Void
     let onRemove: () -> Void
+    /// Opens "Share to a Club" for this quote.
+    var onShareToClub: (() -> Void)? = nil
+
+    @EnvironmentObject private var reflections: ReflectionStore
 
     private var quote: Quote { saved.quote }
 
@@ -29,6 +33,10 @@ struct SavedQuoteCard: View {
                 }
             }
             .buttonStyle(.plain)
+
+            if let reflection = reflections.reflection(for: quote) {
+                reflectionSummary(reflection)
+            }
 
             Divider().overlay(Theme.divider)
 
@@ -56,6 +64,17 @@ struct SavedQuoteCard: View {
 
                 Spacer()
 
+                if let onShareToClub {
+                    Button(action: onShareToClub) {
+                        Image(systemName: "person.2")
+                            .font(.subheadline)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Share to a club")
+                    .padding(.trailing, 8)
+                }
+
                 ShareLink(item: quote.shareText) {
                     Image(systemName: "square.and.arrow.up")
                         .font(.subheadline)
@@ -76,6 +95,30 @@ struct SavedQuoteCard: View {
     }
 }
 
+extension SavedQuoteCard {
+    /// Your mood and note from the Reflect card, shown under the quote.
+    fileprivate func reflectionSummary(_ reflection: Reflection) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let mood = reflection.mood {
+                Label(mood.label, systemImage: mood.selectedSymbol)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+            }
+            let note = reflection.note.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !note.isEmpty {
+                Text(note)
+                    .font(Theme.Font.serif(15).italic())
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(4)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Theme.surfaceElevated))
+    }
+}
+
 #Preview {
     ZStack {
         Theme.background.ignoresSafeArea()
@@ -84,6 +127,7 @@ struct SavedQuoteCard: View {
             onOpenAbout: {},
             onRemove: {}
         )
+        .environmentObject(ReflectionStore())
         .padding()
     }
 }

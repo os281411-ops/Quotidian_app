@@ -11,6 +11,9 @@ nonisolated struct ChatMessage: Codable, Hashable, Identifiable, Sendable {
     var body: String?
     var quoteText: String?
     var isHidden: Bool
+    /// Marked as a spoiler: blurred for others until they tap to reveal.
+    var isSpoiler: Bool
+    var spoilerLabel: String?
     let createdAt: Date
     var editedAt: Date?
     let author: MemberProfile?
@@ -23,6 +26,8 @@ nonisolated struct ChatMessage: Codable, Hashable, Identifiable, Sendable {
         case body
         case quoteText = "quote_text"
         case isHidden = "is_hidden"
+        case isSpoiler = "is_spoiler"
+        case spoilerLabel = "spoiler_label"
         case createdAt = "created_at"
         case editedAt = "edited_at"
         case author
@@ -30,7 +35,7 @@ nonisolated struct ChatMessage: Codable, Hashable, Identifiable, Sendable {
     }
 
     static let columns =
-        "id, club_id, author_id, body, quote_text, is_hidden, created_at, edited_at, " +
+        "id, club_id, author_id, body, quote_text, is_hidden, is_spoiler, spoiler_label, created_at, edited_at, " +
         "author:profiles(username, display_name), " +
         "book:books(\(Book.columns))"
 
@@ -52,6 +57,8 @@ private nonisolated struct NewChatMessage: Encodable, Sendable {
     let body: String?
     let quoteText: String?
     let bookID: UUID?
+    let isSpoiler: Bool
+    let spoilerLabel: String?
 
     enum CodingKeys: String, CodingKey {
         case clubID = "club_id"
@@ -59,6 +66,8 @@ private nonisolated struct NewChatMessage: Encodable, Sendable {
         case body
         case quoteText = "quote_text"
         case bookID = "book_id"
+        case isSpoiler = "is_spoiler"
+        case spoilerLabel = "spoiler_label"
     }
 }
 
@@ -103,6 +112,8 @@ final class ChatRoom: ObservableObject {
     @Published private(set) var isLoadingOlder = false
     @Published private(set) var hasOlder = false
     @Published private(set) var isSending = false
+    /// Spoilers this person has tapped to reveal (this session only).
+    @Published private(set) var revealedSpoilers: Set<UUID> = []
     @Published var errorMessage: String?
 
     private static let pageSize = 50
@@ -249,7 +260,7 @@ final class ChatRoom: ObservableObject {
 
     /// Returns true when the message was sent.
     @discardableResult
-    func send(text: String, asQuote: Bool, book: Book?, userID: UUID) async -> Bool {
+    func send(text: String, asQuote: Bool, book: Book?, spoiler: Bool = false, spoilerLabel: String? = nil, userID: UUID) async -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty || book != nil else { return false }
 
@@ -262,7 +273,9 @@ final class ChatRoom: ObservableObject {
             authorID: userID,
             body: asQuote || trimmed.isEmpty ? nil : String(trimmed.prefix(2000)),
             quoteText: asQuote && !trimmed.isEmpty ? String(trimmed.prefix(1000)) : nil,
-            bookID: book?.id
+            bookID: book?.id,
+            isSpoiler: spoiler,
+            spoilerLabel: spoiler ? Self.cleanSpoilerLabel(spoilerLabel) : nil
         )
 
         do {
@@ -282,6 +295,46 @@ final class ChatRoom: ObservableObject {
             errorMessage = "Couldn't send. Check your connection and try again."
             return false
         }
+    }
+
+    /// Posts a message to a club without opening its chat (used by Share to a Club).
+    static func post(
+        clubID: UUID,
+        userID: UUID,
+        body: String?,
+        quote: String?,
+        bookID: UUID?
+    ) async throws {
+        let trimmedBody = body?.trimmingCharacters(in: .whitespacesAndNewlines)
+        _ = try await supabase
+            .from("messages")
+            .insert(NewChatMessage(
+                clubID: clubID,
+                authorID: userID,
+                body: (trimmedBody?.isEmpty ?? true) ? nil : String(trimmedBody!.prefix(2000)),
+                quoteText: quote.map { String($0.prefix(1000)) },
+                bookID: bookID,
+                isSpoiler: false,
+                spoilerLabel: nil
+            ))
+            .execute()
+    }
+
+    /// Error text for a failed send, for screens outside the chat.
+    static func sendErrorMessage(for error: Error) -> String {
+        if let error = error as? PostgrestError { return message(for: error) }
+        return "Couldn't send. Check your connection and try again."
+    }
+
+    func reveal(_ message: ChatMessage) {
+        revealedSpoilers.insert(message.id)
+    }
+
+    static let spoilerLabelLimit = 40
+
+    private static func cleanSpoilerLabel(_ label: String?) -> String? {
+        guard let trimmed = label?.trimmingCharacters(in: .whitespacesAndNewlines), !trimmed.isEmpty else { return nil }
+        return String(trimmed.prefix(spoilerLabelLimit))
     }
 
     func delete(_ message: ChatMessage) async {

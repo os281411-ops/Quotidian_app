@@ -288,7 +288,7 @@ struct ProfileView: View {
                     Text("Quotidian Premium")
                         .font(Theme.Font.serif(17, weight: .semibold))
                         .foregroundStyle(Theme.textPrimary)
-                    Text("Unlimited saves, the full archive, and more")
+                    Text("Book clubs, unlimited saves, and more")
                         .font(.caption2)
                         .foregroundStyle(Theme.textSecondary)
                 }

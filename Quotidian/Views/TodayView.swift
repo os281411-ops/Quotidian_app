@@ -10,6 +10,7 @@ struct TodayView: View {
     @State private var quote: Quote?
     @State private var showAbout = false
     @State private var shareCardImage: UIImage?
+    @State private var showShareToClub = false
 
     var body: some View {
         ZStack {
@@ -34,8 +35,10 @@ struct TodayView: View {
                             PurchaseButton(url: quote.purchaseURL, title: "Purchase Book")
                         }
 
+                        // Three buttons so Save stays in the centre: sharing options
+                        // live in the Share menu, and About keeps its space when absent.
                         HStack(spacing: 40) {
-                            shareLink(for: quote)
+                            shareMenu(for: quote)
 
                             CircleIconButton(
                                 systemImage: library.isSaved(quote) ? "bookmark.fill" : "bookmark",
@@ -46,13 +49,22 @@ struct TodayView: View {
                                 toggleSave(quote)
                             }
 
+                            // Book quotes: About here, Reflect below Save.
+                            // Book-less quotes: Reflect takes About's place.
                             if quote.hasBook {
                                 CircleIconButton(systemImage: "info.circle", label: "About") {
                                     showAbout = true
                                 }
+                            } else {
+                                ReflectButton(quote: quote)
                             }
                         }
                         .padding(.top, 64)
+
+                        if quote.hasBook {
+                            ReflectButton(quote: quote)
+                                .padding(.top, -12)
+                        }
                     } else {
                         emptyState
                     }
@@ -64,6 +76,11 @@ struct TodayView: View {
         .sheet(isPresented: $showAbout) {
             if let quote {
                 AboutBookView(quote: quote)
+            }
+        }
+        .sheet(isPresented: $showShareToClub) {
+            if let quote {
+                ShareToClubView(quote: quote)
             }
         }
         .overlay {
@@ -96,17 +113,36 @@ struct TodayView: View {
     }
 
     @ViewBuilder
+    /// Share button: a menu with the system share sheet and Share to a Club.
+    private func shareMenu(for quote: Quote) -> some View {
+        Menu {
+            shareLink(for: quote)
+            Button {
+                showShareToClub = true
+            } label: {
+                Label("Share to a Club", systemImage: "person.2")
+            }
+        } label: {
+            CircleIconButtonLabel(systemImage: "square.and.arrow.up", label: "Share")
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
     private func shareLink(for quote: Quote) -> some View {
         if let shareCardImage {
+            // The card image carries a Quotidian footer; apps that accept a
+            // message alongside the image also get the attribution and link.
             ShareLink(
                 item: ShareableQuoteImage(image: shareCardImage),
-                preview: SharePreview(quote.shareText, image: Image(uiImage: shareCardImage))
+                message: Text(AppLinks.shareAttribution),
+                preview: SharePreview(quote.shareLine, image: Image(uiImage: shareCardImage))
             ) {
-                CircleIconButtonLabel(systemImage: "square.and.arrow.up", label: "Share")
+                Label("Share Quote…", systemImage: "square.and.arrow.up")
             }
         } else {
             ShareLink(item: quote.shareText) {
-                CircleIconButtonLabel(systemImage: "square.and.arrow.up", label: "Share")
+                Label("Share Quote…", systemImage: "square.and.arrow.up")
             }
         }
     }

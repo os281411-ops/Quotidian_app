@@ -9,6 +9,9 @@ struct ClubDetailView: View {
     @EnvironmentObject private var clubs: ClubStore
     @EnvironmentObject private var safety: SafetyStore
     @EnvironmentObject private var tabBar: TabBarVisibility
+    @EnvironmentObject private var library: LibraryStore
+    @EnvironmentObject private var subscriptions: SubscriptionManager
+    @EnvironmentObject private var paywall: PaywallPresenter
     @Environment(\.dismiss) private var dismiss
 
     @State private var club: BookClub
@@ -16,6 +19,8 @@ struct ClubDetailView: View {
 
     @State private var draft = ""
     @State private var isQuote = false
+    @State private var isSpoiler = false
+    @State private var spoilerLabel = ""
     @State private var attachedBook: Book?
     @State private var showBookPicker = false
     @State private var showInfo = false
@@ -60,6 +65,9 @@ struct ClubDetailView: View {
                     ChatComposer(
                         text: $draft,
                         isQuote: $isQuote,
+                        isSpoiler: $isSpoiler,
+                        spoilerLabel: $spoilerLabel,
+                        suggestedSpoilerLabel: club.readingProgress,
                         attachedBook: $attachedBook,
                         isFocused: $isComposerFocused,
                         isSending: room.isSending,
@@ -189,7 +197,9 @@ struct ClubDetailView: View {
                             message: message,
                             isMine: message.authorID == auth.userID,
                             showsHeader: startsGroup(at: index),
-                            onTapAuthor: { showProfile(of: message) }
+                            isRevealed: room.revealedSpoilers.contains(message.id),
+                            onTapAuthor: { showProfile(of: message) },
+                            onReveal: { withAnimation(.easeOut(duration: 0.25)) { room.reveal(message) } }
                         )
                         .id(message.id)
                         .contextMenu { contextMenu(for: message) }
@@ -253,6 +263,18 @@ struct ClubDetailView: View {
             Label("Copy", systemImage: "doc.on.doc")
         }
 
+        if let quote = libraryQuote(for: message) {
+            Button {
+                toggleSaved(quote)
+            } label: {
+                if library.isSaved(quote) {
+                    Label("Remove from Library", systemImage: "bookmark.slash")
+                } else {
+                    Label("Save to Library", systemImage: "bookmark")
+                }
+            }
+        }
+
         if message.authorID != auth.userID {
             Button {
                 showProfile(of: message)
@@ -277,6 +299,32 @@ struct ClubDetailView: View {
             } label: {
                 Label("Delete", systemImage: "trash")
             }
+        }
+    }
+
+    /// A shared passage as a Library quote. The ID is tied to the message, so
+    /// saving it twice doesn't create duplicates.
+    private func libraryQuote(for message: ChatMessage) -> Quote? {
+        guard let text = message.quoteText else { return nil }
+        return Quote(
+            id: "club-\(message.id.uuidString.lowercased())",
+            text: text,
+            author: message.book?.author ?? "Unknown author",
+            book: message.book?.title ?? "",
+            year: "",
+            about: "Shared in \(club.name) by \(message.authorName).",
+            isbn13: message.book?.isbn13
+        )
+    }
+
+    /// Same rules as saving the daily quote: free accounts can keep 10.
+    private func toggleSaved(_ quote: Quote) {
+        if library.isSaved(quote)
+            || subscriptions.isSubscribed
+            || library.savedQuotes.count < LibraryStore.freeSaveLimit {
+            library.toggle(quote)
+        } else {
+            paywall.present(.saveLimit)
         }
     }
 
@@ -318,11 +366,13 @@ struct ClubDetailView: View {
 
     private func send() {
         guard let userID = auth.userID else { return }
-        let text = draft, quote = isQuote, book = attachedBook
+        let text = draft, quote = isQuote, book = attachedBook, spoiler = isSpoiler, label = spoilerLabel
         Task {
-            if await room.send(text: text, asQuote: quote, book: book, userID: userID) {
+            if await room.send(text: text, asQuote: quote, book: book, spoiler: spoiler, spoilerLabel: label, userID: userID) {
                 draft = ""
                 isQuote = false
+                isSpoiler = false
+                spoilerLabel = ""
                 attachedBook = nil
             }
         }
@@ -335,7 +385,12 @@ struct MessageRow: View {
     let message: ChatMessage
     let isMine: Bool
     let showsHeader: Bool
+    var isRevealed = false
     let onTapAuthor: () -> Void
+    var onReveal: () -> Void = {}
+
+    /// Others' spoilers stay hidden until tapped; your own are always visible.
+    private var isConcealed: Bool { message.isSpoiler && !isMine && !isRevealed }
 
     var body: some View {
         VStack(alignment: isMine ? .trailing : .leading, spacing: 4) {
@@ -366,7 +421,39 @@ struct MessageRow: View {
     }
 
     private var bubble: some View {
+        bubbleContent
+            .blur(radius: isConcealed ? 9 : 0)
+            .allowsHitTesting(!isConcealed)
+            .overlay {
+                if isConcealed {
+                    Button(action: onReveal) {
+                        Label(spoilerCaption + " · Tap to reveal", systemImage: "eye.slash")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.textPrimary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(Capsule().fill(Theme.surfaceElevated))
+                            .overlay(Capsule().stroke(Theme.accent.opacity(0.4), lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(spoilerCaption). Double-tap to reveal.")
+                }
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+
+    private var spoilerCaption: String {
+        message.spoilerLabel.map { "Spoiler · \($0)" } ?? "Spoiler"
+    }
+
+    private var bubbleContent: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if message.isSpoiler && !isConcealed {
+                Label(spoilerCaption, systemImage: "eye.slash")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(Theme.accent)
+            }
+
             if message.isHidden {
                 Label("Hidden after reports", systemImage: "eye.slash")
                     .font(.caption2.weight(.semibold))
@@ -431,6 +518,10 @@ struct MessageRow: View {
 struct ChatComposer: View {
     @Binding var text: String
     @Binding var isQuote: Bool
+    @Binding var isSpoiler: Bool
+    @Binding var spoilerLabel: String
+    /// The club's Now Reading section, offered as the spoiler label.
+    var suggestedSpoilerLabel: String? = nil
     @Binding var attachedBook: Book?
     var isFocused: FocusState<Bool>.Binding
     let isSending: Bool
@@ -473,10 +564,41 @@ struct ChatComposer: View {
                     .padding(.leading, 4)
             }
 
+            if isSpoiler {
+                HStack(spacing: 8) {
+                    Image(systemName: "eye.slash")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                    Text("Spoiler")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                    TextField("", text: $spoilerLabel, prompt: Text("Chapter or part (optional)").foregroundStyle(Theme.textSecondary.opacity(0.6)))
+                        .font(.caption)
+                        .foregroundStyle(Theme.textPrimary)
+                        .tint(Theme.accent)
+                        .onChange(of: spoilerLabel) { _, newValue in
+                            if newValue.count > ChatRoom.spoilerLabelLimit {
+                                spoilerLabel = String(newValue.prefix(ChatRoom.spoilerLabelLimit))
+                            }
+                        }
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Capsule().fill(Theme.surface))
+            }
+
             HStack(alignment: .bottom, spacing: 8) {
                 composerButton("book", label: "Attach a book", isOn: attachedBook != nil, action: onPickBook)
                 composerButton("text.quote", label: "Share a passage", isOn: isQuote) {
                     withAnimation(.easeOut(duration: 0.15)) { isQuote.toggle() }
+                }
+                composerButton("eye.slash", label: "Mark as spoiler", isOn: isSpoiler) {
+                    withAnimation(.easeOut(duration: 0.15)) {
+                        isSpoiler.toggle()
+                        if isSpoiler, spoilerLabel.isEmpty, let suggested = suggestedSpoilerLabel {
+                            spoilerLabel = String(suggested.prefix(ChatRoom.spoilerLabelLimit))
+                        }
+                    }
                 }
 
                 TextField(

@@ -19,6 +19,7 @@ struct ContentView: View {
     @StateObject private var clubs = ClubStore()
     @StateObject private var safety = SafetyStore()
     @StateObject private var tabBar = TabBarVisibility()
+    @StateObject private var reflections = ReflectionStore()
     @State private var selectedTab: AppTab = .today
     @AppStorage("onboarding.paywallShown") private var hasShownOnboardingPaywall = false
 
@@ -29,7 +30,6 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case .today: TodayView()
-                case .archive: ArchiveView()
                 case .library: LibraryView()
                 case .community: CommunityView()
                 case .profile: ProfileView()
@@ -54,6 +54,7 @@ struct ContentView: View {
         .environmentObject(clubs)
         .environmentObject(safety)
         .environmentObject(tabBar)
+        .environmentObject(reflections)
         .task { await auth.start() }
         .onChange(of: auth.userID) { _, userID in
             if userID == nil { clubs.reset() }

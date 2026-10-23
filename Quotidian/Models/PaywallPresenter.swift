@@ -6,7 +6,6 @@ import Foundation
 enum PaywallTrigger: Identifiable {
     case onboarding
     case saveLimit
-    case archive
     case shareCard
     case streakFreeze
     case themes
@@ -20,7 +19,6 @@ enum PaywallTrigger: Identifiable {
         switch self {
         case .onboarding: "Welcome to Quotidian"
         case .saveLimit: "You've saved 10 quotes"
-        case .archive: "Browse Every Quote"
         case .shareCard: "Share a Beautiful Card"
         case .streakFreeze: "Never Lose Your Streak"
         case .themes: "Make It Yours"
@@ -32,15 +30,14 @@ enum PaywallTrigger: Identifiable {
 
     var message: String {
         switch self {
-        case .onboarding: "Start with Premium for unlimited saves, the full archive, and more — or continue with the free daily quote."
+        case .onboarding: "Start with Premium for your own book clubs, unlimited saves, and more — or continue with the free daily quote."
         case .saveLimit: "Upgrade to Premium for unlimited saves in your Library."
-        case .archive: "Scroll through every quote, past and future, with Premium."
         case .shareCard: "Premium turns your favorite lines into shareable cards."
         case .streakFreeze: "Premium gives you a monthly streak freeze so a missed day doesn't cost you."
         case .themes: "Premium unlocks curated colour themes for the whole app."
         case .secondReminder: "Premium adds a second daily reminder, so today's quote never slips by."
         case .bookclub: "Premium lets you start your own book clubs and join private ones with an invite."
-        case .general: "Unlock unlimited saves, the full archive, and more."
+        case .general: "Unlock book clubs, unlimited saves, and more."
         }
     }
 }

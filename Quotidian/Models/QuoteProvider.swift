@@ -5,9 +5,10 @@ final class QuoteProvider {
 
     let quotes: [Quote]
 
-    /// Quotes tied to a real book — these are the only ones eligible for
-    /// "today's quote," so every user, free or premium, always sees a quote
-    /// with a purchase link. Book-less quotes are premium-archive-only.
+    /// Every quote is in the daily rotation (book quotes and standalone ones).
+    /// quotes.json is ordered so book quotes are spread evenly through the
+    /// cycle: there are never more than two days in a row without a book.
+    /// The widget uses the same file and logic (WidgetQuoteProvider).
     private let dailyEligibleQuotes: [Quote]
 
     private init() {
@@ -19,7 +20,7 @@ final class QuoteProvider {
             return
         }
         quotes = decoded
-        dailyEligibleQuotes = decoded.filter(\.hasBook)
+        dailyEligibleQuotes = decoded
     }
 
     /// Deterministic "quote of the day" — every user sees the same quote on the
