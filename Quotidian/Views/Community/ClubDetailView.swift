@@ -8,6 +8,7 @@ struct ClubDetailView: View {
     @EnvironmentObject private var auth: AuthManager
     @EnvironmentObject private var clubs: ClubStore
     @EnvironmentObject private var safety: SafetyStore
+    @EnvironmentObject private var tabBar: TabBarVisibility
     @Environment(\.dismiss) private var dismiss
 
     @State private var club: BookClub
@@ -22,6 +23,7 @@ struct ClubDetailView: View {
     @State private var reporting: ChatMessage?
     @State private var reportSent = false
     @State private var blocking: ChatMessage?
+    @State private var editingReadingNow = false
     @FocusState private var isComposerFocused: Bool
 
     init(initialClub: BookClub) {
@@ -38,6 +40,15 @@ struct ClubDetailView: View {
             Theme.background.ignoresSafeArea()
 
             VStack(spacing: 0) {
+                if club.hasReadingNow || canModerate {
+                    ReadingNowBanner(club: club, canEdit: canModerate) {
+                        if canModerate { editingReadingNow = true } else { showInfo = true }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 6)
+                    .padding(.bottom, 4)
+                }
+
                 messageList
 
                 CommunityErrorText(message: room.errorMessage ?? clubs.errorMessage)
@@ -59,8 +70,7 @@ struct ClubDetailView: View {
                     joinBar
                 }
             }
-            // Leave room for the app's floating tab bar, which hides with the keyboard.
-            .padding(.bottom, isComposerFocused ? 6 : 76)
+            .padding(.bottom, 6)
         }
         .navigationTitle(club.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -78,8 +88,17 @@ struct ClubDetailView: View {
             clubs.errorMessage = nil
             await room.start()
         }
+        // The floating tab bar would cover the message box, so hide it while
+        // the chat is open (it comes back when you go back).
+        .onAppear { tabBar.isHidden = true }
         .onDisappear {
+            tabBar.isHidden = false
             Task { await room.stop() }
+        }
+        .sheet(isPresented: $editingReadingNow) {
+            EditReadingNowView(club: club) { updated in
+                club = updated
+            }
         }
         .sheet(isPresented: $showBookPicker) {
             BookPickerView(title: "Attach a Book") { book in

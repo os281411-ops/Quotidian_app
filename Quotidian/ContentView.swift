@@ -18,6 +18,7 @@ struct ContentView: View {
     @StateObject private var auth = AuthManager()
     @StateObject private var clubs = ClubStore()
     @StateObject private var safety = SafetyStore()
+    @StateObject private var tabBar = TabBarVisibility()
     @State private var selectedTab: AppTab = .today
     @AppStorage("onboarding.paywallShown") private var hasShownOnboardingPaywall = false
 
@@ -35,13 +36,14 @@ struct ContentView: View {
                 }
             }
 
-            if !keyboard.isVisible {
+            if !keyboard.isVisible && !tabBar.isHidden {
                 CustomTabBar(selection: $selectedTab)
                     .padding(.bottom, 8)
                     .transition(.opacity)
             }
         }
         .animation(.easeOut(duration: 0.2), value: keyboard.isVisible)
+        .animation(.easeOut(duration: 0.2), value: tabBar.isHidden)
         .environmentObject(library)
         .environmentObject(streak)
         .environmentObject(notifications)
@@ -51,6 +53,7 @@ struct ContentView: View {
         .environmentObject(auth)
         .environmentObject(clubs)
         .environmentObject(safety)
+        .environmentObject(tabBar)
         .task { await auth.start() }
         .onChange(of: auth.userID) { _, userID in
             if userID == nil { clubs.reset() }

@@ -71,7 +71,7 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 *Reading together*
 - [ ] **A4. Spoiler tags**: mark a message as a spoiler with a chapter ("Spoiler · Ch. 12"); blurred until tapped.
 - [ ] **A5. Club shelf**: automatic list of every book attached in a club's chat, each with a Bookshop.org button.
-- [ ] **A6. Pinned message**: owners/moderators pin a reading plan to the top of the chat.
+- [x] **A6. Now Reading**: owners/moderators tag the book (optional), section (e.g. "Chapters 1–5") and a finish-by date. Shown as a banner at the top of the chat, in Club Info, and under the club in lists.
 - [ ] **A7. Replies**: reply to a specific message.
 - [ ] **A8. Reactions**: a "resonated" reaction on messages.
 

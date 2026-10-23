@@ -19,6 +19,7 @@ struct ClubInfoView: View {
     @State private var profileToShow: ClubMember?
     @State private var inviteCode: String?
     @State private var confirmingNewCode = false
+    @State private var editingReadingNow = false
 
     private var myRole: ClubMember.Role? { clubs.role(in: club) }
     private var canModerate: Bool { myRole == .owner || myRole == .moderator }
@@ -33,6 +34,9 @@ struct ClubInfoView: View {
                         titleBlock
                         membershipAction
                         CommunityErrorText(message: clubs.errorMessage)
+                        ReadingNowCard(club: club, canEdit: canModerate) {
+                            editingReadingNow = true
+                        }
                         if canModerate {
                             inviteCard
                         }
@@ -55,6 +59,11 @@ struct ClubInfoView: View {
             }
         }
         .task { await reload() }
+        .sheet(isPresented: $editingReadingNow) {
+            EditReadingNowView(club: club) { updated in
+                club = updated
+            }
+        }
         .sheet(item: $profileToShow) { member in
             MemberProfileView(member: member)
         }

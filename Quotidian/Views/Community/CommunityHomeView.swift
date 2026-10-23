@@ -324,6 +324,13 @@ struct ClubRow: View {
                     .multilineTextAlignment(.leading)
             }
 
+            if let reading = club.readingSummary {
+                Label("Reading \(reading)", systemImage: "bookmark.fill")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Theme.accent)
+                    .lineLimit(1)
+            }
+
             Label("\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")", systemImage: "person.2")
             .font(.caption)
             .foregroundStyle(Theme.textSecondary)

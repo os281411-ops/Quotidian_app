@@ -14,6 +14,13 @@ nonisolated struct BookClub: Codable, Hashable, Identifiable, Sendable {
     /// PostgREST returns `club_members(count)` as `[{ "count": n }]`.
     var memberCountRows: [CountRow]?
 
+    // "Now Reading": set by owners/moderators. All optional.
+    var readingBook: Book?
+    var readingProgress: String?
+    /// "yyyy-MM-dd" (a plain date, no time).
+    var readingUntil: String?
+    var readingUpdatedAt: Date?
+
     var memberCount: Int { memberCountRows?.first?.count ?? 0 }
 
     enum CodingKeys: String, CodingKey {
@@ -22,11 +29,40 @@ nonisolated struct BookClub: Codable, Hashable, Identifiable, Sendable {
         case ownerID = "owner_id"
         case createdAt = "created_at"
         case memberCountRows = "club_members"
+        case readingBook = "reading_book"
+        case readingProgress = "reading_progress"
+        case readingUntil = "reading_until"
+        case readingUpdatedAt = "reading_updated_at"
     }
 
     /// Columns to request whenever clubs are loaded, so every screen gets the same shape.
     static let columns =
-        "id, name, description, is_private, owner_id, created_at, club_members(count)"
+        "id, name, description, is_private, owner_id, created_at, club_members(count), " +
+        "reading_progress, reading_until, reading_updated_at, reading_book:books(\(Book.columns))"
+
+    static let readingProgressLimit = 80
+
+    var hasReadingNow: Bool { readingBook != nil || readingProgress != nil }
+
+    /// e.g. "Chapters 1–5 · Middlemarch"
+    var readingSummary: String? {
+        let parts = [readingProgress, readingBook?.title].compactMap { $0 }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    var readingUntilDate: Date? {
+        guard let readingUntil else { return nil }
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: readingUntil)
+    }
+
+    /// e.g. "by Thu 30 Oct"
+    var readingDeadlineText: String? {
+        readingUntilDate.map { "by " + $0.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated)) }
+    }
 
     static let nameLimit = 3...60
     static let descriptionLimit = 500
@@ -114,5 +150,29 @@ nonisolated struct NewMembership: Encodable, Sendable {
     enum CodingKeys: String, CodingKey {
         case clubID = "club_id"
         case userID = "user_id"
+    }
+}
+
+/// Body sent when owners/moderators change "Now Reading". Sends explicit
+/// nulls so clearing a field really clears it.
+nonisolated struct ReadingNowUpdate: Encodable, Sendable {
+    let bookID: UUID?
+    let progress: String?
+    let until: String?
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case bookID = "reading_book_id"
+        case progress = "reading_progress"
+        case until = "reading_until"
+        case updatedAt = "reading_updated_at"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(bookID, forKey: .bookID)
+        try container.encode(progress, forKey: .progress)
+        try container.encode(until, forKey: .until)
+        try container.encode(updatedAt, forKey: .updatedAt)
     }
 }

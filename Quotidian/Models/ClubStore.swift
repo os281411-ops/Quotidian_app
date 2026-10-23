@@ -192,6 +192,50 @@ final class ClubStore: ObservableObject {
         }
     }
 
+    // MARK: - Now Reading
+
+    /// Sets (or clears, with all nil) what the club is reading. Owners/moderators only.
+    func setReadingNow(for club: BookClub, book: Book?, progress: String, until: Date?) async -> BookClub? {
+        let text = progress.trimmingCharacters(in: .whitespacesAndNewlines)
+        var untilString: String?
+        if let until {
+            let formatter = DateFormatter()
+            formatter.calendar = Calendar(identifier: .gregorian)
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.dateFormat = "yyyy-MM-dd"
+            untilString = formatter.string(from: until)
+        }
+
+        errorMessage = nil
+        isWorking = true
+        defer { isWorking = false }
+        do {
+            let updated: BookClub = try await supabase
+                .from("book_clubs")
+                .update(ReadingNowUpdate(
+                    bookID: book?.id,
+                    progress: text.isEmpty ? nil : String(text.prefix(BookClub.readingProgressLimit)),
+                    until: untilString,
+                    updatedAt: ISO8601DateFormatter().string(from: Date())
+                ))
+                .eq("id", value: club.id)
+                .select(BookClub.columns)
+                .single()
+                .execute()
+                .value
+            if let index = myClubs.firstIndex(where: { $0.id == updated.id }) {
+                myClubs[index] = updated
+            }
+            return updated
+        } catch let error as PostgrestError {
+            errorMessage = Self.message(for: error) ?? "Couldn't save. Please try again."
+            return nil
+        } catch {
+            errorMessage = "Couldn't save. Check your connection and try again."
+            return nil
+        }
+    }
+
     // MARK: - Invites
 
     /// What an invite code points at, shown before joining.
