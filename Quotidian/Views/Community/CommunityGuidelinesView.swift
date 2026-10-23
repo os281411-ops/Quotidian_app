@@ -54,7 +54,7 @@ struct CommunityGuidelinesView: View {
                 .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Theme.surface))
                 .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.divider, lineWidth: 1))
 
-                Text("There's zero tolerance for objectionable content or abusive readers. Posts that break these rules are removed, and accounts that break them are suspended.")
+                Text("There's zero tolerance for objectionable content or abusive readers. Posts that break these rules are removed, and accounts that break them are suspended. Questions or concerns: \(AppLinks.supportEmail).")
                     .font(.footnote)
                     .foregroundStyle(Theme.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)

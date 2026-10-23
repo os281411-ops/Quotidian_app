@@ -42,22 +42,22 @@ Tick items by changing `[ ]` to `[x]`.
 
 ## Phase 3 — Clubs
 
-- [ ] **11. Community tab** in `CustomTabBar`: "My clubs" and "Discover" (public clubs).
-- [ ] **12. Create a club**: name, description, public/private. No book selection.
-- [ ] **13. Join and leave** public clubs; members list.
-- [ ] **14. Book search** via the Open Library API, used to attach books in chat and to set Currently Reading (with a Bookshop.org link through `BookshopAffiliate`). Clubs aren't tied to one book: a club can be about a book, an author, a genre or a character.
+- [x] **11. Community tab** in `CustomTabBar`: "My clubs" and "Discover" (public clubs).
+- [x] **12. Create a club**: name, description, public/private. No book selection.
+- [x] **13. Join and leave** public clubs; members list.
+- [x] **14. Book search** via the Open Library API, used to attach books in chat and to set Currently Reading (with a Bookshop.org link through `BookshopAffiliate`). Clubs aren't tied to one book: a club can be about a book, an author, a genre or a character.
 - [x] **15. Invite codes**: owners/moderators get an 8-character code in Club Info (Share, New Code); anyone can use + → Join with Invite Code.
 
 ## Phase 4 — Club chat and profiles
 
 Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). The Community tab is called **Bookclub** in the app.
 
-- [ ] **16. Live club chat**: messages appear instantly (Supabase Realtime); load earlier messages; pull to refresh.
-- [ ] **17. Send messages**: plain text, a quoted passage (quote mode), or both.
-- [ ] **18. Attach a book**: search Open Library, attach a book card with a Bookshop.org affiliate button.
-- [ ] **19. Currently Reading** on profiles: set it in Account; shown in members lists and on member profiles.
-- [ ] **20. Member profiles**: tap a name in chat or the members list.
-- [ ] **21. Delete** your own messages; owners/moderators can delete any in their club.
+- [x] **16. Live club chat**: messages appear instantly (Supabase Realtime); load earlier messages; pull to refresh.
+- [x] **17. Send messages**: plain text, a quoted passage (quote mode), or both.
+- [x] **18. Attach a book**: search Open Library, attach a book card with a Bookshop.org affiliate button.
+- [x] **19. Currently Reading** on profiles: set it in Account; shown in members lists and on member profiles.
+- [x] **20. Member profiles**: tap a name in chat or the members list.
+- [x] **21. Delete** your own messages; owners/moderators can delete any in their club.
 - [x] **21b. Share to a club**: Today → Club button, or the club icon on a Library card. Pick a club, add a thought, send; the book is attached with its Bookshop.org link.
 - [ ] **21c. Edit** your own messages. *(database supports it; no button yet)*
 
@@ -93,9 +93,9 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [x] **22. Report**: messages (long-press → Report) and people (their profile → Report).
 - [x] **23. Block**: from a profile or long-press on a message; Account → Blocked Readers to unblock.
 - [x] **23b. Ban** (admins): Review Reports → Ban, or Remove & Ban Author. Banned accounts can't post, start or join clubs; their messages are hidden.
-- [ ] **24. Show friendly errors** for the word filter and spam limit (the server returns hints `word_filter` and `rate_limit`).
+- [x] **24. Show friendly errors** for the word filter and spam limit (the server returns hints `word_filter` and `rate_limit`).
 - [ ] **25. Review reports** within 24 hours (Apple expects this) using the Review Reports screen (A13). Consider a daily reminder or, later, a push notification to admins when a report comes in.
-- [ ] **26. Contact info** for reporting problems shown in the app (your support page).
+- [x] **26. Contact info**: Profile → Help & Feedback (Email Support, Help & FAQ, Privacy Policy); Bookclub → Account → Report a Problem; email in the house rules.
 
 ## Phase 6 — Notifications
 
@@ -105,10 +105,13 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 
 ## Phase 7 — Before release
 
-- [ ] **30. Update the privacy policy** (accounts, user posts, Apple ID email) and App Store privacy labels; update `PrivacyInfo.xcprivacy`.
+- [ ] **30. Update the privacy policy** *(drafted: `docs/privacy-policy.html`, `docs/support.html`, and description / App Privacy answers / age rating / What's New in `Marketing/app-store-listing.md`. To do: Oliver reviews, pushes (pages go live via GitHub Pages), then updates App Store Connect when submitting.)*
   - The App Store description currently says Quotidian "doesn't collect any personal data, doesn't require an account, and doesn't track you". Rewrite that line: Bookclub is optional, but it uses an account and stores what people post.
 - [ ] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
-- [ ] **31. Premium checks on the server** for A11/A12: verify subscriptions with Apple's App Store Server API (an Edge Function), so a modified app can't skip the paywall.
+  - [x] Code written: `supabase/functions/delete-account`, `AppleReauthenticator.swift`, delete flow confirms with Apple first (falls back to plain delete if the function isn't reachable).
+  - [x] Sign in with Apple key made, secrets added, function deployed and tested on QuotidianDev.
+  - [ ] Near release: add the same secrets to the live project (APPLE_CLIENT_ID = com.oliverscott.Quotidian), deploy `delete-account` there with JWT verification off.
+- [ ] **31. Premium checks on the server** *(deferred until after launch: the check is in the app for now)* for A11/A12: verify subscriptions with Apple's App Store Server API (an Edge Function), so a modified app can't skip the paywall.
 - [x] **31a. Remove the Archive** *(done in the app; still to do: "What's New" note and dropping `04-archive.png` with 31c)* (the tab where Premium users browse every quote, past and future). Seeing every quote at once goes against the point of a quote *a day*, and Bookclub now gives Premium more to offer. Includes:
   - remove the Archive tab and `ArchiveView`, and the `.archive` paywall reason;
   - take "The full quote archive" out of the paywall feature list (do this with 31b);

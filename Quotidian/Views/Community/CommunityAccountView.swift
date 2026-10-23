@@ -1,3 +1,4 @@
+import AuthenticationServices
 import SwiftUI
 
 /// Your community account: who you're signed in as, sign out, delete account.
@@ -5,6 +6,7 @@ struct CommunityAccountView: View {
     @EnvironmentObject private var auth: AuthManager
     @Environment(\.dismiss) private var dismiss
     @State private var confirmingDelete = false
+    @State private var reauthenticator = AppleReauthenticator()
     @State private var showBookPicker = false
 
     var body: some View {
@@ -20,6 +22,7 @@ struct CommunityAccountView: View {
                             moderationLink
                         }
                         blockedLink
+                        reportProblemLink
                         actionsCard
                         CommunityErrorText(message: auth.errorMessage)
                     }
@@ -44,12 +47,21 @@ struct CommunityAccountView: View {
         .alert("Delete your account?", isPresented: $confirmingDelete) {
             Button("Delete Account", role: .destructive) {
                 Task {
-                    if await auth.deleteAccount() { dismiss() }
+                    // Confirm with Apple once more, so Quotidian's access can be revoked.
+                    let code: String?
+                    do {
+                        code = try await reauthenticator.authorizationCode()
+                    } catch let error as ASAuthorizationError where error.code == .canceled {
+                        return   // they closed the Apple sheet: don't delete
+                    } catch {
+                        code = nil   // Apple unavailable: still delete, just without revoking
+                    }
+                    if await auth.deleteAccount(appleAuthorizationCode: code) { dismiss() }
                 }
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This permanently deletes your username, posts, comments and reactions. Clubs you started stay open for their members. Your saved quotes and streak on this phone stay as they are. This can't be undone.")
+            Text("This permanently deletes your username, posts, comments and reactions. Clubs you started stay open for their members. Your saved quotes and streak on this phone stay as they are. This can't be undone.\n\nYou'll confirm with Apple, which also removes Quotidian from your Apple ID's Sign in with Apple list.")
         }
     }
 
@@ -126,6 +138,32 @@ struct CommunityAccountView: View {
                 }
                 .buttonStyle(.plain)
             }
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+    }
+
+    /// Email support about anything Bookclub-related (abuse, bugs, appeals).
+    private var reportProblemLink: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Link(destination: AppLinks.supportMail(subject: "Bookclub: report a problem")) {
+                HStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.bubble")
+                        .foregroundStyle(Theme.textSecondary)
+                        .frame(width: 22)
+                    Text("Report a Problem")
+                        .foregroundStyle(Theme.textPrimary)
+                    Spacer()
+                    Image(systemName: "envelope")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.textSecondary)
+                }
+            }
+            Text("To report a message or a reader, long-press the message or open their profile. For anything else, email \(AppLinks.supportEmail).")
+                .font(.caption)
+                .foregroundStyle(Theme.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))

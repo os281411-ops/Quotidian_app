@@ -1,1 +1,5 @@
 project_id = "Quotidian_app"
+
+# The function checks who is calling itself, so the gateway check is off.
+[functions.delete-account]
+verify_jwt = false

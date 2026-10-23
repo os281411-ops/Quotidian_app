@@ -167,16 +167,26 @@ final class AuthManager: ObservableObject {
     /// cascades it). Saved quotes and streaks on this phone aren't touched.
     /// Returns true when the account was deleted.
     @discardableResult
-    func deleteAccount() async -> Bool {
+    func deleteAccount(appleAuthorizationCode: String? = nil) async -> Bool {
         errorMessage = nil
         isWorking = true
         defer { isWorking = false }
 
         do {
-            try await supabase.rpc("delete_my_account").execute()
+            // Server function: revokes Sign in with Apple, then deletes the account.
+            try await supabase.functions.invoke(
+                "delete-account",
+                options: FunctionInvokeOptions(body: ["authorizationCode": appleAuthorizationCode ?? ""])
+            )
         } catch {
-            errorMessage = "Couldn't delete your account. Check your connection and try again."
-            return false
+            // If the function isn't deployed or can't be reached, still delete
+            // the account (that part is required); only the revoke is skipped.
+            do {
+                try await supabase.rpc("delete_my_account").execute()
+            } catch {
+                errorMessage = "Couldn't delete your account. Check your connection and try again."
+                return false
+            }
         }
 
         // The account no longer exists, so just clear the session on this phone.

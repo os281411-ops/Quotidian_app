@@ -60,6 +60,8 @@ struct ProfileView: View {
                         upgradeCard
                     }
 
+                    HelpCard()
+
                     #if DEBUG
                     DeveloperMenuButton()
                     #endif
