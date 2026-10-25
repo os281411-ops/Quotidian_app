@@ -16,7 +16,12 @@ final class ClubStore: ObservableObject {
     @Published private(set) var isLoadingMine = false
     @Published private(set) var isLoadingDiscover = false
     @Published private(set) var isWorking = false
+    /// New messages in each of your clubs since you last opened it.
+    @Published private(set) var unreadCounts: [UUID: Int] = [:]
     @Published var errorMessage: String?
+
+    var totalUnread: Int { unreadCounts.values.reduce(0, +) }
+    func unread(in club: BookClub) -> Int { unreadCounts[club.id] ?? 0 }
 
     private var lastSearch = ""
 
@@ -27,6 +32,7 @@ final class ClubStore: ObservableObject {
         myClubs = []
         discoverClubs = []
         myRoles = [:]
+        unreadCounts = [:]
         errorMessage = nil
     }
 
@@ -46,7 +52,9 @@ final class ClubStore: ObservableObject {
 
             myRoles = Dictionary(uniqueKeysWithValues: memberships.map { ($0.clubID, $0.role) })
 
-            guard !memberships.isEmpty else {
+            // The Quote of the Day room has its own spot, not a place in the list.
+            let clubIDs = memberships.map(\.clubID).filter { $0 != DailyRoom.clubID }
+            guard !clubIDs.isEmpty else {
                 myClubs = []
                 return
             }
@@ -54,7 +62,7 @@ final class ClubStore: ObservableObject {
             myClubs = try await supabase
                 .from("book_clubs")
                 .select(BookClub.columns)
-                .in("id", values: memberships.map(\.clubID))
+                .in("id", values: clubIDs)
                 .order("name")
                 .execute()
                 .value
@@ -74,6 +82,7 @@ final class ClubStore: ObservableObject {
                 .from("book_clubs")
                 .select(BookClub.columns)
                 .eq("is_private", value: false)
+                .neq("id", value: DailyRoom.clubID)
             if !query.isEmpty {
                 request = request.ilike("name", pattern: "%\(query)%")
             }
@@ -189,6 +198,57 @@ final class ClubStore: ObservableObject {
                 .execute()
         } then: {
             await self.refreshAfterChange(userID: userID)
+        }
+    }
+
+    // MARK: - Unread
+
+    private nonisolated struct UnreadRow: Decodable, Sendable {
+        let clubID: UUID
+        let unread: Int
+
+        enum CodingKeys: String, CodingKey {
+            case clubID = "club_id"
+            case unread
+        }
+    }
+
+    func refreshUnread() async {
+        let rows: [UnreadRow]? = try? await supabase
+            .rpc("my_unread_counts")
+            .execute()
+            .value
+        guard let rows else { return }
+        unreadCounts = Dictionary(uniqueKeysWithValues: rows.map { ($0.clubID, $0.unread) })
+    }
+
+    /// You've seen everything in this club up to now.
+    func markRead(clubID: UUID) async {
+        unreadCounts[clubID] = 0
+        _ = try? await supabase
+            .rpc("mark_club_read", params: ["p_club_id": clubID.uuidString])
+            .execute()
+    }
+
+    // MARK: - Quote of the Day room
+
+    /// Joins the daily room quietly (everyone can talk there). Safe to call
+    /// when already a member.
+    func ensureDailyRoomMembership(userID: UUID) async {
+        guard myRoles[DailyRoom.clubID] == nil else { return }
+        do {
+            _ = try await supabase
+                .from("club_members")
+                .upsert(
+                    NewMembership(clubID: DailyRoom.clubID, userID: userID),
+                    onConflict: "club_id,user_id",
+                    returning: .minimal,
+                    ignoreDuplicates: true
+                )
+                .execute()
+            myRoles[DailyRoom.clubID] = .member
+        } catch {
+            errorMessage = "Couldn't open today's discussion. Check your connection and try again."
         }
     }
 

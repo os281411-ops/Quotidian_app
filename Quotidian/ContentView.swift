@@ -20,7 +20,8 @@ struct ContentView: View {
     @StateObject private var safety = SafetyStore()
     @StateObject private var tabBar = TabBarVisibility()
     @StateObject private var reflections = ReflectionStore()
-    @State private var selectedTab: AppTab = .today
+    @StateObject private var router = AppRouter()
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage("onboarding.paywallShown") private var hasShownOnboardingPaywall = false
 
     var body: some View {
@@ -28,7 +29,7 @@ struct ContentView: View {
             Theme.background.ignoresSafeArea()
 
             Group {
-                switch selectedTab {
+                switch router.selectedTab {
                 case .today: TodayView()
                 case .library: LibraryView()
                 case .community: CommunityView()
@@ -37,7 +38,10 @@ struct ContentView: View {
             }
 
             if !keyboard.isVisible && !tabBar.isHidden {
-                CustomTabBar(selection: $selectedTab)
+                CustomTabBar(
+                    selection: $router.selectedTab,
+                    badged: clubs.totalUnread > 0 ? [.community] : []
+                )
                     .padding(.bottom, 8)
                     .transition(.opacity)
             }
@@ -55,6 +59,7 @@ struct ContentView: View {
         .environmentObject(safety)
         .environmentObject(tabBar)
         .environmentObject(reflections)
+        .environmentObject(router)
         .task { await auth.start() }
         .onChange(of: auth.userID) { _, userID in
             if userID == nil { clubs.reset() }
@@ -64,7 +69,13 @@ struct ContentView: View {
                 safety.reset()
             } else {
                 await safety.load()
+                await clubs.refreshUnread()
             }
+        }
+        // Check for new club messages whenever the app comes back.
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active, auth.userID != nil else { return }
+            Task { await clubs.refreshUnread() }
         }
         .sheet(item: $paywall.trigger) { trigger in
             PaywallView(trigger: trigger)

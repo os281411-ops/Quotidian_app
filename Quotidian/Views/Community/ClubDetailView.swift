@@ -16,6 +16,8 @@ struct ClubDetailView: View {
 
     @State private var club: BookClub
     @StateObject private var room: ChatRoom
+    /// Set for the Quote of the Day room: the quote being discussed.
+    private let dailyQuote: Quote?
 
     @State private var draft = ""
     @State private var isQuote = false
@@ -32,20 +34,31 @@ struct ClubDetailView: View {
     @FocusState private var isComposerFocused: Bool
 
     init(initialClub: BookClub) {
+        let isDaily = initialClub.id == DailyRoom.clubID
         _club = State(initialValue: initialClub)
-        _room = StateObject(wrappedValue: ChatRoom(clubID: initialClub.id))
+        _room = StateObject(wrappedValue: ChatRoom(
+            clubID: initialClub.id,
+            roomDay: isDaily ? DailyRoom.today() : nil
+        ))
+        dailyQuote = isDaily ? QuoteProvider.shared.quote() : nil
     }
 
+    private var isDaily: Bool { club.id == DailyRoom.clubID }
     private var myRole: ClubMember.Role? { clubs.role(in: club) }
     private var isMember: Bool { myRole != nil }
-    private var canModerate: Bool { myRole == .owner || myRole == .moderator }
+    private var canModerate: Bool { !isDaily && (myRole == .owner || myRole == .moderator) }
 
     var body: some View {
         ZStack {
             Theme.background.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                if club.hasReadingNow || canModerate {
+                if let dailyQuote {
+                    DailyQuoteBanner(quote: dailyQuote)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 6)
+                        .padding(.bottom, 4)
+                } else if club.hasReadingNow || canModerate {
                     ReadingNowBanner(club: club, canEdit: canModerate) {
                         if canModerate { editingReadingNow = true } else { showInfo = true }
                     }
@@ -68,40 +81,62 @@ struct ClubDetailView: View {
                         isSpoiler: $isSpoiler,
                         spoilerLabel: $spoilerLabel,
                         suggestedSpoilerLabel: club.readingProgress,
+                        placeholder: isDaily ? "What did today's quote make you think?" : "Message",
                         attachedBook: $attachedBook,
                         isFocused: $isComposerFocused,
                         isSending: room.isSending,
                         onPickBook: { showBookPicker = true },
                         onSend: send
                     )
+                } else if isDaily {
+                    // Joining happens automatically; this shows only if it failed.
+                    CommunityPrimaryButton(title: "Join the Discussion") {
+                        Task {
+                            guard let userID = auth.userID else { return }
+                            await clubs.ensureDailyRoomMembership(userID: userID)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
                 } else {
                     joinBar
                 }
             }
             .padding(.bottom, 6)
         }
-        .navigationTitle(club.name)
+        .navigationTitle(isDaily ? "Today's Quote" : club.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.background, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { showInfo = true } label: {
-                    Image(systemName: "info.circle")
-                        .foregroundStyle(Theme.textPrimary)
+            if !isDaily {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showInfo = true } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundStyle(Theme.textPrimary)
+                    }
+                    .accessibilityLabel("Club info")
                 }
-                .accessibilityLabel("Club info")
             }
         }
         .task {
             clubs.errorMessage = nil
+            if isDaily, !auth.isBanned, let userID = auth.userID {
+                await clubs.ensureDailyRoomMembership(userID: userID)
+            }
             await room.start()
+            if isMember, !isDaily { await clubs.markRead(clubID: club.id) }
         }
         // The floating tab bar would cover the message box, so hide it while
         // the chat is open (it comes back when you go back).
         .onAppear { tabBar.isHidden = true }
         .onDisappear {
             tabBar.isHidden = false
-            Task { await room.stop() }
+            let clubID = club.id, markRead = isMember && !isDaily
+            Task {
+                await room.stop()
+                // Anything that arrived while you were here counts as read.
+                if markRead { await clubs.markRead(clubID: clubID) }
+            }
         }
         .sheet(isPresented: $editingReadingNow) {
             EditReadingNowView(club: club) { updated in
@@ -241,10 +276,12 @@ struct ClubDetailView: View {
             Image(systemName: "bubble.left.and.text.bubble.right")
                 .font(.system(size: 32))
                 .foregroundStyle(Theme.accentDim)
-            Text("No messages yet")
+            Text(isDaily ? "Be the first today" : "No messages yet")
                 .font(Theme.Font.serif(19, weight: .semibold))
                 .foregroundStyle(Theme.textPrimary)
-            Text(isMember
+            Text(isDaily
+                 ? "Share what today's quote means to you. Everyone reading Quotidian today can join in."
+                 : isMember
                  ? "Say hello, share a passage, or attach a book you'd recommend."
                  : "Join to start the conversation.")
                 .font(.subheadline)
@@ -312,7 +349,9 @@ struct ClubDetailView: View {
             author: message.book?.author ?? "Unknown author",
             book: message.book?.title ?? "",
             year: "",
-            about: "Shared in \(club.name) by \(message.authorName).",
+            about: isDaily
+                ? "Shared in the Quote of the Day discussion by \(message.authorName)."
+                : "Shared in \(club.name) by \(message.authorName).",
             isbn13: message.book?.isbn13
         )
     }
@@ -522,6 +561,7 @@ struct ChatComposer: View {
     @Binding var spoilerLabel: String
     /// The club's Now Reading section, offered as the spoiler label.
     var suggestedSpoilerLabel: String? = nil
+    var placeholder = "Message"
     @Binding var attachedBook: Book?
     var isFocused: FocusState<Bool>.Binding
     let isSending: Bool
@@ -604,7 +644,7 @@ struct ChatComposer: View {
                 TextField(
                     "",
                     text: $text,
-                    prompt: Text(isQuote ? "Paste or type the passage…" : "Message")
+                    prompt: Text(isQuote ? "Paste or type the passage…" : placeholder)
                         .foregroundStyle(Theme.textSecondary.opacity(0.6)),
                     axis: .vertical
                 )
@@ -650,5 +690,47 @@ struct ChatComposer: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
+    }
+}
+
+// MARK: - Quote of the Day banner
+
+/// Today's quote, pinned above the daily discussion.
+struct DailyQuoteBanner: View {
+    let quote: Quote
+    @State private var isExpanded = false
+
+    var body: some View {
+        Button {
+            withAnimation(.easeOut(duration: 0.2)) { isExpanded.toggle() }
+        } label: {
+            // The accent line is drawn behind the text so it only ever
+            // matches the quote's height (a plain shape would stretch).
+            VStack(alignment: .leading, spacing: 6) {
+                Text(quote.text)
+                    .font(Theme.Font.serif(16).italic())
+                    .foregroundStyle(Theme.textPrimary)
+                    .lineLimit(isExpanded ? nil : 3)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(quote.hasBook ? "\(quote.author), \(quote.book)" : quote.author)
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
+                    .lineLimit(1)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 14)
+            .background(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(Theme.accent)
+                    .frame(width: 2)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.surface))
+            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint(isExpanded ? "Shows less" : "Shows the whole quote")
     }
 }

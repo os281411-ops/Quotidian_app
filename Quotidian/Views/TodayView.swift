@@ -6,6 +6,7 @@ struct TodayView: View {
     @EnvironmentObject private var streak: StreakManager
     @EnvironmentObject private var subscriptions: SubscriptionManager
     @EnvironmentObject private var paywall: PaywallPresenter
+    @EnvironmentObject private var router: AppRouter
 
     @State private var quote: Quote?
     @State private var showAbout = false
@@ -65,6 +66,8 @@ struct TodayView: View {
                             ReflectButton(quote: quote)
                                 .padding(.top, -12)
                         }
+
+                        discussButton
                     } else {
                         emptyState
                     }
@@ -147,6 +150,21 @@ struct TodayView: View {
         }
     }
 
+    /// Opens today's shared discussion in the Bookclub tab.
+    private var discussButton: some View {
+        Button {
+            router.discussToday()
+        } label: {
+            Label("Discuss today's quote", systemImage: "bubble.left.and.bubble.right")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Theme.accent)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 10)
+                .background(Capsule().stroke(Theme.accent.opacity(0.4), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
     private func toggleSave(_ quote: Quote) {
         if library.isSaved(quote) {
             withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
@@ -183,4 +201,5 @@ struct TodayView: View {
         .environmentObject(StreakManager())
         .environmentObject(SubscriptionManager())
         .environmentObject(PaywallPresenter())
+        .environmentObject(AppRouter())
 }

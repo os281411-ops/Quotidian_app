@@ -15,6 +15,8 @@ enum AppTab: CaseIterable {
 
 struct CustomTabBar: View {
     @Binding var selection: AppTab
+    /// Tabs showing a small dot (e.g. Bookclub with unread messages).
+    var badged: Set<AppTab> = []
 
     var body: some View {
         HStack(spacing: 0) {
@@ -27,6 +29,15 @@ struct CustomTabBar: View {
                     Image(systemName: tab.systemImage)
                         .font(.system(size: 18))
                         .foregroundStyle(selection == tab ? Theme.accent : Theme.textSecondary)
+                        .overlay(alignment: .topTrailing) {
+                            if badged.contains(tab) {
+                                Circle()
+                                    .fill(Theme.accent)
+                                    .frame(width: 7, height: 7)
+                                    .offset(x: 5, y: -3)
+                                    .accessibilityLabel("New messages")
+                            }
+                        }
                         .frame(maxWidth: .infinity)
                 }
             }

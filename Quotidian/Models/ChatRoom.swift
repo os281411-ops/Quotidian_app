@@ -59,6 +59,8 @@ private nonisolated struct NewChatMessage: Encodable, Sendable {
     let bookID: UUID?
     let isSpoiler: Bool
     let spoilerLabel: String?
+    /// Only for the Quote of the Day room: which day's quote this is about.
+    var roomDay: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case clubID = "club_id"
@@ -68,6 +70,7 @@ private nonisolated struct NewChatMessage: Encodable, Sendable {
         case bookID = "book_id"
         case isSpoiler = "is_spoiler"
         case spoilerLabel = "spoiler_label"
+        case roomDay = "room_day"
     }
 }
 
@@ -106,6 +109,8 @@ enum ReportReason: String, CaseIterable, Identifiable {
 @MainActor
 final class ChatRoom: ObservableObject {
     let clubID: UUID
+    /// Set for the Quote of the Day room: only that day's messages are shown.
+    let roomDay: String?
 
     @Published private(set) var messages: [ChatMessage] = []
     @Published private(set) var isLoading = true
@@ -120,8 +125,21 @@ final class ChatRoom: ObservableObject {
     private var channel: RealtimeChannelV2?
     private var listeners: [Task<Void, Never>] = []
 
-    init(clubID: UUID) {
+    init(clubID: UUID, roomDay: String? = nil) {
         self.clubID = clubID
+        self.roomDay = roomDay
+    }
+
+    /// Messages in this room (and, for the daily room, only today's).
+    private func baseQuery() -> PostgrestFilterBuilder {
+        var query = supabase
+            .from("messages")
+            .select(ChatMessage.columns)
+            .eq("club_id", value: clubID)
+        if let roomDay {
+            query = query.eq("room_day", value: roomDay)
+        }
+        return query
     }
 
     // MARK: - Lifecycle
@@ -144,10 +162,7 @@ final class ChatRoom: ObservableObject {
 
     func loadLatest() async {
         do {
-            let latest: [ChatMessage] = try await supabase
-                .from("messages")
-                .select(ChatMessage.columns)
-                .eq("club_id", value: clubID)
+            let latest: [ChatMessage] = try await baseQuery()
                 .order("created_at", ascending: false)
                 .limit(Self.pageSize)
                 .execute()
@@ -167,10 +182,7 @@ final class ChatRoom: ObservableObject {
         defer { isLoadingOlder = false }
 
         do {
-            let older: [ChatMessage] = try await supabase
-                .from("messages")
-                .select(ChatMessage.columns)
-                .eq("club_id", value: clubID)
+            let older: [ChatMessage] = try await baseQuery()
                 .lt("created_at", value: oldest.createdAt)
                 .order("created_at", ascending: false)
                 .limit(Self.pageSize)
@@ -227,9 +239,9 @@ final class ChatRoom: ObservableObject {
     /// or removes it. Removing covers messages that became hidden or blocked.
     private func refreshMessage(idString: String?) async {
         guard let idString, let id = UUID(uuidString: idString) else { return }
-        let fresh: ChatMessage? = try? await supabase
-            .from("messages")
-            .select(ChatMessage.columns)
+        // For the daily room, messages from another day don't come back,
+        // so they're simply ignored.
+        let fresh: ChatMessage? = try? await baseQuery()
             .eq("id", value: id)
             .single()
             .execute()
@@ -275,7 +287,8 @@ final class ChatRoom: ObservableObject {
             quoteText: asQuote && !trimmed.isEmpty ? String(trimmed.prefix(1000)) : nil,
             bookID: book?.id,
             isSpoiler: spoiler,
-            spoilerLabel: spoiler ? Self.cleanSpoilerLabel(spoilerLabel) : nil
+            spoilerLabel: spoiler ? Self.cleanSpoilerLabel(spoilerLabel) : nil,
+            roomDay: roomDay
         )
 
         do {
@@ -369,6 +382,7 @@ final class ChatRoom: ObservableObject {
         switch (error.code ?? "", error.hint ?? "") {
         case (_, "word_filter"): return "That contains language that isn't allowed in Bookclub."
         case (_, "rate_limit"):  return "You're sending messages too quickly. Wait a minute and try again."
+        case (_, "room_day"):    return "Today's discussion has moved on. Go back and open it again."
         case ("42501", _):       return "Join the club to send messages."
         default:                 return "Couldn't send. Please try again."
         }

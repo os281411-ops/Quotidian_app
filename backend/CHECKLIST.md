@@ -64,7 +64,7 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 ## Phase 4b — More Bookclub features
 
 *Tie Bookclub into the rest of the app*
-- [ ] **A1. Quote of the Day room**: one shared chat everyone can join to discuss each day's quote. Add a "Discuss today's quote" button under the quote on Today that opens it.
+- [x] **A1. Quote of the Day room**: one shared chat everyone can join to discuss each day's quote. Add a "Discuss today's quote" button under the quote on Today that opens it. *(built: migration `20261023150000_daily_room_and_unread.sql`; a fresh room each day, pinned card in Bookclub, button on Today)*
 - [x] **A2. Save from chat to Library**: long-press a shared passage → Save to Library (free limit of 10 applies).
 - [ ] **A14. "From the author" card** for the 100 book-less quotes: a 2–3 line note on who said it plus one recommended book by/about them with a Bookshop.org link (brings back About and the affiliate link on those days). Claude drafts notes + book picks and checks ISBNs; Oliver approves before it goes in.
 - [x] **A15. Reflect** on Today: a round Reflect button (under Save on book quotes; in About's place on book-less quotes) opens a menu: six moods (Inspired, Moved, Calm, Thoughtful, Challenged, Not for me), Write a Thought…, Clear. Private, saved on the device only; shown on Library cards for saved quotes.
@@ -79,7 +79,7 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 
 *Finding and returning to clubs*
 - [ ] **A9. Club tags**: Book, Author, Genre, Character; filter by tag in Discover.
-- [ ] **A10. Unread badges**: show which clubs have new messages since you last looked.
+- [x] **A10. Unread badges**: show which clubs have new messages since you last looked. *(built: same migration; counts on My Clubs rows and a dot on the Bookclub tab)*
 
 *Premium*
 - [x] **A11. Starting a club is Premium** (checked in the app; server check is step 31).

@@ -7,6 +7,7 @@ struct CommunityHomeView: View {
     @EnvironmentObject private var clubs: ClubStore
     @EnvironmentObject private var subscriptions: SubscriptionManager
     @EnvironmentObject private var paywall: PaywallPresenter
+    @EnvironmentObject private var router: AppRouter
 
     enum Section: String, CaseIterable {
         case mine = "My Clubs"
@@ -48,12 +49,20 @@ struct CommunityHomeView: View {
                 .scrollDismissesKeyboard(.interactively)
                 .refreshable { await reload() }
             }
+            // Today's discussion: a small button floating above the tab bar.
+            .overlay(alignment: .bottomTrailing) {
+                DailyRoomButton { openDailyRoom() }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 88)
+            }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: BookClub.self) { club in
                 ClubDetailView(initialClub: club)
             }
         }
         .task(id: auth.userID) { await reload() }
+        .onAppear { openDailyRoomIfAsked() }
+        .onChange(of: router.wantsDailyRoom) { _, _ in openDailyRoomIfAsked() }
         .task(id: searchText) {
             // Wait for a pause in typing before searching.
             if !searchText.isEmpty { try? await Task.sleep(for: .milliseconds(350)) }
@@ -89,7 +98,19 @@ struct CommunityHomeView: View {
     private func reload() async {
         guard let userID = auth.userID else { return }
         await clubs.refreshMine(userID: userID)
+        await clubs.refreshUnread()
         await clubs.refreshDiscover(search: searchText)
+    }
+
+    private func openDailyRoom() {
+        path = [DailyRoom.club]
+    }
+
+    /// "Discuss today's quote" on Today asks for the room via the router.
+    private func openDailyRoomIfAsked() {
+        guard router.wantsDailyRoom else { return }
+        router.wantsDailyRoom = false
+        openDailyRoom()
     }
 
     // MARK: - Header
@@ -234,7 +255,7 @@ struct CommunityHomeView: View {
         VStack(spacing: 14) {
             ForEach(list) { club in
                 NavigationLink(value: club) {
-                    ClubRow(club: club, role: clubs.role(in: club))
+                    ClubRow(club: club, role: clubs.role(in: club), unread: clubs.unread(in: club))
                 }
                 .buttonStyle(.plain)
             }
@@ -289,6 +310,7 @@ struct CommunityHomeView: View {
 struct ClubRow: View {
     let club: BookClub
     let role: ClubMember.Role?
+    var unread = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -303,6 +325,16 @@ struct ClubRow: View {
                         .foregroundStyle(Theme.textSecondary)
                 }
                 Spacer(minLength: 8)
+                if unread > 0 {
+                    Text(unread > 99 ? "99+" : "\(unread)")
+                        .font(.caption2.weight(.bold))
+                        .monospacedDigit()
+                        .foregroundStyle(Theme.background)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 3)
+                        .background(Capsule().fill(Theme.accent))
+                        .accessibilityLabel("\(unread) new \(unread == 1 ? "message" : "messages")")
+                }
                 if let role, role != .member {
                     Text(role.label)
                         .font(.caption2.weight(.bold))
@@ -343,6 +375,24 @@ struct ClubRow: View {
     }
 }
 
+/// Floating button that opens today's Quote of the Day discussion.
+struct DailyRoomButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "quote.bubble.fill")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(Theme.background)
+                .frame(width: 54, height: 54)
+                .background(Circle().fill(Theme.accent))
+                .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Discuss today's quote")
+    }
+}
+
 #Preview {
     ZStack {
         Theme.background.ignoresSafeArea()
@@ -350,4 +400,5 @@ struct ClubRow: View {
     }
     .environmentObject(AuthManager())
     .environmentObject(ClubStore())
+    .environmentObject(AppRouter())
 }
