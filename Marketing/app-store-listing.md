@@ -15,7 +15,7 @@ One quote from a great book every day. Reflect on it, talk it through in Bookclu
 (139 chars)
 
 ## Description (4000 char max)
-Quotidian brings you one carefully chosen quote a day, from sixty of the world's great novels, memoirs and biographies (Moby-Dick to Beloved, Frankenstein to Becoming) and from the people who've said things worth remembering.
+Quotidian brings you one carefully chosen quote a day, from the world's great novels, memoirs and biographies (Moby-Dick to Beloved, Frankenstein to Becoming) and from the people who've said things worth remembering.
 
 Read it, save it, and take a moment to reflect: how did it make you feel? Then talk it through with other readers in Bookclub, and keep every book you read on your Bookshelf.
 

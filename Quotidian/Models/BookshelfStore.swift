@@ -42,7 +42,7 @@ nonisolated struct ShelfBook: Codable, Hashable, Identifiable, Sendable {
 /// Your bookshelf: books you've scanned or searched for, newest first.
 @MainActor
 final class BookshelfStore: ObservableObject {
-    @Published private(set) var books: [ShelfBook] = []
+    @Published fileprivate(set) var books: [ShelfBook] = []
 
     private let defaults: UserDefaults
     private let storageKey = "bookshelf.books"
@@ -120,4 +120,55 @@ final class BookshelfStore: ObservableObject {
         guard let data = try? JSONEncoder().encode(books) else { return }
         defaults.set(data, forKey: storageKey)
     }
+
+    #if DEBUG
+    fileprivate func saveForDebug() { save() }
+    #endif
 }
+
+#if DEBUG
+extension BookshelfStore {
+    /// Developer Menu: fills the shelf with well-known books (for screenshots).
+    func fillWithSampleBooks() {
+        let samples: [(String, String, Int, String, Int?, String?)] = [
+            ("The Great Gatsby", "F. Scott Fitzgerald", 1925, "9780743273565", 5, "The green light at the end of the dock will stay with me for a long time. Short, sad and perfect."),
+            ("Pride and Prejudice", "Jane Austen", 1813, "9780143138730", 5, nil),
+            ("1984", "George Orwell", 1949, "9780451524935", 4, nil),
+            ("To Kill a Mockingbird", "Harper Lee", 1960, "9780060935467", 5, nil),
+            ("Jane Eyre", "Charlotte Brontë", 1847, "9780141441146", 4, nil),
+            ("The Book Thief", "Markus Zusak", 2005, "9780375842207", 5, nil),
+            ("Frankenstein", "Mary Shelley", 1818, "9780141439471", 4, nil),
+            ("The Hunger Games", "Suzanne Collins", 2008, "9780439023528", 4, nil),
+            ("Brave New World", "Aldous Huxley", 1932, "9780060850524", 3, nil),
+            ("Educated", "Tara Westover", 2018, "9780399590504", 5, nil),
+            ("The Catcher in the Rye", "J.D. Salinger", 1951, "9780316769488", 3, nil),
+            ("Life of Pi", "Yann Martel", 2001, "9780156027328", 4, nil),
+            ("The Kite Runner", "Khaled Hosseini", 2003, "9781594631931", 5, nil),
+            ("Fahrenheit 451", "Ray Bradbury", 1953, "9781451673319", 4, nil),
+            ("Little Women", "Louisa May Alcott", 1868, "9780147514011", nil, nil),
+            ("Rebecca", "Daphne du Maurier", 1938, "9780316575201", 4, nil),
+        ]
+        let now = Date()
+        books = samples.enumerated().map { index, item in
+            ShelfBook(
+                id: UUID(),
+                title: item.0,
+                author: item.1,
+                year: item.2,
+                isbn13: item.3,
+                openLibraryID: nil,
+                coverID: nil,
+                addedAt: now.addingTimeInterval(TimeInterval(-index * 86_400 * 3)),
+                rating: item.4,
+                thoughts: item.5
+            )
+        }
+        saveForDebug()
+    }
+
+    func clearForDebug() {
+        books = []
+        saveForDebug()
+    }
+}
+#endif

@@ -47,6 +47,7 @@ struct DeveloperMenuView: View {
     @EnvironmentObject private var subscriptions: SubscriptionManager
     @EnvironmentObject private var paywall: PaywallPresenter
     @EnvironmentObject private var auth: AuthManager
+    @EnvironmentObject private var bookshelf: BookshelfStore
     @Environment(\.dismiss) private var dismiss
 
     @State private var notice: String?
@@ -110,6 +111,24 @@ struct DeveloperMenuView: View {
                     Text("Bookclub")
                 } footer: {
                     Text("Your user ID is what you'd paste into Supabase to make yourself an admin (for the moderation view).")
+                }
+
+                Section {
+                    Button("Fill Bookshelf with Sample Books") {
+                        bookshelf.fillWithSampleBooks()
+                        notice = "Added 16 well-known books (with ratings) to the Bookshelf."
+                    }
+                    Button("Empty Bookshelf", role: .destructive) {
+                        bookshelf.clearForDebug()
+                        notice = "Bookshelf emptied."
+                    }
+                    Button("Restart Bookclub Tour") {
+                        UserDefaults.standard.removeObject(forKey: TutorialChat.stepKey)
+                        UserDefaults.standard.removeObject(forKey: TutorialChat.completedKey)
+                        notice = "The tour will start again next time you open it."
+                    }
+                } header: {
+                    Text("Screenshots")
                 }
 
                 Section {
