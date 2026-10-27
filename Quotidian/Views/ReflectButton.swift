@@ -89,11 +89,7 @@ struct ReflectionNoteSheet: View {
                             }
                         }
 
-                        if let mood = reflections.reflection(for: quote)?.mood {
-                            Label("You felt \(mood.label.lowercased())", systemImage: mood.selectedSymbol)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(Theme.accent)
-                        }
+                        moodPicker
 
                         TextField(
                             "",
@@ -137,7 +133,34 @@ struct ReflectionNoteSheet: View {
         .presentationDetents([.medium, .large])
         .onAppear {
             note = reflections.reflection(for: quote)?.note ?? ""
-            isFocused = true
+            // Opening from Today's menu goes straight to typing; from the
+            // Library you may only want to change the mood.
+            isFocused = note.isEmpty
+        }
+    }
+
+    /// How it made you feel; tap again to clear.
+    private var moodPicker: some View {
+        let current = reflections.reflection(for: quote)?.mood
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(ReflectionMood.allCases) { mood in
+                    let isOn = current == mood
+                    Button {
+                        reflections.setMood(isOn ? nil : mood, for: quote)
+                    } label: {
+                        Label(mood.label, systemImage: isOn ? mood.selectedSymbol : mood.symbol)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(isOn ? Theme.background : Theme.textSecondary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(Capsule().fill(isOn ? Theme.accent : Theme.surface))
+                            .overlay(Capsule().stroke(isOn ? Theme.accent : Theme.divider, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isOn ? .isSelected : [])
+                }
+            }
         }
     }
 }

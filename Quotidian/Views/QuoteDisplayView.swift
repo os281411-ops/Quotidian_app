@@ -4,16 +4,17 @@ struct QuoteDisplayView: View {
     let quote: Quote
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 18) {
             HStack {
                 Image(systemName: "quote.opening")
-                    .font(.system(size: 32))
+                    .font(.system(size: 26))
                     .foregroundStyle(Theme.accent.opacity(0.55))
                 Spacer()
             }
 
             Text(quote.text)
-                .font(Theme.Font.serif(26).italic())
+                // Long quotes get slightly smaller type so the page still fits.
+                .font(Theme.Font.serif(quote.text.count > 220 ? 21 : quote.text.count > 140 ? 23 : 25).italic())
                 .foregroundStyle(Theme.textPrimary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)

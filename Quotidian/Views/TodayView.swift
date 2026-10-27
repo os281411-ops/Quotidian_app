@@ -7,6 +7,8 @@ struct TodayView: View {
     @EnvironmentObject private var subscriptions: SubscriptionManager
     @EnvironmentObject private var paywall: PaywallPresenter
     @EnvironmentObject private var router: AppRouter
+    @EnvironmentObject private var notifications: NotificationManager
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var quote: Quote?
     @State private var showAbout = false
@@ -18,7 +20,9 @@ struct TodayView: View {
             Theme.background.ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: 36) {
+                // Spacing kept tight so the whole page, down to "Discuss
+                // today's quote", fits on screen without scrolling.
+                VStack(spacing: 22) {
                     HStack {
                         Text("Quotidian")
                             .font(.caption.weight(.bold))
@@ -60,11 +64,11 @@ struct TodayView: View {
                                 ReflectButton(quote: quote)
                             }
                         }
-                        .padding(.top, 64)
+                        .padding(.top, 8)
 
                         if quote.hasBook {
                             ReflectButton(quote: quote)
-                                .padding(.top, -12)
+                                .padding(.top, -8)
                         }
 
                         discussButton
@@ -101,6 +105,15 @@ struct TodayView: View {
                 quote = QuoteProvider.shared.quote()
             }
             streak.registerVisitIfNeeded(isSubscribed: subscriptions.isSubscribed)
+            notifications.markTodayRead()
+        }
+        // Coming back to the app on a new day while Today is open: show the
+        // new quote and count the visit, just as if Today had just opened.
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            quote = QuoteProvider.shared.quote()
+            streak.registerVisitIfNeeded(isSubscribed: subscriptions.isSubscribed)
+            notifications.markTodayRead()
         }
         .task(id: shareCardTaskID) {
             guard subscriptions.isSubscribed, let quote else {
@@ -156,10 +169,10 @@ struct TodayView: View {
             router.discussToday()
         } label: {
             Label("Discuss today's quote", systemImage: "bubble.left.and.bubble.right")
-                .font(.subheadline.weight(.semibold))
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(Theme.accent)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 10)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 9)
                 .background(Capsule().stroke(Theme.accent.opacity(0.4), lineWidth: 1))
         }
         .buttonStyle(.plain)
@@ -202,4 +215,5 @@ struct TodayView: View {
         .environmentObject(SubscriptionManager())
         .environmentObject(PaywallPresenter())
         .environmentObject(AppRouter())
+        .environmentObject(NotificationManager())
 }

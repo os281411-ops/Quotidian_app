@@ -15,7 +15,7 @@ struct PurchaseButton: View {
                     .font(.caption.weight(.bold))
             }
             .foregroundStyle(Theme.accent)
-            .padding(.vertical, 14)
+            .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
             .background(Capsule().fill(Theme.surface))
             .overlay(Capsule().stroke(Theme.divider, lineWidth: 1))

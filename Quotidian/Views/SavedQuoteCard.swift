@@ -9,6 +9,7 @@ struct SavedQuoteCard: View {
     var onShareToClub: (() -> Void)? = nil
 
     @EnvironmentObject private var reflections: ReflectionStore
+    @State private var editingThought = false
 
     private var quote: Quote { saved.quote }
 
@@ -35,7 +36,18 @@ struct SavedQuoteCard: View {
             .buttonStyle(.plain)
 
             if let reflection = reflections.reflection(for: quote) {
-                reflectionSummary(reflection)
+                Button { editingThought = true } label: {
+                    reflectionSummary(reflection)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Edit your thought")
+            } else {
+                Button { editingThought = true } label: {
+                    Label("Add a thought", systemImage: "square.and.pencil")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .buttonStyle(.plain)
             }
 
             Divider().overlay(Theme.divider)
@@ -92,6 +104,9 @@ struct SavedQuoteCard: View {
         .padding(20)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+        .sheet(isPresented: $editingThought) {
+            ReflectionNoteSheet(quote: quote)
+        }
     }
 }
 
@@ -99,10 +114,16 @@ extension SavedQuoteCard {
     /// Your mood and note from the Reflect card, shown under the quote.
     fileprivate func reflectionSummary(_ reflection: Reflection) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            if let mood = reflection.mood {
-                Label(mood.label, systemImage: mood.selectedSymbol)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.accent)
+            HStack {
+                if let mood = reflection.mood {
+                    Label(mood.label, systemImage: mood.selectedSymbol)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.accent)
+                }
+                Spacer()
+                Image(systemName: "pencil")
+                    .font(.caption)
+                    .foregroundStyle(Theme.textSecondary)
             }
             let note = reflection.note.trimmingCharacters(in: .whitespacesAndNewlines)
             if !note.isEmpty {

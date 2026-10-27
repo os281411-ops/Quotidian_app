@@ -21,7 +21,13 @@ final class NotificationManager: NSObject, ObservableObject {
     private let eveningEnabledKey = "reminder.evening.enabled"
     private let eveningHourKey = "reminder.evening.hour"
     private let eveningMinuteKey = "reminder.evening.minute"
+    /// Old single repeating evening reminder (removed when rescheduling).
     private let eveningRequestIdentifier = "evening-quote-reminder"
+    /// The evening reminder is now one notification per day, so each day's
+    /// message can depend on whether that day's quote has been read.
+    private let eveningDayPrefix = "evening-quote-reminder-"
+    private let eveningDaysAhead = 21
+    private let lastReadDayKey = "reminder.lastReadDay"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -73,7 +79,26 @@ final class NotificationManager: NSObject, ObservableObject {
         } else {
             isEveningReminderEnabled = false
             defaults.set(false, forKey: eveningEnabledKey)
-            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [eveningRequestIdentifier])
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: allEveningIdentifiers())
+        }
+    }
+
+    /// Call when today's quote has been seen: tonight's reminder changes
+    /// from "you haven't read it" to a gentler follow-up.
+    func markTodayRead() {
+        let today = Self.dayKey(Date())
+        guard defaults.string(forKey: lastReadDayKey) != today else { return }
+        defaults.set(today, forKey: lastReadDayKey)
+        if isEveningReminderEnabled {
+            scheduleEveningNotification()
+        }
+    }
+
+    /// Keeps the next few weeks of evening reminders queued. Call when the
+    /// app opens (iOS can't repeat a notification whose wording changes).
+    func refreshEveningSchedule() {
+        if isEveningReminderEnabled {
+            scheduleEveningNotification()
         }
     }
 
@@ -140,17 +165,63 @@ final class NotificationManager: NSObject, ObservableObject {
 
     private func scheduleEveningNotification() {
         let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: [eveningRequestIdentifier])
+        center.removePendingNotificationRequests(withIdentifiers: allEveningIdentifiers())
 
-        let content = UNMutableNotificationContent()
-        content.title = "Quotidian"
-        content.body = "You haven't read today's quote yet."
-        content.sound = .default
+        let calendar = Calendar.current
+        let time = calendar.dateComponents([.hour, .minute], from: eveningReminderTime)
+        let readToday = defaults.string(forKey: lastReadDayKey) == Self.dayKey(Date())
+        let now = Date()
 
-        let components = Calendar.current.dateComponents([.hour, .minute], from: eveningReminderTime)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-        let request = UNNotificationRequest(identifier: eveningRequestIdentifier, content: content, trigger: trigger)
-        center.add(request)
+        for offset in 0..<eveningDaysAhead {
+            guard let day = calendar.date(byAdding: .day, value: offset, to: calendar.startOfDay(for: now)),
+                  let fireDate = calendar.date(bySettingHour: time.hour ?? 20, minute: time.minute ?? 0, second: 0, of: day),
+                  fireDate > now else { continue }
+
+            let content = UNMutableNotificationContent()
+            content.title = "Quotidian"
+            // Only today is known to be read; future days start as unread
+            // and get updated when the app is opened that day.
+            content.body = (offset == 0 && readToday)
+                ? Self.alreadyReadMessage(for: day)
+                : "You haven't read today's quote yet."
+            content.sound = .default
+
+            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: fireDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+            center.add(UNNotificationRequest(
+                identifier: eveningDayPrefix + Self.dayKey(day),
+                content: content,
+                trigger: trigger
+            ))
+        }
+    }
+
+    /// Evening messages for days the quote has already been read.
+    private static func alreadyReadMessage(for day: Date) -> String {
+        let messages = [
+            "Has today's quote stayed with you? Add a thought before the day ends.",
+            "See what other readers made of today's quote in Bookclub.",
+            "One more look at today's quote before bed?",
+            "How did today's quote make you feel? Tap Reflect to note it down.",
+        ]
+        let index = (Calendar.current.ordinality(of: .day, in: .era, for: day) ?? 0) % messages.count
+        return messages[index]
+    }
+
+    private func allEveningIdentifiers() -> [String] {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: Date())
+        let days = (-1...eveningDaysAhead).compactMap { calendar.date(byAdding: .day, value: $0, to: start) }
+        return [eveningRequestIdentifier] + days.map { eveningDayPrefix + Self.dayKey($0) }
+    }
+
+    private static func dayKey(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
     }
 }
 

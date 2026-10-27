@@ -103,6 +103,14 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [ ] **28. Edge Function** that sends a push when someone comments on your post or replies to you.
 - [ ] **29. Notification settings** so users can turn these off.
 
+## Phase 6b — Fixes from testing
+
+- [x] **T1. Evening reminder wording**: "You haven't read today's quote yet" also goes to people who already have. If today's quote has been read, send a different evening message instead.
+- [x] **T2. Compact Today screen**: "Discuss today's quote" should be visible without scrolling.
+- [x] **T3. Edit your thought from the Library**: tap the thought (or mood) on a saved quote to change it.
+- [x] **T4. Book search fails the first time**: the first search when attaching a book shows a connection error; the second works.
+- [x] **T5. New club asks its owner to "Join to Chat"** (TestFlight feedback): the app now trusts that you own a club you just made, re-checks membership when a chat opens, treats "already in this club" as joined, and opens an empty club with the keyboard up.
+
 ## Phase 7 — Before release
 
 - [ ] **30. Update the privacy policy** *(drafted: `docs/privacy-policy.html`, `docs/support.html`, and description / App Privacy answers / age rating / What's New in `Marketing/app-store-listing.md`. To do: Oliver reviews, pushes (pages go live via GitHub Pages), then updates App Store Connect when submitting.)*

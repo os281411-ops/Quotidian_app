@@ -90,10 +90,18 @@ enum BookSearch {
         var request = URLRequest(url: components.url!)
         // Open Library asks apps to identify themselves.
         request.setValue("Quotidian/1.0 (iOS book club app)", forHTTPHeaderField: "User-Agent")
-        request.timeoutInterval = 15
+        request.timeoutInterval = 20
 
-        let (data, _) = try await URLSession.shared.data(for: request)
-        let response = try JSONDecoder().decode(Response.self, from: data)
+        // Open Library's first answer after a quiet spell is often slow or
+        // fails outright, so quietly try once more before giving up.
+        let response: Response
+        do {
+            response = try await fetch(request)
+        } catch {
+            if error is CancellationError || (error as? URLError)?.code == .cancelled { throw error }
+            try await Task.sleep(for: .milliseconds(700))
+            response = try await fetch(request)
+        }
 
         return response.docs.compactMap { doc in
             guard let title = doc.title, !title.isEmpty else { return nil }
@@ -106,6 +114,14 @@ enum BookSearch {
                 isbn13: doc.isbn?.first(where: isBookshopISBN)
             )
         }
+    }
+
+    private nonisolated static func fetch(_ request: URLRequest) async throws -> Response {
+        let (data, urlResponse) = try await URLSession.shared.data(for: request)
+        if let http = urlResponse as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            throw URLError(.badServerResponse)
+        }
+        return try JSONDecoder().decode(Response.self, from: data)
     }
 
     /// Bookshop.org deep links need a 13-digit ISBN starting 978 or 979.

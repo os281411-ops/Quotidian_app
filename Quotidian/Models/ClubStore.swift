@@ -130,7 +130,7 @@ final class ClubStore: ObservableObject {
 
     @discardableResult
     func join(_ club: BookClub, userID: UUID) async -> Bool {
-        await perform(failure: "Couldn't join this club. Please try again.") {
+        let joined = await perform(failure: "Couldn't join this club. Please try again.") {
             _ = try await supabase
                 .from("club_members")
                 .insert(NewMembership(clubID: club.id, userID: userID))
@@ -138,6 +138,30 @@ final class ClubStore: ObservableObject {
         } then: {
             await self.refreshAfterChange(userID: userID)
         }
+        if joined { return true }
+        // "Already in this club" means the app was out of date, not that
+        // anything went wrong: catch up and carry on.
+        if await refreshMembership(clubID: club.id, userID: userID) != nil {
+            errorMessage = nil
+            await refreshAfterChange(userID: userID)
+            return true
+        }
+        return false
+    }
+
+    /// Re-checks your role in one club with the server and updates `myRoles`.
+    @discardableResult
+    func refreshMembership(clubID: UUID, userID: UUID) async -> ClubMember.Role? {
+        let rows: [MembershipRow]? = try? await supabase
+            .from("club_members")
+            .select("club_id, role")
+            .eq("club_id", value: clubID)
+            .eq("user_id", value: userID)
+            .execute()
+            .value
+        guard let rows else { return myRoles[clubID] }
+        myRoles[clubID] = rows.first?.role
+        return rows.first?.role
     }
 
     @discardableResult
@@ -184,8 +208,12 @@ final class ClubStore: ObservableObject {
         } then: {
             await self.refreshAfterChange(userID: userID)
         }
+        guard let new = created else { return nil }
+        // You're the owner of a club you just made, whatever a slower
+        // refresh may have said.
+        myRoles[new.id] = .owner
         // Re-read from your clubs so the member count includes you.
-        return created.flatMap { new in myClubs.first { $0.id == new.id } ?? new }
+        return myClubs.first { $0.id == new.id } ?? new
     }
 
     @discardableResult

@@ -74,7 +74,9 @@ struct ContentView: View {
         }
         // Check for new club messages whenever the app comes back.
         .onChange(of: scenePhase) { _, phase in
-            guard phase == .active, auth.userID != nil else { return }
+            guard phase == .active else { return }
+            notifications.refreshEveningSchedule()
+            guard auth.userID != nil else { return }
             Task { await clubs.refreshUnread() }
         }
         .sheet(item: $paywall.trigger) { trigger in

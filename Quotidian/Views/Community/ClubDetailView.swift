@@ -123,8 +123,17 @@ struct ClubDetailView: View {
             if isDaily, !auth.isBanned, let userID = auth.userID {
                 await clubs.ensureDailyRoomMembership(userID: userID)
             }
+            // Double-check membership with the server, so a club you've just
+            // made or joined never asks you to "Join to Chat".
+            if !isMember, !isDaily, let userID = auth.userID {
+                await clubs.refreshMembership(clubID: club.id, userID: userID)
+            }
             await room.start()
             if isMember, !isDaily { await clubs.markRead(clubID: club.id) }
+            // A brand-new (empty) club opens ready to type.
+            if isMember, !auth.isBanned, room.messages.isEmpty {
+                isComposerFocused = true
+            }
         }
         // The floating tab bar would cover the message box, so hide it while
         // the chat is open (it comes back when you go back).
