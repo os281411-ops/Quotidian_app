@@ -123,10 +123,10 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 
 - [ ] **30. Update the privacy policy** *(drafted: `docs/privacy-policy.html`, `docs/support.html`, and description / App Privacy answers / age rating / What's New in `Marketing/app-store-listing.md`. To do: Oliver reviews, pushes (pages go live via GitHub Pages), then updates App Store Connect when submitting.)*
   - The App Store description currently says Quotidian "doesn't collect any personal data, doesn't require an account, and doesn't track you". Rewrite that line: Bookclub is optional, but it uses an account and stores what people post.
-- [ ] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
+- [x] **30b. Revoke Sign in with Apple on account deletion** (Apple asks for this). Needs a Sign in with Apple key from the Apple Developer portal and a Supabase Edge Function that calls Apple's token-revoke endpoint.
   - [x] Code written: `supabase/functions/delete-account`, `AppleReauthenticator.swift`, delete flow confirms with Apple first (falls back to plain delete if the function isn't reachable).
   - [x] Sign in with Apple key made, secrets added, function deployed and tested on QuotidianDev.
-  - [ ] Near release: add the same secrets to the live project (APPLE_CLIENT_ID = com.oliverscott.Quotidian), deploy `delete-account` there with JWT verification off.
+  - [x] Live project: secrets added, `delete-account` deployed (JWT verification off), tested from TestFlight: revoked and deleted.
 - [ ] **31. Premium checks on the server** *(deferred until after launch: the check is in the app for now)* for A11/A12: verify subscriptions with Apple's App Store Server API (an Edge Function), so a modified app can't skip the paywall.
 - [x] **31a. Remove the Archive** *(done in the app; still to do: "What's New" note and dropping `04-archive.png` with 31c)* (the tab where Premium users browse every quote, past and future). Seeing every quote at once goes against the point of a quote *a day*, and Bookclub now gives Premium more to offer. Includes:
   - remove the Archive tab and `ArchiveView`, and the `.archive` paywall reason;
@@ -141,4 +141,4 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
   - Gradient idea: a deep tone fading into black at the edges, so it stays dark and premium; a slightly different shade per screenshot so the set flows as a sequence.
   - Claude builds the frames from the existing designs and shows a few gradient options to pick from.
 - [ ] **32. TestFlight** with at least 3 accounts: posting, reporting, blocking, deleting an account.
-- [ ] **33. App Review notes**: explain the community feature, the moderation tools, and give Apple a **demo account** they can sign in with.
+- [ ] **33. App Review notes**: explain the community feature, the moderation tools, and give Apple a **demo account** they can sign in with. *(drafted: `Marketing/app-review-notes.md`. Sign in with Apple only, so no demo account needed; fill in the private-club invite code.)*
