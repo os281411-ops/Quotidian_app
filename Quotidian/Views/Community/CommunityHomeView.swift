@@ -20,6 +20,7 @@ struct CommunityHomeView: View {
     @State private var showAccount = false
     @State private var showJoinWithCode = false
     @State private var path: [BookClub] = []
+    @AppStorage(TutorialChat.completedKey) private var tutorialDone = false
     @FocusState private var isSearchFocused: Bool
 
     var body: some View {
@@ -47,7 +48,10 @@ struct CommunityHomeView: View {
                     .padding(.bottom, 140)
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .refreshable { await reload() }
+                // Run the reload in its own task: SwiftUI cancels the pull-to-
+                // refresh task as soon as the list redraws, which used to cut
+                // the request off and show "Couldn't load your clubs".
+                .refreshable { await Task { await reload() }.value }
             }
             // Today's discussion: a small button floating above the tab bar.
             .overlay(alignment: .bottomTrailing) {
@@ -57,7 +61,11 @@ struct CommunityHomeView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: BookClub.self) { club in
-                ClubDetailView(initialClub: club)
+                if club.id == TutorialChat.clubID {
+                    TutorialChatView(onOpenDailyRoom: { path = [DailyRoom.club] })
+                } else {
+                    ClubDetailView(initialClub: club)
+                }
             }
         }
         .task(id: auth.userID) { await reload() }
@@ -97,6 +105,7 @@ struct CommunityHomeView: View {
 
     private func reload() async {
         guard let userID = auth.userID else { return }
+        clubs.errorMessage = nil
         await clubs.refreshMine(userID: userID)
         await clubs.refreshUnread()
         await clubs.refreshDiscover(search: searchText)
@@ -207,8 +216,25 @@ struct CommunityHomeView: View {
 
     // MARK: - Lists
 
-    @ViewBuilder
+    /// The private tour chat: first in My Clubs until finished, then a
+    /// small link at the bottom.
+    private var tutorialLink: some View {
+        NavigationLink(value: TutorialChat.club) {
+            TutorialRow(isComplete: tutorialDone)
+        }
+        .buttonStyle(.plain)
+    }
+
     private var myClubsList: some View {
+        VStack(spacing: 10) {
+            if !tutorialDone { tutorialLink }
+            myClubsContent
+            if tutorialDone { tutorialLink }
+        }
+    }
+
+    @ViewBuilder
+    private var myClubsContent: some View {
         if clubs.myClubs.isEmpty {
             if clubs.isLoadingMine {
                 loadingState
@@ -252,7 +278,7 @@ struct CommunityHomeView: View {
     }
 
     private func clubList(_ list: [BookClub]) -> some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 10) {
             ForEach(list) { club in
                 NavigationLink(value: club) {
                     ClubRow(club: club, role: clubs.role(in: club), unread: clubs.unread(in: club))
@@ -306,71 +332,82 @@ struct CommunityHomeView: View {
     }
 }
 
-/// One club in a list.
+/// One club in a list: a compact row, so the list reads as separate
+/// items rather than more of the controls above it.
 struct ClubRow: View {
     let club: BookClub
     let role: ClubMember.Role?
     var unread = 0
 
+    private var subtitle: String {
+        let members = "\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")"
+        let detail = club.readingSummary.map { "Reading \($0)" } ?? club.description
+        return [members, detail].compactMap { $0?.isEmpty == false ? $0 : nil }.joined(separator: " \u{00B7} ")
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(club.name)
-                    .font(Theme.Font.serif(19, weight: .semibold))
-                    .foregroundStyle(Theme.textPrimary)
-                    .lineLimit(2)
-                if club.isPrivate {
-                    Image(systemName: "lock.fill")
-                        .font(.caption)
-                        .foregroundStyle(Theme.textSecondary)
-                }
-                Spacer(minLength: 8)
-                if unread > 0 {
-                    Text(unread > 99 ? "99+" : "\(unread)")
-                        .font(.caption2.weight(.bold))
-                        .monospacedDigit()
-                        .foregroundStyle(Theme.background)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 3)
-                        .background(Capsule().fill(Theme.accent))
-                        .accessibilityLabel("\(unread) new \(unread == 1 ? "message" : "messages")")
-                }
-                if let role, role != .member {
-                    Text(role.label)
-                        .font(.caption2.weight(.bold))
-                        .trackedCaps(1)
-                        .foregroundStyle(Theme.accent)
-                } else if role == .member {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.subheadline)
-                        .foregroundStyle(Theme.accent)
-                        .accessibilityLabel("Joined")
-                }
-            }
+        HStack(spacing: 12) {
+            Text(String(club.name.prefix(1)).uppercased())
+                .font(Theme.Font.serif(16, weight: .semibold))
+                .foregroundStyle(Theme.accent)
+                .frame(width: 34, height: 34)
+                .background(Circle().fill(Theme.surfaceElevated))
+                .accessibilityHidden(true)
 
-            if let description = club.description, !description.isEmpty {
-                Text(description)
-                    .font(.subheadline)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(club.name)
+                        .font(Theme.Font.serif(16, weight: .semibold))
+                        .foregroundStyle(Theme.textPrimary)
+                        .lineLimit(1)
+                    if club.isPrivate {
+                        Image(systemName: "lock.fill")
+                            .font(.caption2)
+                            .foregroundStyle(Theme.textSecondary)
+                            .accessibilityLabel("Private")
+                    }
+                }
+                Text(subtitle)
+                    .font(.caption)
                     .foregroundStyle(Theme.textSecondary)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-            }
-
-            if let reading = club.readingSummary {
-                Label("Reading \(reading)", systemImage: "bookmark.fill")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(Theme.accent)
                     .lineLimit(1)
             }
 
-            Label("\(club.memberCount) \(club.memberCount == 1 ? "member" : "members")", systemImage: "person.2")
-            .font(.caption)
-            .foregroundStyle(Theme.textSecondary)
+            Spacer(minLength: 8)
+
+            if unread > 0 {
+                Text(unread > 99 ? "99+" : "\(unread)")
+                    .font(.caption2.weight(.bold))
+                    .monospacedDigit()
+                    .foregroundStyle(Theme.background)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Capsule().fill(Theme.accent))
+                    .accessibilityLabel("\(unread) new \(unread == 1 ? "message" : "messages")")
+            } else if let role, role != .member {
+                Text(role.label)
+                    .font(.caption2.weight(.bold))
+                    .trackedCaps(1)
+                    .foregroundStyle(Theme.accent)
+            } else if role == .member {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.accent)
+                    .accessibilityLabel("Joined")
+            }
         }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Theme.surface))
+        .overlay(alignment: .leading) {
+            if unread > 0 {
+                // Gold edge on clubs with new messages.
+                UnevenRoundedRectangle(topLeadingRadius: 14, bottomLeadingRadius: 14, style: .continuous)
+                    .fill(Theme.accent)
+                    .frame(width: 3)
+            }
+        }
         .contentShape(Rectangle())
     }
 }

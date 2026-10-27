@@ -42,6 +42,43 @@ extension BookshopAffiliate {
         ]
         return components.url ?? URL(string: "https://bookshop.org")!
     }
+
+    /// False only when Bookshop.org says it has no page for this ISBN (404).
+    /// Anything unclear (no signal, blocked request) counts as fine, so the
+    /// affiliate link is kept whenever it might work.
+    nonisolated static func hasPage(isbn13: String) async -> Bool {
+        guard let id, let url = URL(string: "https://bookshop.org/a/\(id)/\(isbn13)") else { return false }
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        request.timeoutInterval = 6
+        guard let (_, response) = try? await URLSession.shared.data(for: request),
+              let http = response as? HTTPURLResponse else { return true }
+        return http.statusCode != 404 && http.statusCode != 410
+    }
+
+    /// The first ISBN (in order) that Bookshop.org has a page for, checking a
+    /// few at once. Nil if none of them do.
+    nonisolated static func firstStocked(_ candidates: [String]) async -> String? {
+        let checked = Array(candidates.prefix(6))
+        guard !checked.isEmpty else { return nil }
+        let results = await withTaskGroup(of: (Int, Bool).self) { group in
+            for (index, isbn) in checked.enumerated() {
+                group.addTask { (index, await hasPage(isbn13: isbn)) }
+            }
+            var found: [Int: Bool] = [:]
+            for await (index, ok) in group { found[index] = ok }
+            return found
+        }
+        return checked.indices.first { results[$0] == true }.map { checked[$0] }
+    }
+
+    /// Where a book's Bookshop button should go: its affiliate page if
+    /// Bookshop has it, otherwise a search for the title and author.
+    nonisolated static func workingURL(for book: Book) async -> URL {
+        let search = url(isbn13: nil, title: book.title, author: book.author)
+        guard let isbn = book.isbn13, await hasPage(isbn13: isbn) else { return search }
+        return url(isbn13: isbn, title: book.title, author: book.author)
+    }
 }
 
 // MARK: - Open Library search
@@ -53,7 +90,12 @@ nonisolated struct BookSearchResult: Hashable, Identifiable, Sendable {
     let author: String?
     let year: Int?
     let coverID: Int?
-    let isbn13: String?
+    /// Every edition's ISBN that Bookshop.org could link to (Open Library
+    /// lists editions in no useful order, and Bookshop doesn't stock them all).
+    let isbnCandidates: [String]
+
+    /// Used to spot a book that's already been added.
+    var isbn13: String? { isbnCandidates.first }
 
     var id: String { openLibraryID }
 
@@ -111,7 +153,7 @@ enum BookSearch {
                 author: doc.author_name?.first,
                 year: doc.first_publish_year,
                 coverID: doc.cover_i,
-                isbn13: doc.isbn?.first(where: isBookshopISBN)
+                isbnCandidates: bookshopISBNs(doc.isbn ?? [])
             )
         }
     }
@@ -122,6 +164,17 @@ enum BookSearch {
             throw URLError(.badServerResponse)
         }
         return try JSONDecoder().decode(Response.self, from: data)
+    }
+
+    /// The ISBNs Bookshop.org could link to, without repeats (at most 12).
+    private nonisolated static func bookshopISBNs(_ isbns: [String]) -> [String] {
+        var seen = Set<String>()
+        var result: [String] = []
+        for isbn in isbns where isBookshopISBN(isbn) && seen.insert(isbn).inserted {
+            result.append(isbn)
+            if result.count == 12 { break }
+        }
+        return result
     }
 
     /// Bookshop.org deep links need a 13-digit ISBN starting 978 or 979.
@@ -150,6 +203,10 @@ enum BookSearch {
     static func save(_ result: BookSearchResult) async throws -> Book {
         if let existing = try await findExisting(result) { return existing }
 
+        // Use an edition Bookshop.org actually has a page for, so the
+        // link doesn't land on "page not found".
+        let isbn = await BookshopAffiliate.firstStocked(result.isbnCandidates)
+
         do {
             return try await supabase
                 .from("books")
@@ -157,7 +214,7 @@ enum BookSearch {
                     NewBook(
                         title: String(result.title.prefix(300)),
                         author: result.author.map { String($0.prefix(200)) },
-                        isbn13: result.isbn13,
+                        isbn13: isbn,
                         openLibraryID: result.openLibraryID,
                         coverURL: result.coverURL?.absoluteString
                     ),
@@ -217,6 +274,56 @@ enum BookSearch {
             if let existing = try await lookup() { return existing }
             throw error
         }
+    }
+
+    /// Looks up a scanned barcode (an ISBN-13) on Open Library.
+    nonisolated static func lookup(isbn: String) async throws -> BookSearchResult? {
+        var components = URLComponents(string: "https://openlibrary.org/search.json")!
+        components.queryItems = [
+            URLQueryItem(name: "isbn", value: isbn),
+            URLQueryItem(name: "fields", value: "key,title,author_name,first_publish_year,cover_i,isbn"),
+            URLQueryItem(name: "limit", value: "1"),
+        ]
+        var request = URLRequest(url: components.url!)
+        request.setValue("Quotidian/1.0 (iOS book club app)", forHTTPHeaderField: "User-Agent")
+        request.timeoutInterval = 20
+
+        let response: Response
+        do {
+            response = try await fetch(request)
+        } catch {
+            if error is CancellationError || (error as? URLError)?.code == .cancelled { throw error }
+            try await Task.sleep(for: .milliseconds(700))
+            response = try await fetch(request)
+        }
+
+        guard let doc = response.docs.first, let title = doc.title, !title.isEmpty else { return nil }
+        // Put the scanned edition first: it's the copy in your hands.
+        let others = bookshopISBNs(doc.isbn ?? []).filter { $0 != isbn }
+        return BookSearchResult(
+            openLibraryID: doc.key.replacingOccurrences(of: "/works/", with: ""),
+            title: title,
+            author: doc.author_name?.first,
+            year: doc.first_publish_year,
+            coverID: doc.cover_i,
+            isbnCandidates: (isBookshopISBN(isbn) ? [isbn] : []) + others
+        )
+    }
+
+    /// A short description of the book from Open Library, if it has one.
+    nonisolated static func description(openLibraryID: String) async -> String? {
+        guard let url = URL(string: "https://openlibrary.org/works/\(openLibraryID).json") else { return nil }
+        var request = URLRequest(url: url)
+        request.setValue("Quotidian/1.0 (iOS book club app)", forHTTPHeaderField: "User-Agent")
+        request.timeoutInterval = 15
+        guard let (data, _) = try? await URLSession.shared.data(for: request),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        // "description" is either plain text or { "value": text }.
+        let raw = (json["description"] as? String) ?? ((json["description"] as? [String: Any])?["value"] as? String)
+        guard var text = raw?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else { return nil }
+        // Drop Open Library's trailing source notes and links.
+        if let cut = text.range(of: "\n----") ?? text.range(of: "([source]") { text = String(text[..<cut.lowerBound]) }
+        return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     @MainActor

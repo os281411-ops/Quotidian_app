@@ -415,15 +415,35 @@ struct ClubDetailView: View {
     private func send() {
         guard let userID = auth.userID else { return }
         let text = draft, quote = isQuote, book = attachedBook, spoiler = isSpoiler, label = spoilerLabel
+
+        // Empty the box straight away rather than after the server replies.
+        // The keyboard can finish an autocorrection just after sending and
+        // put the text back, so check again a moment later too.
+        clearComposer()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            let leftover = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !leftover.isEmpty, text.contains(leftover) { draft = "" }
+        }
+
         Task {
-            if await room.send(text: text, asQuote: quote, book: book, spoiler: spoiler, spoilerLabel: label, userID: userID) {
-                draft = ""
-                isQuote = false
-                isSpoiler = false
-                spoilerLabel = ""
-                attachedBook = nil
+            let sent = await room.send(text: text, asQuote: quote, book: book, spoiler: spoiler, spoilerLabel: label, userID: userID)
+            // Didn't send: put it back so nothing is lost.
+            if !sent, draft.isEmpty {
+                draft = text
+                isQuote = quote
+                isSpoiler = spoiler
+                spoilerLabel = label
+                attachedBook = book
             }
         }
+    }
+
+    private func clearComposer() {
+        draft = ""
+        isQuote = false
+        isSpoiler = false
+        spoilerLabel = ""
+        attachedBook = nil
     }
 }
 

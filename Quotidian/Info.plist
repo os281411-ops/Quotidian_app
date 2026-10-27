@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Quotidian uses the camera to scan a book's barcode and add it to your bookshelf.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

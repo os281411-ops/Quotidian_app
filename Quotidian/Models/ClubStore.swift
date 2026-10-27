@@ -67,7 +67,10 @@ final class ClubStore: ObservableObject {
                 .execute()
                 .value
         } catch {
-            errorMessage = "Couldn't load your clubs. Pull down to try again."
+            // A refresh that was replaced by a newer one isn't a failure.
+            if !Self.isCancellation(error) {
+                errorMessage = "Couldn't load your clubs. Pull down to try again."
+            }
         }
     }
 
@@ -96,7 +99,9 @@ final class ClubStore: ObservableObject {
             guard search == lastSearch else { return }
             discoverClubs = results
         } catch {
-            errorMessage = "Couldn't load clubs. Pull down to try again."
+            if !Self.isCancellation(error) {
+                errorMessage = "Couldn't load clubs. Pull down to try again."
+            }
         }
     }
 
@@ -417,6 +422,14 @@ final class ClubStore: ObservableObject {
         }
         await refresh()
         return true
+    }
+
+    /// True when a request stopped because it was cancelled (for example a
+    /// pull-to-refresh that SwiftUI ended early), not because it failed.
+    static func isCancellation(_ error: Error) -> Bool {
+        if error is CancellationError { return true }
+        if let urlError = error as? URLError, urlError.code == .cancelled { return true }
+        return (error as NSError).code == NSURLErrorCancelled
     }
 
     private static func message(for error: PostgrestError) -> String? {

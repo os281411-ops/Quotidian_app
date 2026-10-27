@@ -19,65 +19,78 @@ struct TodayView: View {
         ZStack {
             Theme.background.ignoresSafeArea()
 
-            ScrollView {
-                // Spacing kept tight so the whole page, down to "Discuss
-                // today's quote", fits on screen without scrolling.
-                VStack(spacing: 22) {
-                    HStack {
-                        Text("Quotidian")
-                            .font(.caption.weight(.bold))
-                            .trackedCaps(2)
-                            .foregroundStyle(Theme.textSecondary)
-                        Spacer()
-                        StreakBadgeView(streak: streak.currentStreak, style: .full)
-                    }
-                    .padding(.top, 8)
-
-                    if let quote {
-                        QuoteDisplayView(quote: quote)
-
-                        if quote.hasBook {
-                            PurchaseButton(url: quote.purchaseURL, title: "Purchase Book")
-                        }
-
-                        // Three buttons so Save stays in the centre: sharing options
-                        // live in the Share menu, and About keeps its space when absent.
-                        HStack(spacing: 40) {
-                            shareMenu(for: quote)
-
-                            CircleIconButton(
-                                systemImage: library.isSaved(quote) ? "bookmark.fill" : "bookmark",
-                                label: "Save",
-                                isActive: library.isSaved(quote),
-                                isEmphasized: true
-                            ) {
-                                toggleSave(quote)
-                            }
-
-                            // Book quotes: About here, Reflect below Save.
-                            // Book-less quotes: Reflect takes About's place.
-                            if quote.hasBook {
-                                CircleIconButton(systemImage: "info.circle", label: "About") {
-                                    showAbout = true
-                                }
-                            } else {
-                                ReflectButton(quote: quote)
-                            }
+            // The page stretches to fill the screen: the gaps between
+            // sections grow on taller phones and shrink to a minimum on
+            // smaller ones (iPhone 12 and up still fit without scrolling).
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        HStack {
+                            Text("Quotidian")
+                                .font(.caption.weight(.bold))
+                                .trackedCaps(2)
+                                .foregroundStyle(Theme.textSecondary)
+                            Spacer()
+                            StreakBadgeView(streak: streak.currentStreak, style: .full)
                         }
                         .padding(.top, 8)
 
-                        if quote.hasBook {
-                            ReflectButton(quote: quote)
-                                .padding(.top, -8)
-                        }
+                        if let quote {
+                            Spacer(minLength: 20)
 
-                        discussButton
-                    } else {
-                        emptyState
+                            QuoteDisplayView(quote: quote)
+
+                            Spacer(minLength: 20)
+
+                            if quote.hasBook {
+                                PurchaseButton(url: quote.purchaseURL, title: "Purchase Book")
+                                Spacer(minLength: 20)
+                            }
+
+                            // Three buttons so Save stays in the centre: sharing options
+                            // live in the Share menu, and About keeps its space when absent.
+                            HStack(spacing: 40) {
+                                shareMenu(for: quote)
+
+                                CircleIconButton(
+                                    systemImage: library.isSaved(quote) ? "bookmark.fill" : "bookmark",
+                                    label: "Save",
+                                    isActive: library.isSaved(quote),
+                                    isEmphasized: true
+                                ) {
+                                    toggleSave(quote)
+                                }
+
+                                // Book quotes: About here, Reflect below Save.
+                                // Book-less quotes: Reflect takes About's place.
+                                if quote.hasBook {
+                                    CircleIconButton(systemImage: "info.circle", label: "About") {
+                                        showAbout = true
+                                    }
+                                } else {
+                                    ReflectButton(quote: quote)
+                                }
+                            }
+
+                            if quote.hasBook {
+                                ReflectButton(quote: quote)
+                                    .padding(.top, 14)
+                            }
+
+                            Spacer(minLength: 20)
+
+                            discussButton
+
+                            Spacer(minLength: 8)
+                        } else {
+                            emptyState
+                            Spacer(minLength: 0)
+                        }
                     }
+                    .padding(.horizontal, 24)
+                    .frame(minHeight: max(geometry.size.height - Self.tabBarClearance, 0))
+                    .padding(.bottom, Self.tabBarClearance)
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 140)
             }
         }
         .sheet(isPresented: $showAbout) {
@@ -123,6 +136,9 @@ struct TodayView: View {
             shareCardImage = QuoteCardRenderer.render(quote)
         }
     }
+
+    /// Room left at the bottom for the floating tab bar.
+    private static let tabBarClearance: CGFloat = 84
 
     private var shareCardTaskID: String {
         "\(quote?.id ?? "")-\(subscriptions.isSubscribed)"

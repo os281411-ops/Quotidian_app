@@ -110,6 +110,14 @@ Clubs are chat rooms (the `messages` table replaced posts/comments/reactions). T
 - [x] **T3. Edit your thought from the Library**: tap the thought (or mood) on a saved quote to change it.
 - [x] **T4. Book search fails the first time**: the first search when attaching a book shows a connection error; the second works.
 - [x] **T5. New club asks its owner to "Join to Chat"** (TestFlight feedback): the app now trusts that you own a club you just made, re-checks membership when a chat opens, treats "already in this club" as joined, and opens an empty club with the keyboard up.
+- [x] **T6. Pull-to-refresh said "Couldn't load your clubs"** even though they loaded: SwiftUI was cancelling the refresh early; cancelled requests no longer count as errors.
+- [x] **T7. Today fills the screen**: gaps grow on taller phones and shrink to fit iPhone 12 and up without scrolling.
+- [x] **T8. Sent messages sometimes stayed in the box**: the box now empties as soon as you tap send (and puts the text back if sending fails).
+- [x] **T9. Report button cut off on member profiles**: tighter layout and a slightly taller sheet.
+- [x] **T10. Bookshop links on searched books gave 404s**: Open Library's first ISBN is often an edition Bookshop.org doesn't stock. New books now pick an edition Bookshop has a page for, and every Bookshop button checks first and falls back to a search for the title if the page is missing.
+- [x] **T11. Tap anywhere to close the keyboard**, on every screen (taps on text boxes, and just above the keyboard where chat's message box is, are ignored).
+- [x] **A16. Bookclub tour**: a private, scripted chat in My Clubs that explains messages, passages, books, spoilers, Now Reading, unread badges, long-press options and, last, the Quote of the Day button. Type "next" to move on; progress is saved on the phone.
+- [x] **A17. Bookshelf tab**: scan a book's barcode (camera) or search to add it; covers four to a row; tap to flip (title, author, year), tap again for the full page (big cover, description, ISBN, Bookshop.org link, remove). Private, saved on the phone, free for everyone. *(Test scanning on a real iPhone; the Simulator has no camera.)*
 
 ## Phase 7 — Before release
 

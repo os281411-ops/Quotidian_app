@@ -21,6 +21,7 @@ struct ContentView: View {
     @StateObject private var tabBar = TabBarVisibility()
     @StateObject private var reflections = ReflectionStore()
     @StateObject private var router = AppRouter()
+    @StateObject private var bookshelf = BookshelfStore()
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("onboarding.paywallShown") private var hasShownOnboardingPaywall = false
 
@@ -32,6 +33,7 @@ struct ContentView: View {
                 switch router.selectedTab {
                 case .today: TodayView()
                 case .library: LibraryView()
+                case .bookshelf: BookshelfView()
                 case .community: CommunityView()
                 case .profile: ProfileView()
                 }
@@ -60,6 +62,7 @@ struct ContentView: View {
         .environmentObject(tabBar)
         .environmentObject(reflections)
         .environmentObject(router)
+        .environmentObject(bookshelf)
         .task { await auth.start() }
         .onChange(of: auth.userID) { _, userID in
             if userID == nil { clubs.reset() }
@@ -75,6 +78,7 @@ struct ContentView: View {
         // Check for new club messages whenever the app comes back.
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
+            KeyboardDismisser.shared.install()
             notifications.refreshEveningSchedule()
             guard auth.userID != nil else { return }
             Task { await clubs.refreshUnread() }
@@ -90,6 +94,8 @@ struct ContentView: View {
             }
         }
         .onAppear {
+            // Tap anywhere to close the keyboard (needs the window to exist first).
+            DispatchQueue.main.async { KeyboardDismisser.shared.install() }
             guard !hasShownOnboardingPaywall, !subscriptions.isSubscribed else { return }
             hasShownOnboardingPaywall = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {

@@ -367,9 +367,9 @@ struct MemberProfileView: View {
                 Theme.background.ignoresSafeArea()
 
                 ScrollView {
-                    VStack(spacing: 24) {
-                        VStack(spacing: 10) {
-                            MemberAvatar(name: displayName, size: 72)
+                    VStack(spacing: 16) {
+                        VStack(spacing: 8) {
+                            MemberAvatar(name: displayName, size: 64)
                             if let name = member.profile?.displayName {
                                 Text(name)
                                     .font(Theme.Font.serif(24, weight: .semibold))
@@ -379,7 +379,6 @@ struct MemberProfileView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(Theme.textSecondary)
                         }
-                        .padding(.top, 12)
 
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Currently Reading")
@@ -397,7 +396,7 @@ struct MemberProfileView: View {
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(18)
+                        .padding(16)
                         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Theme.surface))
                         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(Theme.divider, lineWidth: 1))
 
@@ -405,7 +404,8 @@ struct MemberProfileView: View {
                             safetyActions
                         }
                     }
-                    .padding(24)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 24)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -416,7 +416,9 @@ struct MemberProfileView: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
+        // A little taller than half the screen so Block and Report both
+        // show without scrolling.
+        .presentationDetents([.fraction(0.62), .large])
         .task { await load() }
         .alert("Block \(handle)?", isPresented: $confirmingBlock) {
             Button("Block", role: .destructive) {

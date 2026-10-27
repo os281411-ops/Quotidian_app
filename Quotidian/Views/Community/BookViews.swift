@@ -29,6 +29,9 @@ struct BookCard: View {
     let book: Book
     var compact = false
 
+    @Environment(\.openURL) private var openURL
+    @State private var isOpening = false
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             BookCover(url: book.cover, width: compact ? 40 : 52)
@@ -45,16 +48,31 @@ struct BookCard: View {
                         .foregroundStyle(Theme.textSecondary)
                         .lineLimit(1)
                 }
-                Link(destination: book.bookshopURL) {
+                // Checks Bookshop.org has this edition first; if not, opens a
+                // search for the book instead of a "page not found".
+                Button {
+                    guard !isOpening else { return }
+                    isOpening = true
+                    Task {
+                        let url = await BookshopAffiliate.workingURL(for: book)
+                        isOpening = false
+                        openURL(url)
+                    }
+                } label: {
                     HStack(spacing: 4) {
                         Image(systemName: "bag")
                         Text("Bookshop.org")
-                        Image(systemName: "arrow.up.right")
-                            .font(.caption2.weight(.bold))
+                        if isOpening {
+                            ProgressView().controlSize(.mini).tint(Theme.accent)
+                        } else {
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption2.weight(.bold))
+                        }
                     }
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Theme.accent)
                 }
+                .buttonStyle(.plain)
                 .padding(.top, 2)
             }
             Spacer(minLength: 0)
@@ -69,6 +87,9 @@ struct BookCard: View {
 struct BookPickerView: View {
     let title: String
     let onPick: (Book) -> Void
+    /// Set to get the search result itself instead (nothing is saved to the
+    /// server). Used by the Bookshelf, which lives on the phone.
+    var onPickResult: ((BookSearchResult) -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var query = ""
@@ -197,6 +218,11 @@ struct BookPickerView: View {
     }
 
     private func pick(_ result: BookSearchResult) {
+        if let onPickResult {
+            onPickResult(result)
+            dismiss()
+            return
+        }
         savingID = result.id
         Task {
             defer { savingID = nil }
